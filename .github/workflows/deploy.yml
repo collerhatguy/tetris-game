@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Verify Git path
+        run: |
+          echo "Git path: $(which git)"
       - name: Checkout code
         uses: actions/checkout@v2
 
