@@ -29,13 +29,8 @@ jobs:
       - name: Build Angular application
         run: npm run build --prod
 
-      - name: Provide Credentials
-        run: |
-          git config --global user.name "collerhatguy"
-          git config --global user.password ${{ secrets.PAT }}
-
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist/tetris-ai
