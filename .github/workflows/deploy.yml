@@ -27,7 +27,7 @@ jobs:
         run: npm i
 
       - name: Build Angular application
-        run: npm run build --base-href "tetrisAI"
+        run: npm run build -- --base-href tetris-game
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
