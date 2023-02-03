@@ -1,1 +1,8 @@
-If you can read this than CI/CD works! Testing
+<button
+  (click)="gameStart.next(true)"
+  *ngIf="!(gameStart | async)"
+  data-testid="start-game-btn"
+>
+  Start Game
+</button>
+<section *ngIf="gameStart | async" data-testid="game-board"></section>
