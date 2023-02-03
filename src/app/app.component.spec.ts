@@ -13,4 +13,6 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
   });
+
+  it('has a start game button that reveals the board', () => {});
 });
