@@ -10,6 +10,7 @@ $squareSize: 20px;
 .board-container {
   display: grid;
   grid-template-rows: repeat(20, $squareSize);
+  border: 1px black solid;
 }
 
 app-row {

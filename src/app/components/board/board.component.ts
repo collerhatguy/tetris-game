@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
-export type Color = 'white' | 'black';
-export type Row = Color[];
+type Color = 'white' | 'black';
+type Row = Color[];
 type Board = Row[];
 
 @Component({
@@ -18,7 +18,7 @@ export class BoardComponent {
     const board: Board = [];
 
     for (let i = 0; i < 20; i++) {
-      const row: Color[] = [];
+      const row: Row = [];
       board.push(row);
       for (let j = 0; j < 10; j++) {
         row.push('white');

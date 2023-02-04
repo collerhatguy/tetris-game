@@ -1,5 +1,10 @@
 <section class="board-container">
   <div data-testid="row" *ngFor="let row of board">
-    <div *ngFor="let color of row" class="square" data-testid="square"></div>
+    <div
+      [style]="'background-color: ' + color + ';'"
+      *ngFor="let color of row"
+      class="square"
+      data-testid="square"
+    ></div>
   </div>
 </section>
