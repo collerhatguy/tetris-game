@@ -1,22 +1,5 @@
 <section class="board-container">
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
-  <app-row></app-row>
+  <div data-testid="row" *ngFor="let row of board">
+    <div *ngFor="let color of row" class="square" data-testid="square"></div>
+  </div>
 </section>

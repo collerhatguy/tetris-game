@@ -1,9 +1,12 @@
 import { AppComponent } from './app.component';
 import { fireEvent, render, screen } from '@testing-library/angular';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
-    await render(AppComponent, {});
+    await render(AppComponent, {
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    });
   });
 
   it('has a start game button that reveals the game', () => {

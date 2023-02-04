@@ -1,17 +1,19 @@
 import { render, screen } from '@testing-library/angular';
 
 import { BoardComponent } from './board.component';
-import { RowComponent } from './row/row.component';
 
 describe('BoardComponent', () => {
   beforeEach(async () => {
-    await render(BoardComponent, {
-      declarations: [RowComponent],
-    });
+    await render(BoardComponent, {});
   });
 
   it('should have 20 rows', () => {
     const rows = screen.getAllByTestId('row');
     expect(rows.length).toBe(20);
+  });
+
+  it('should have 10 squares for each row', () => {
+    const squares = screen.getAllByTestId('square');
+    expect(squares.length).toBe(200);
   });
 });
