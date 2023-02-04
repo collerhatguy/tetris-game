@@ -5,4 +5,6 @@
 >
   Start Game
 </button>
-<section *ngIf="gameStart | async" data-testid="game-board"></section>
+<main *ngIf="gameStart | async" data-testid="game">
+  <app-board></app-board>
+</main>
