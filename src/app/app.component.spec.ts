@@ -6,11 +6,11 @@ describe('AppComponent', () => {
     await render(AppComponent, {});
   });
 
-  it('has a start game button that reveals the board', () => {
+  it('has a start game button that reveals the game', () => {
     const startGame = screen.getByTestId('start-game-btn');
     fireEvent.click(startGame);
     const empty = screen.queryByTestId('start-game-btn');
     expect(empty).toBeFalsy();
-    const board = screen.getByTestId('game-board');
+    const game = screen.getByTestId('game');
   });
 });

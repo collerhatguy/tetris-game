@@ -1,0 +1,10 @@
+@import "./row/row.component.scss";
+
+.board-container {
+  display: grid;
+  grid-template-rows: repeat(20, $squareSize);
+}
+
+app-row {
+  grid-template-columns: repeat(10, $squareSize);
+}
