@@ -16,3 +16,7 @@ $squareSize: 20px;
 app-row {
   grid-template-columns: repeat(10, $squareSize);
 }
+
+.effects {
+  visibility: hidden;
+}
