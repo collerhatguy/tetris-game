@@ -1,11 +1,18 @@
 import { fakeAsync, tick, flushMicrotasks, flush } from '@angular/core/testing';
 import { render, screen } from '@testing-library/angular';
-
+import { subscribeSpyTo } from '@hirez_io/observer-spy';
 import { BoardComponent } from './board.component';
 
 describe('BoardComponent', () => {
+  let component: BoardComponent;
+
   beforeEach(async () => {
-    await render(BoardComponent, {});
+    const res = await render(BoardComponent, {});
+    component = res.fixture.componentInstance;
+  });
+
+  afterEach(() => {
+    component.ngOnDestroy();
   });
 
   it('should have 20 rows', () => {
@@ -18,14 +25,14 @@ describe('BoardComponent', () => {
     expect(squares.length).toBe(200);
   });
 
-  // it('after being rendered for a second an orange square will appear at the top of the grid', fakeAsync(async () => {
-  //   let playerPieces = screen.queryAllByTestId('player-peice');
-  //   expect(playerPieces.length).toBe(0);
-  //   tick(1000);
-  //   flush();
-  //   flushMicrotasks();
-  //   playerPieces = screen.getAllByTestId('player-peice');
-  //   expect(playerPieces.length).toBe(4);
-  //   expect(playerPieces[0].style.color).toBe('orange');
-  // }));
+  it('after being rendered for a second an orange square will appear at the top of the grid', fakeAsync(async () => {
+    // let playerPieces = screen.queryAllByTestId('player-peice');
+    // expect(playerPieces.length).toBe(0);
+    // tick(1000);
+    // flush();
+    // flushMicrotasks();
+    // playerPieces = screen.getAllByTestId('player-peice');
+    // expect(playerPieces.length).toBe(4);
+    // expect(playerPieces[0].style.color).toBe('orange');
+  }));
 });

@@ -1,16 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   Observable,
   interval,
-  startWith,
   map,
   BehaviorSubject,
-  pairwise,
   pipe,
-  take,
   tap,
-  distinctUntilChanged,
-  distinctUntilKeyChanged,
+  Subject,
+  pairwise,
+  takeWhile,
+  takeUntil,
 } from 'rxjs';
 
 type Color = 'white' | 'black' | 'orange';
@@ -39,10 +38,11 @@ const clone = <T>() =>
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent {
+export class BoardComponent implements OnDestroy {
   board = new BehaviorSubject<Board>(this.getInitialBoard());
 
-  private gravity = interval(1000);
+  private destroy = new Subject();
+  gravity = interval(1000).pipe(takeUntil(this.destroy));
 
   playerPeice = new BehaviorSubject<Coordinate[]>([]);
   // I need to check every second whether a block exists and create it if it does
@@ -69,7 +69,7 @@ export class BoardComponent {
 
     this.playerPeice
       .asObservable()
-      .pipe(clone(), pairwise())
+      .pipe(clone(), pairwise(), takeUntil(this.destroy))
       .subscribe(([prev, current]) => {
         const prevValue = this.board.value;
         prev.forEach((c) => {
@@ -95,5 +95,9 @@ export class BoardComponent {
       }
     }
     return board;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next(true);
   }
 }
