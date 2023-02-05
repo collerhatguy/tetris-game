@@ -9,6 +9,7 @@ describe('BoardComponent', () => {
   beforeEach(async () => {
     const res = await render(BoardComponent, {});
     component = res.fixture.componentInstance;
+    component.ngOnInit();
   });
 
   afterEach(() => {
@@ -26,13 +27,13 @@ describe('BoardComponent', () => {
   });
 
   it('after being rendered for a second an orange square will appear at the top of the grid', fakeAsync(async () => {
-    // let playerPieces = screen.queryAllByTestId('player-peice');
-    // expect(playerPieces.length).toBe(0);
-    // tick(1000);
-    // flush();
-    // flushMicrotasks();
-    // playerPieces = screen.getAllByTestId('player-peice');
-    // expect(playerPieces.length).toBe(4);
-    // expect(playerPieces[0].style.color).toBe('orange');
+    component.ngOnInit();
+    let playerPieces = screen.queryAllByTestId('player-peice');
+    expect(playerPieces.length).toBe(0);
+    tick(1001);
+    playerPieces = await screen.findAllByTestId('player-peice');
+    expect(playerPieces.length).toBe(4);
+    expect(playerPieces[0].style.backgroundColor).toBe('orange');
+    component.ngOnDestroy();
   }));
 });

@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   Observable,
   interval,
@@ -38,19 +38,17 @@ const clone = <T>() =>
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent implements OnDestroy {
+export class BoardComponent implements OnDestroy, OnInit {
   board = new BehaviorSubject<Board>(this.getInitialBoard());
 
   private destroy = new Subject();
-  gravity = interval(1000).pipe(takeUntil(this.destroy));
 
   playerPeice = new BehaviorSubject<Coordinate[]>([]);
-  // I need to check every second whether a block exists and create it if it does
-  // then I need to increase its y coordinate by one every second
-  // update the board to reflect its position
 
-  constructor() {
-    this.gravity.subscribe(() => {
+  gravity = interval(1000).pipe(
+    takeUntil(this.destroy),
+    log(),
+    tap(() => {
       const prevValue = this.playerPeice.value;
       const newValue =
         prevValue.length === 0
@@ -65,11 +63,19 @@ export class BoardComponent implements OnDestroy {
               return { ...c };
             });
       this.playerPeice.next(newValue);
-    });
+    })
+  );
 
+  // I need to check every second whether a block exists and create it if it does
+  // then I need to increase its y coordinate by one every second
+  // update the board to reflect its position
+
+  constructor() {}
+  ngOnInit(): void {
+    this.gravity.subscribe();
     this.playerPeice
       .asObservable()
-      .pipe(clone(), pairwise(), takeUntil(this.destroy))
+      .pipe(log(), clone(), pairwise(), takeUntil(this.destroy))
       .subscribe(([prev, current]) => {
         const prevValue = this.board.value;
         prev.forEach((c) => {
