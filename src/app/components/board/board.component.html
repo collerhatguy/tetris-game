@@ -4,7 +4,13 @@
       *ngFor="let square of row"
       [style]="'background-color: ' + square.color + ';'"
       class="square"
-      [attr.data-testid]="square.isPlayer ? 'player-peice' : 'square'"
+      [attr.data-testid]="
+        square.isPlayer
+          ? 'player-peice'
+          : square.color !== 'white'
+          ? 'solid-peice'
+          : 'square'
+      "
     ></div>
   </div>
 </section>

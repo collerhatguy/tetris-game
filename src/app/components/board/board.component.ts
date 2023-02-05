@@ -39,6 +39,9 @@ const clone = <T>() =>
   styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements OnDestroy, OnInit {
+  private readonly boardHeight = 20;
+  private readonly boardWidth = 10;
+
   board = new BehaviorSubject<Board>(this.getInitialBoard());
 
   private destroy = new Subject();
@@ -47,7 +50,6 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   gravity = interval(1000).pipe(
     takeUntil(this.destroy),
-    log(),
     tap(() => {
       const prevValue = this.playerPeice.value;
       const newValue =
@@ -62,7 +64,23 @@ export class BoardComponent implements OnDestroy, OnInit {
               c.y += 1;
               return { ...c };
             });
-      this.playerPeice.next(newValue);
+
+      const currentBoard = this.board.value;
+      const lowestPoints = newValue.reduce(
+        (arr: Coordinate[], c: Coordinate) => {
+          if (arr.length === 0) return [c];
+          const lowestPoint = arr[0].y;
+          if (c.y === lowestPoint) return [...arr, c];
+          if (c.y > lowestPoint) return [c];
+          return arr;
+        },
+        []
+      );
+      const hitTheGround = lowestPoints.some(
+        (c) =>
+          c.y === this.boardHeight || currentBoard[c.y][c.x].color !== 'white'
+      );
+      this.playerPeice.next(hitTheGround ? [] : newValue);
     })
   );
 
@@ -75,13 +93,14 @@ export class BoardComponent implements OnDestroy, OnInit {
     this.gravity.subscribe();
     this.playerPeice
       .asObservable()
-      .pipe(log(), clone(), pairwise(), takeUntil(this.destroy))
+      .pipe(clone(), pairwise(), takeUntil(this.destroy))
       .subscribe(([prev, current]) => {
         const prevValue = this.board.value;
-        prev.forEach((c) => {
-          prevValue[c.y][c.x].color = 'white';
-          prevValue[c.y][c.x].isPlayer = false;
-        });
+        if (current.length !== 0)
+          prev.forEach((c) => {
+            prevValue[c.y][c.x].color = 'white';
+            prevValue[c.y][c.x].isPlayer = false;
+          });
         current.forEach((c) => {
           prevValue[c.y][c.x].color = 'orange';
           prevValue[c.y][c.x].isPlayer = true;
@@ -92,11 +111,10 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   private getInitialBoard(): Board {
     const board: Board = [];
-
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < this.boardHeight; i++) {
       const row: Row = [];
       board.push(row);
-      for (let j = 0; j < 10; j++) {
+      for (let j = 0; j < this.boardWidth; j++) {
         row.push({ color: 'white', isPlayer: false });
       }
     }
