@@ -96,11 +96,10 @@ export class BoardComponent implements OnDestroy, OnInit {
       .pipe(clone(), pairwise(), takeUntil(this.destroy))
       .subscribe(([prev, current]) => {
         const prevValue = this.board.value;
-        if (current.length !== 0)
-          prev.forEach((c) => {
-            prevValue[c.y][c.x].color = 'white';
-            prevValue[c.y][c.x].isPlayer = false;
-          });
+        prev.forEach((c) => {
+          if (current.length !== 0) prevValue[c.y][c.x].color = 'white';
+          prevValue[c.y][c.x].isPlayer = false;
+        });
         current.forEach((c) => {
           prevValue[c.y][c.x].color = 'orange';
           prevValue[c.y][c.x].isPlayer = true;
