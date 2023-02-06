@@ -1,12 +1,15 @@
 import { fakeAsync, tick, flush } from '@angular/core/testing';
 import { render, screen } from '@testing-library/angular';
 import { BoardComponent } from './board.component';
+import { PieceService } from './piece/piece.service';
 
 describe('BoardComponent', () => {
   let component: BoardComponent;
 
   beforeEach(async () => {
-    const res = await render(BoardComponent, {});
+    const res = await render(BoardComponent, {
+      providers: [PieceService],
+    });
     component = res.fixture.componentInstance;
     component.ngOnInit();
   });

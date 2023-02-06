@@ -11,6 +11,7 @@ import {
   takeWhile,
   takeUntil,
 } from 'rxjs';
+import { PieceService } from './piece/piece.service';
 
 type Color = 'white' | 'black' | 'orange';
 
@@ -22,7 +23,7 @@ export interface Square {
 export type Row = Square[];
 export type Board = Row[];
 
-interface Coordinate {
+export interface Coordinate {
   x: number;
   y: number;
 }
@@ -50,8 +51,9 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   gravity = interval(1000).pipe(
     takeUntil(this.destroy),
-    tap(() => {
-      const prevValue = this.playerPeice.value;
+    map(() => this.playerPeice.value),
+    clone(),
+    map((prevValue) => {
       const newValue =
         prevValue.length === 0
           ? [
@@ -65,17 +67,8 @@ export class BoardComponent implements OnDestroy, OnInit {
               return { ...c };
             });
 
+      const lowestPoints = this.piece.getLowestPoints(newValue);
       const currentBoard = this.board.value;
-      const lowestPoints = newValue.reduce(
-        (arr: Coordinate[], c: Coordinate) => {
-          if (arr.length === 0) return [c];
-          const lowestPoint = arr[0].y;
-          if (c.y === lowestPoint) return [...arr, c];
-          if (c.y > lowestPoint) return [c];
-          return arr;
-        },
-        []
-      );
       const hitTheGround = lowestPoints.some(
         (c) =>
           c.y === this.boardHeight || currentBoard[c.y][c.x].color !== 'white'
@@ -88,7 +81,7 @@ export class BoardComponent implements OnDestroy, OnInit {
   // then I need to increase its y coordinate by one every second
   // update the board to reflect its position
 
-  constructor() {}
+  constructor(private piece: PieceService) {}
   ngOnInit(): void {
     this.gravity.subscribe();
     this.playerPeice
