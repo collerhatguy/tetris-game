@@ -8,10 +8,10 @@ import {
   tap,
   Subject,
   pairwise,
-  takeWhile,
   takeUntil,
 } from 'rxjs';
-import { PieceService } from './piece/piece.service';
+import { BoardService } from './board-service/board.service';
+import { PlayerPieceService } from './player-piece/player-piece.service';
 
 type Color = 'white' | 'black' | 'orange';
 
@@ -40,52 +40,22 @@ const clone = <T>() =>
   styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements OnDestroy, OnInit {
-  private readonly boardHeight = 20;
-  private readonly boardWidth = 10;
-
-  board = new BehaviorSubject<Board>(this.getInitialBoard());
+  board$ = this.board.value$;
 
   private destroy = new Subject();
 
-  playerPeice = new BehaviorSubject<Coordinate[]>([]);
-
   gravity = interval(1000).pipe(
     takeUntil(this.destroy),
-    map(() => this.playerPeice.value),
-    clone(),
-    map((prevValue) => {
-      const newValue =
-        prevValue.length === 0
-          ? [
-              { x: 4, y: 0 },
-              { x: 5, y: 0 },
-              { x: 4, y: 1 },
-              { x: 5, y: 1 },
-            ]
-          : prevValue.map((c) => {
-              c.y += 1;
-              return { ...c };
-            });
-
-      const lowestPoints = this.piece.getLowestPoints(newValue);
-      const currentBoard = this.board.value;
-      const hitTheGround = lowestPoints.some(
-        (c) =>
-          c.y === this.boardHeight || currentBoard[c.y][c.x].color !== 'white'
-      );
-      this.playerPeice.next(hitTheGround ? [] : newValue);
-    })
+    tap(() => this.playerPiece.moveDown())
   );
 
-  // I need to check every second whether a block exists and create it if it does
-  // then I need to increase its y coordinate by one every second
-  // update the board to reflect its position
-
-  constructor(private piece: PieceService) {}
+  constructor(
+    private playerPiece: PlayerPieceService,
+    private board: BoardService
+  ) {}
   ngOnInit(): void {
     this.gravity.subscribe();
-    this.playerPeice
-      .asObservable()
+    this.playerPiece.value$
       .pipe(clone(), pairwise(), takeUntil(this.destroy))
       .subscribe(([prev, current]) => {
         const prevValue = this.board.value;
@@ -97,20 +67,8 @@ export class BoardComponent implements OnDestroy, OnInit {
           prevValue[c.y][c.x].color = 'orange';
           prevValue[c.y][c.x].isPlayer = true;
         });
-        this.board.next([...prevValue]);
+        this.board.value = [...prevValue];
       });
-  }
-
-  private getInitialBoard(): Board {
-    const board: Board = [];
-    for (let i = 0; i < this.boardHeight; i++) {
-      const row: Row = [];
-      board.push(row);
-      for (let j = 0; j < this.boardWidth; j++) {
-        row.push({ color: 'white', isPlayer: false });
-      }
-    }
-    return board;
   }
 
   ngOnDestroy(): void {
