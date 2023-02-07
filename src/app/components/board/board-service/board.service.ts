@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Board, Row } from '../board.component';
+import { Board, Coordinate, Row } from '../board.component';
 
 @Injectable({
   providedIn: 'root',
@@ -17,10 +17,6 @@ export class BoardService {
     return this.board.value;
   }
 
-  set value(value: Board) {
-    this.board.next(value);
-  }
-
   private getInitialBoard(): Board {
     const board: Board = [];
     for (let i = 0; i < this.boardHeight; i++) {
@@ -31,5 +27,29 @@ export class BoardService {
       }
     }
     return board;
+  }
+
+  lockPieceInplace(cordinates: Coordinate[]) {
+    const prevBoard = this.value;
+    cordinates.forEach((c) => {
+      prevBoard[c.y][c.x].isPlayer = false;
+    });
+    this.board.next(prevBoard);
+  }
+  clearPiece(cordinates: Coordinate[]) {
+    const prevBoard = this.value;
+    cordinates.forEach((c) => {
+      prevBoard[c.y][c.x].color = 'white';
+      prevBoard[c.y][c.x].isPlayer = false;
+    });
+    this.board.next(prevBoard);
+  }
+  setPiece(cordinates: Coordinate[]) {
+    const prevBoard = this.value;
+    cordinates.forEach((c) => {
+      prevBoard[c.y][c.x].color = 'orange';
+      prevBoard[c.y][c.x].isPlayer = true;
+    });
+    this.board.next(prevBoard);
   }
 }
