@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Board, Coordinate, Row } from '../board.component';
+import { Board, Row, Coordinate } from './models';
 
 @Injectable({
   providedIn: 'root',

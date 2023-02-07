@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BoardService } from '../board-service/board.service';
-import { Coordinate } from '../board.component';
+import { Coordinate } from '../board-service/models';
 
 @Injectable({
   providedIn: 'root',

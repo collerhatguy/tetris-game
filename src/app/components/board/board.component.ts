@@ -13,20 +13,6 @@ import {
 import { BoardService } from './board-service/board.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
 
-type Color = 'white' | 'black' | 'orange';
-
-export interface Square {
-  color: Color;
-  isPlayer: boolean;
-}
-
-export type Row = Square[];
-export type Board = Row[];
-
-export interface Coordinate {
-  x: number;
-  y: number;
-}
 const log = <T>() =>
   pipe<Observable<T>, Observable<T>>(
     tap((x) => console.log(JSON.parse(JSON.stringify(x))))
