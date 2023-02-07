@@ -1,4 +1,4 @@
-<section class="board-container" *ngIf="board | async as board">
+<section class="board-container" *ngIf="board$ | async as board">
   <div data-testid="row" *ngFor="let row of board">
     <div
       *ngFor="let square of row"
