@@ -1,4 +1,4 @@
-import { fakeAsync, tick, ComponentFixture } from '@angular/core/testing';
+import { fakeAsync, tick } from '@angular/core/testing';
 import { fireEvent, render, screen } from '@testing-library/angular';
 import { BoardService } from './board-service/board.service';
 import { BoardComponent } from './board.component';
@@ -26,7 +26,7 @@ describe('BoardComponent', () => {
     expect(squares.length).toBe(200);
   });
 
-  const getPlayerPieces = () => screen.findAllByTestId('player-peice');
+  const getPlayerPieces = () => screen.findAllByTestId('player-piece');
 
   const getPlayerCoordinates = async () => {
     const playerPieces = await getPlayerPieces();
@@ -48,41 +48,43 @@ describe('BoardComponent', () => {
     } as KeyboardEvent);
   };
 
-  it('after being rendered for a second an orange square will appear at the top of the grid', fakeAsync(async () => {
-    component.ngOnInit();
-    let playerPieces = screen.queryAllByTestId('player-peice');
-    expect(playerPieces.length).toBe(0);
-    tick(1001);
-    playerPieces = await getPlayerPieces();
-    expect(playerPieces.length).toBe(4);
-    expect(playerPieces[0].style.backgroundColor).toBe('orange');
-    component.ngOnDestroy();
-  }));
-
-  it('the peice will stop falling at the bottom and become solid', fakeAsync(async () => {
-    component.ngOnInit();
-    tick(1000 * 21);
-    const solidPieces = await screen.findAllByTestId('solid-peice');
-    expect(solidPieces.length).toBe(4);
-    expect(solidPieces[0].style.backgroundColor).toBe('orange');
-    component.ngOnDestroy();
-  }));
-
-  it('the peice will move left if I hit "a" and right if I hit "d"', fakeAsync(async () => {
-    component.ngOnInit();
-    tick(1000);
-
-    const prevCoordinates = await getPlayerCoordinates();
-    pressA();
-    const currentCoordinates = await getPlayerCoordinates();
-
-    const expectedCoordinates = prevCoordinates.map((c) => ({
-      ...c,
-      x: c.x - 1,
+  describe('movement', () => {
+    it('after being rendered for a second an orange square will appear at the top of the grid', fakeAsync(async () => {
+      component.ngOnInit();
+      let playerPieces = screen.queryAllByTestId('player-piece');
+      expect(playerPieces.length).toBe(0);
+      tick(1001);
+      playerPieces = await getPlayerPieces();
+      expect(playerPieces.length).toBe(4);
+      expect(playerPieces[0].style.backgroundColor).toBe('orange');
+      component.ngOnDestroy();
     }));
-    expect(prevCoordinates).not.toEqual(currentCoordinates);
-    expect(currentCoordinates).toEqual(expectedCoordinates);
 
-    component.ngOnDestroy();
-  }));
+    it('the piece will stop falling at the bottom and become solid', fakeAsync(async () => {
+      component.ngOnInit();
+      tick(1000 * 21);
+      const solidPieces = await getPlayerPieces();
+      expect(solidPieces.length).toBe(4);
+      expect(solidPieces[0].style.backgroundColor).toBe('orange');
+      component.ngOnDestroy();
+    }));
+
+    it('the piece will move left if I hit "a" and right if I hit "d"', fakeAsync(async () => {
+      component.ngOnInit();
+      tick(1000);
+
+      const prevCoordinates = await getPlayerCoordinates();
+      pressA();
+      const currentCoordinates = await getPlayerCoordinates();
+
+      const expectedCoordinates = prevCoordinates.map((c) => ({
+        ...c,
+        x: c.x - 1,
+      }));
+      expect(prevCoordinates).not.toEqual(currentCoordinates);
+      expect(currentCoordinates).toEqual(expectedCoordinates);
+
+      component.ngOnDestroy();
+    }));
+  });
 });

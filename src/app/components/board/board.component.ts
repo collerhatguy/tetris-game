@@ -1,15 +1,5 @@
-import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
-import {
-  Observable,
-  interval,
-  map,
-  BehaviorSubject,
-  pipe,
-  tap,
-  Subject,
-  pairwise,
-  takeUntil,
-} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { interval, tap, Subject, pairwise, takeUntil } from 'rxjs';
 import { BoardService } from './board-service/board.service';
 import { PlayerInputService } from './player-input/player-input.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
