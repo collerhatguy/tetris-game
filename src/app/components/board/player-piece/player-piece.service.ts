@@ -16,14 +16,17 @@ export class PlayerPieceService {
   }
   constructor(private board: BoardService) {}
 
-  private getLowestPoints(piece: Coordinate[]) {
-    return piece.reduce((arr: Coordinate[], c: Coordinate) => {
-      if (arr.length === 0) return [c];
-      const lowestPoint = arr[0].y;
-      if (c.y === lowestPoint) return [...arr, c];
-      if (c.y > lowestPoint) return [c];
-      return arr;
-    }, []);
+  private getNewlyOccupiedAreas(
+    newPosition: Coordinate[],
+    currentPosition = this.value
+  ): Coordinate[] {
+    console.log(
+      JSON.parse(JSON.stringify(newPosition)),
+      JSON.parse(JSON.stringify(currentPosition))
+    );
+    return newPosition.filter(
+      (c) => !currentPosition.find((c2) => c2.x === c.x && c.y === c2.y)
+    );
   }
 
   moveDown() {
@@ -35,16 +38,28 @@ export class PlayerPieceService {
             { x: 4, y: 1 },
             { x: 5, y: 1 },
           ]
-        : this.value.map((c) => {
-            c.y += 1;
-            return { ...c };
-          });
-    const lowestPoints = this.getLowestPoints(newValue);
+        : this.value.map((c) => ({ ...c, y: c.y + 1 }));
+    const newlyOccupied = this.getNewlyOccupiedAreas(newValue);
     const currentBoard = this.board.value;
-    const hitTheGround = lowestPoints.some(
+    const hitTheGround = newlyOccupied.some(
       (c) =>
         c.y === currentBoard.length || currentBoard[c.y][c.x].color !== 'white'
     );
     this.playerPiece.next(hitTheGround ? [] : newValue);
+  }
+
+  moveLeft() {
+    const newValue = this.value.map((c) => {
+      c.x -= 1;
+      return c;
+    });
+
+    const newlyOccupied = this.getNewlyOccupiedAreas(newValue);
+    const currentBoard = this.board.value;
+    const isInvalid = newlyOccupied.some(
+      (c) => c.x < 0 || currentBoard[c.y][c.x].color !== 'white'
+    );
+
+    !isInvalid && this.playerPiece.next(newValue);
   }
 }

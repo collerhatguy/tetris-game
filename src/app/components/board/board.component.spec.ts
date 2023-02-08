@@ -1,8 +1,8 @@
 import { fakeAsync, tick } from '@angular/core/testing';
 import { fireEvent, render, screen } from '@testing-library/angular';
 import { BoardService } from './board-service/board.service';
-import { Coordinate } from './board-service/models';
 import { BoardComponent } from './board.component';
+import { PlayerInputService } from './player-input/player-input.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
 
 describe('BoardComponent', () => {
@@ -10,7 +10,7 @@ describe('BoardComponent', () => {
 
   beforeEach(async () => {
     const res = await render(BoardComponent, {
-      providers: [PlayerPieceService, BoardService],
+      providers: [PlayerPieceService, BoardService, PlayerInputService],
     });
     component = res.fixture.componentInstance;
     component.ngOnInit();
@@ -75,11 +75,6 @@ describe('BoardComponent', () => {
     component.ngOnInit();
     // tick(1000);
     // const prevCoordinates = await getPlayerCoordinates();
-    // fireEvent.keyDown(document, {
-    //   key: 'a',
-    //   charCode: 65,
-    //   code: 'KeyA',
-    // });
     // pressA();
     // const currentCoordinates = await getPlayerCoordinates();
 
