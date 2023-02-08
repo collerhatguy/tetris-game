@@ -110,5 +110,41 @@ describe('BoardComponent', () => {
 
       component.ngOnDestroy();
     }));
+
+    it('the piece will not accept further input for a brief time after receiving it', fakeAsync(async () => {
+      component.ngOnInit();
+      tick(1000);
+
+      let prevCoordinates = await getPlayerCoordinates();
+      pressD();
+      pressA();
+      pressD();
+      pressA();
+      let currentCoordinates = await getPlayerCoordinates();
+
+      let expectedCoordinates = prevCoordinates.map((c) => ({
+        ...c,
+        x: c.x + 1,
+      }));
+      expect(prevCoordinates).not.toEqual(currentCoordinates);
+      expect(currentCoordinates).toEqual(expectedCoordinates);
+
+      tick(300);
+      pressA();
+
+      prevCoordinates = currentCoordinates;
+
+      currentCoordinates = await getPlayerCoordinates();
+
+      expectedCoordinates = prevCoordinates.map((c) => ({
+        ...c,
+        x: c.x - 1,
+      }));
+
+      expect(prevCoordinates).not.toEqual(currentCoordinates);
+      expect(currentCoordinates).toEqual(expectedCoordinates);
+
+      component.ngOnDestroy();
+    }));
   });
 });

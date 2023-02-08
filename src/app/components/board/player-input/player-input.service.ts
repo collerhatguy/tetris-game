@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { fromEvent, filter, throttleTime, tap } from 'rxjs';
+import { filterInputs } from 'src/app/utils/operators';
+import { allInputs, inputsPerSecond } from './constants';
 
 @Injectable({
   providedIn: 'root',
@@ -7,14 +9,13 @@ import { fromEvent, filter, throttleTime, tap } from 'rxjs';
 export class PlayerInputService {
   private keyEvents = fromEvent<KeyboardEvent>(window, 'keydown');
 
-  leftInput = this.keyEvents.pipe(
-    filter((e) => e.key === 'a'),
-    throttleTime(200)
+  private significantInputs = this.keyEvents.pipe(
+    filterInputs(allInputs),
+    throttleTime(1000 / inputsPerSecond)
   );
-  rightInput = this.keyEvents.pipe(
-    filter((e) => e.key === 'd'),
-    throttleTime(200)
-  );
+
+  leftInput = this.significantInputs.pipe(filter((e) => e.key === 'a'));
+  rightInput = this.significantInputs.pipe(filter((e) => e.key === 'd'));
 
   constructor() {}
 }
