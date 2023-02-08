@@ -47,6 +47,13 @@ describe('BoardComponent', () => {
       code: 'KeyA',
     } as KeyboardEvent);
   };
+  const pressD = () => {
+    fireEvent.keyDown(window, {
+      key: 'd',
+      charCode: 68,
+      code: 'KeyD',
+    } as KeyboardEvent);
+  };
 
   describe('movement', () => {
     it('after being rendered for a second an orange square will appear at the top of the grid', fakeAsync(async () => {
@@ -69,7 +76,7 @@ describe('BoardComponent', () => {
       component.ngOnDestroy();
     }));
 
-    it('the piece will move left if I hit "a" and right if I hit "d"', fakeAsync(async () => {
+    it('the piece will move left if I hit "a"', fakeAsync(async () => {
       component.ngOnInit();
       tick(1000);
 
@@ -80,6 +87,23 @@ describe('BoardComponent', () => {
       const expectedCoordinates = prevCoordinates.map((c) => ({
         ...c,
         x: c.x - 1,
+      }));
+      expect(prevCoordinates).not.toEqual(currentCoordinates);
+      expect(currentCoordinates).toEqual(expectedCoordinates);
+
+      component.ngOnDestroy();
+    }));
+    it('the piece will move right if I hit "d"', fakeAsync(async () => {
+      component.ngOnInit();
+      tick(1000);
+
+      const prevCoordinates = await getPlayerCoordinates();
+      pressD();
+      const currentCoordinates = await getPlayerCoordinates();
+
+      const expectedCoordinates = prevCoordinates.map((c) => ({
+        ...c,
+        x: c.x + 1,
       }));
       expect(prevCoordinates).not.toEqual(currentCoordinates);
       expect(currentCoordinates).toEqual(expectedCoordinates);

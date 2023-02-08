@@ -9,8 +9,11 @@ export class PlayerInputService {
 
   leftInput = this.keyEvents.pipe(
     filter((e) => e.key === 'a'),
-    throttleTime(200),
-    tap(() => console.count('key event'))
+    throttleTime(200)
+  );
+  rightInput = this.keyEvents.pipe(
+    filter((e) => e.key === 'd'),
+    throttleTime(200)
   );
 
   constructor() {}

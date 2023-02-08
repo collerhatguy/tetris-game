@@ -30,6 +30,9 @@ export class BoardComponent implements OnDestroy, OnInit {
     this.inputs.leftInput
       .pipe(takeUntil(this.destroy))
       .subscribe(() => this.playerPiece.moveLeft());
+    this.inputs.rightInput
+      .pipe(takeUntil(this.destroy))
+      .subscribe(() => this.playerPiece.moveRight());
     this.playerPiece.value$
       .pipe(clone(), pairwise(), takeUntil(this.destroy))
       .subscribe(([prev, current]) => {

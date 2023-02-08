@@ -58,4 +58,18 @@ export class PlayerPieceService {
 
     !isInvalid && this.playerPiece.next(newValue);
   }
+  moveRight() {
+    const newValue = this.value.map((c) => ({
+      ...c,
+      x: c.x + 1,
+    }));
+
+    const newlyOccupied = this.getNewlyOccupiedAreas(newValue);
+    const currentBoard = this.board.value;
+    const isInvalid = newlyOccupied.some(
+      (c) => c.x > 9 || currentBoard[c.y][c.x].color !== 'white'
+    );
+
+    !isInvalid && this.playerPiece.next(newValue);
+  }
 }
