@@ -1,14 +1,15 @@
 <section class="board-container" *ngIf="board$ | async as board">
-  <div data-testid="row" *ngFor="let row of board">
+  <div data-testid="row" *ngFor="let row of board; let y = index">
     <div
-      *ngFor="let square of row"
+      *ngFor="let square of row; let x = index"
       [style]="'background-color: ' + square.color + ';'"
+      [attr.coordinate]="x.toString() + '-' + y.toString()"
       class="square"
       [attr.data-testid]="
         square.isPlayer
-          ? 'player-peice'
+          ? 'player-piece'
           : square.color !== 'white'
-          ? 'solid-peice'
+          ? 'solid-piece'
           : 'square'
       "
     ></div>

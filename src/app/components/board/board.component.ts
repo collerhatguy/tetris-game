@@ -1,25 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  Observable,
-  interval,
-  map,
-  BehaviorSubject,
-  pipe,
-  tap,
-  Subject,
-  pairwise,
-  takeUntil,
-} from 'rxjs';
+import { interval, tap, Subject, pairwise, takeUntil } from 'rxjs';
 import { BoardService } from './board-service/board.service';
+import { PlayerInputService } from './player-input/player-input.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
-
-const log = <T>() =>
-  pipe<Observable<T>, Observable<T>>(
-    tap((x) => console.log(JSON.parse(JSON.stringify(x))))
-  );
-
-const clone = <T>() =>
-  pipe<Observable<T>, Observable<T>>(map((x) => JSON.parse(JSON.stringify(x))));
+import { clone } from '../../utils/operators';
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
@@ -37,10 +21,18 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   constructor(
     private playerPiece: PlayerPieceService,
-    private board: BoardService
+    private board: BoardService,
+    private inputs: PlayerInputService
   ) {}
+
   ngOnInit(): void {
     this.gravity.subscribe();
+    this.inputs.leftInput
+      .pipe(takeUntil(this.destroy))
+      .subscribe(() => this.playerPiece.moveLeft());
+    this.inputs.rightInput
+      .pipe(takeUntil(this.destroy))
+      .subscribe(() => this.playerPiece.moveRight());
     this.playerPiece.value$
       .pipe(clone(), pairwise(), takeUntil(this.destroy))
       .subscribe(([prev, current]) => {
