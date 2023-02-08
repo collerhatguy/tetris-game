@@ -1,4 +1,4 @@
-import { fakeAsync, tick } from '@angular/core/testing';
+import { fakeAsync, tick, ComponentFixture } from '@angular/core/testing';
 import { fireEvent, render, screen } from '@testing-library/angular';
 import { BoardService } from './board-service/board.service';
 import { BoardComponent } from './board.component';
@@ -13,10 +13,6 @@ describe('BoardComponent', () => {
       providers: [PlayerPieceService, BoardService, PlayerInputService],
     });
     component = res.fixture.componentInstance;
-    component.ngOnInit();
-  });
-
-  afterEach(() => {
     component.ngOnDestroy();
   });
 
@@ -33,7 +29,7 @@ describe('BoardComponent', () => {
   const getPlayerPieces = () => screen.findAllByTestId('player-peice');
 
   const getPlayerCoordinates = async () => {
-    const playerPieces = await screen.findAllByTestId('player-peice');
+    const playerPieces = await getPlayerPieces();
     return playerPieces.map((piece) => {
       const string = piece.getAttribute('coordinate') as string;
       const [x, y] = string.split('-');
@@ -44,12 +40,13 @@ describe('BoardComponent', () => {
     });
   };
 
-  const pressA = () =>
-    fireEvent.keyDown(document, {
+  const pressA = () => {
+    fireEvent.keyDown(window, {
       key: 'a',
       charCode: 65,
       code: 'KeyA',
-    });
+    } as KeyboardEvent);
+  };
 
   it('after being rendered for a second an orange square will appear at the top of the grid', fakeAsync(async () => {
     component.ngOnInit();
@@ -73,17 +70,18 @@ describe('BoardComponent', () => {
 
   it('the peice will move left if I hit "a" and right if I hit "d"', fakeAsync(async () => {
     component.ngOnInit();
-    // tick(1000);
-    // const prevCoordinates = await getPlayerCoordinates();
-    // pressA();
-    // const currentCoordinates = await getPlayerCoordinates();
+    tick(1000);
 
-    // const updatedCoordinates = prevCoordinates.map((c) => {
-    //   c.x -= 1;
-    //   return c;
-    // });
+    const prevCoordinates = await getPlayerCoordinates();
+    pressA();
+    const currentCoordinates = await getPlayerCoordinates();
 
-    // expect(updatedCoordinates).toEqual(currentCoordinates);
+    const expectedCoordinates = prevCoordinates.map((c) => ({
+      ...c,
+      x: c.x - 1,
+    }));
+    expect(prevCoordinates).not.toEqual(currentCoordinates);
+    expect(currentCoordinates).toEqual(expectedCoordinates);
 
     component.ngOnDestroy();
   }));

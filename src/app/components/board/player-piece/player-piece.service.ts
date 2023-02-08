@@ -20,10 +20,6 @@ export class PlayerPieceService {
     newPosition: Coordinate[],
     currentPosition = this.value
   ): Coordinate[] {
-    console.log(
-      JSON.parse(JSON.stringify(newPosition)),
-      JSON.parse(JSON.stringify(currentPosition))
-    );
     return newPosition.filter(
       (c) => !currentPosition.find((c2) => c2.x === c.x && c.y === c2.y)
     );
@@ -49,10 +45,10 @@ export class PlayerPieceService {
   }
 
   moveLeft() {
-    const newValue = this.value.map((c) => {
-      c.x -= 1;
-      return c;
-    });
+    const newValue = this.value.map((c) => ({
+      ...c,
+      x: c.x - 1,
+    }));
 
     const newlyOccupied = this.getNewlyOccupiedAreas(newValue);
     const currentBoard = this.board.value;
