@@ -53,10 +53,10 @@ export class PlayerPieceService {
     return newlyOccupied.some((c) => {
       const hitGround = c.y === currentBoard.length;
       if (hitGround) return true;
-      const overlapsWithOtherPiece = currentBoard[c.y][c.x].color !== 'white';
-      if (overlapsWithOtherPiece) return true;
       const outsideOfBounds = c.x < 0 || c.x > currentBoard[0].length - 1;
-      return outsideOfBounds;
+      if (outsideOfBounds) return true;
+      const overlapsWithOtherPiece = currentBoard[c.y][c.x].color !== 'white';
+      return overlapsWithOtherPiece;
     });
   }
 
