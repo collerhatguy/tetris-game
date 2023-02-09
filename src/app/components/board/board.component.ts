@@ -57,7 +57,7 @@ export class BoardComponent implements OnDestroy, OnInit {
         hitGround
           ? this.board.lockPieceInplace(prev)
           : this.board.clearPiece(prev);
-        this.board.setPiece(current);
+        this.board.setPlayerPiece(current);
       });
   }
 

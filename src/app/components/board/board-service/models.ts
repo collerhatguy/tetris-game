@@ -3,6 +3,7 @@ type Color = 'white' | 'black' | 'orange';
 export interface Square {
   color: Color;
   isPlayer: boolean;
+  solid: boolean;
 }
 
 export type Row = Square[];

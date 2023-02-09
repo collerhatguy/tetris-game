@@ -26,11 +26,11 @@ describe('BoardComponent', () => {
     expect(squares.length).toBe(200);
   });
 
-  const getPlayerPieces = () => screen.findAllByTestId('player-piece');
+  const getPlayerBlock = () => screen.findAllByTestId('player-piece');
+  const getShadowBlock = () => screen.findAllByTestId('shadow-block');
 
-  const getPlayerCoordinates = async () => {
-    const playerPieces = await getPlayerPieces();
-    return playerPieces.map((piece) => {
+  const getBlock = (elements: HTMLElement[]) =>
+    elements.map((piece) => {
       const string = piece.getAttribute('coordinate') as string;
       const [x, y] = string.split('-');
       return {
@@ -38,6 +38,15 @@ describe('BoardComponent', () => {
         y: parseInt(y),
       };
     });
+
+  const getPlayerCoordinates = async () => {
+    const playerPieces = await getPlayerBlock();
+    return getBlock(playerPieces);
+  };
+
+  const getShadowCoordinates = async () => {
+    const shadowBlock = await getShadowBlock();
+    return getBlock(shadowBlock);
   };
 
   const pressA = () => {
@@ -68,7 +77,7 @@ describe('BoardComponent', () => {
       let playerPieces = screen.queryAllByTestId('player-piece');
       expect(playerPieces.length).toBe(0);
       tick(1001);
-      playerPieces = await getPlayerPieces();
+      playerPieces = await getPlayerBlock();
       expect(playerPieces.length).toBe(4);
       expect(playerPieces[0].style.backgroundColor).toBe('orange');
       component.ngOnDestroy();
@@ -77,7 +86,7 @@ describe('BoardComponent', () => {
     it('the piece will stop falling at the bottom and become solid', fakeAsync(async () => {
       component.ngOnInit();
       tick(1000 * 21);
-      const solidPieces = await getPlayerPieces();
+      const solidPieces = await getPlayerBlock();
       expect(solidPieces.length).toBe(4);
       expect(solidPieces[0].style.backgroundColor).toBe('orange');
       component.ngOnDestroy();
@@ -196,6 +205,14 @@ describe('BoardComponent', () => {
       }));
 
       expect(currentCoordinates).toEqual(expectedCoordinates);
+      component.ngOnDestroy();
+    }));
+
+    it('has a shadow at the bottom of the screen indicating where the piece will fall', fakeAsync(async () => {
+      component.ngOnInit();
+      tick(1000);
+      // const playerCoordinates = await getPlayerCoordinates();
+      // const shadowBlock = await getShadowCoordinates();
       component.ngOnDestroy();
     }));
   });

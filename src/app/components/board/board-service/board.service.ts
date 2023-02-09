@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Board, Row, Block } from './models';
+import { log } from 'src/app/utils/operators';
+import { Board, Row, Block, Square } from './models';
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +9,29 @@ import { Board, Row, Block } from './models';
 export class BoardService {
   private readonly boardHeight = 20;
   private readonly boardWidth = 10;
+  private readonly emptyBlock: Square = Object.freeze({
+    solid: false,
+    isPlayer: false,
+    color: 'white',
+  });
+
+  private readonly setBlock: Square = Object.freeze({
+    solid: true,
+    isPlayer: false,
+    color: 'orange',
+  });
+
+  private readonly shadowBlock: Square = Object.freeze({
+    solid: false,
+    isPlayer: false,
+    color: 'orange',
+  });
+
+  private readonly playerBlock: Square = Object.freeze({
+    solid: true,
+    isPlayer: true,
+    color: 'orange',
+  });
 
   private board = new BehaviorSubject<Board>(this.getInitialBoard());
 
@@ -23,7 +47,7 @@ export class BoardService {
       const row: Row = [];
       board.push(row);
       for (let j = 0; j < this.boardWidth; j++) {
-        row.push({ color: 'white', isPlayer: false });
+        row.push({ ...this.emptyBlock });
       }
     }
     return board;
@@ -32,23 +56,29 @@ export class BoardService {
   lockPieceInplace(cordinates: Block) {
     const prevBoard = this.value;
     cordinates.forEach((c) => {
-      prevBoard[c.y][c.x].isPlayer = false;
+      prevBoard[c.y][c.x] = { ...this.setBlock };
     });
     this.board.next(prevBoard);
   }
+
   clearPiece(cordinates: Block) {
     const prevBoard = this.value;
     cordinates.forEach((c) => {
-      prevBoard[c.y][c.x].color = 'white';
-      prevBoard[c.y][c.x].isPlayer = false;
+      prevBoard[c.y][c.x] = { ...this.emptyBlock };
     });
     this.board.next(prevBoard);
   }
-  setPiece(cordinates: Block) {
+  setPlayerPiece(cordinates: Block) {
     const prevBoard = this.value;
     cordinates.forEach((c) => {
-      prevBoard[c.y][c.x].color = 'orange';
-      prevBoard[c.y][c.x].isPlayer = true;
+      prevBoard[c.y][c.x] = { ...this.playerBlock };
+    });
+    this.board.next(prevBoard);
+  }
+  setShadowPiece(cordinates: Block) {
+    const prevBoard = this.value;
+    cordinates.forEach((c) => {
+      prevBoard[c.y][c.x] = { ...this.shadowBlock };
     });
     this.board.next(prevBoard);
   }
