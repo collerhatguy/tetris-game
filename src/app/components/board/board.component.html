@@ -3,14 +3,17 @@
     <div
       *ngFor="let square of row; let x = index"
       [style]="'background-color: ' + square.color + ';'"
+      [ngClass]="{ transparent: !square.solid }"
       [attr.coordinate]="x.toString() + '-' + y.toString()"
       class="square"
       [attr.data-testid]="
         square.isPlayer
           ? 'player-piece'
-          : square.color !== 'white'
+          : square.color === 'white'
+          ? 'square'
+          : square.solid
           ? 'solid-piece'
-          : 'square'
+          : 'shadow-block'
       "
     ></div>
   </div>
