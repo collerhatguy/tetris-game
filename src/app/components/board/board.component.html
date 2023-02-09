@@ -3,6 +3,7 @@
     <div
       *ngFor="let square of row; let x = index"
       [style]="'background-color: ' + square.color + ';'"
+      [ngClass]="{ transparent: !square.solid }"
       [attr.coordinate]="x.toString() + '-' + y.toString()"
       class="square"
       [attr.data-testid]="

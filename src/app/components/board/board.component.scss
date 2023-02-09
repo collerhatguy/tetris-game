@@ -13,6 +13,10 @@ $squareSize: 20px;
   border: 1px black solid;
 }
 
+.transparent {
+  opacity: 0.5;
+}
+
 app-row {
   grid-template-columns: repeat(10, $squareSize);
 }
