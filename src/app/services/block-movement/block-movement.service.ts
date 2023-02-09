@@ -36,7 +36,7 @@ export class BlockMovementService {
     if (hitGround) return true;
     const outsideOfBounds = c.x < 0 || c.x > board[0].length - 1;
     if (outsideOfBounds) return true;
-    const overlapsWithOtherPiece = board[c.y][c.x].color !== 'white';
+    const overlapsWithOtherPiece = board[c.y][c.x].solid;
     return overlapsWithOtherPiece;
   }
 

@@ -12,6 +12,8 @@ import { BoardService } from './board-service/board.service';
 import { PlayerInputService } from '../../services/player-input/player-input.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
 import { clone } from '../../utils/operators';
+import { ShadowPieceService } from './shadow-piece/shadow-piece.service';
+import { Square } from './board-service/models';
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
@@ -35,12 +37,14 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   constructor(
     private playerPiece: PlayerPieceService,
+    private shadowPiece: ShadowPieceService,
     private board: BoardService,
     private inputs: PlayerInputService
   ) {}
 
   ngOnInit(): void {
     this.gravity.subscribe();
+    this.shadowPiece.trackPlayerPiece.pipe(takeUntil(this.destroy)).subscribe();
     this.inputs.leftInput
       .pipe(takeUntil(this.destroy))
       .subscribe(() => this.playerPiece.moveLeft());

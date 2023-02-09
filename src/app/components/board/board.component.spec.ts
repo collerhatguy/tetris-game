@@ -211,8 +211,8 @@ describe('BoardComponent', () => {
     it('has a shadow at the bottom of the screen indicating where the piece will fall', fakeAsync(async () => {
       component.ngOnInit();
       tick(1000);
-      // const playerCoordinates = await getPlayerCoordinates();
-      // const shadowBlock = await getShadowCoordinates();
+      const playerCoordinates = await getPlayerCoordinates();
+      const shadowBlock = await getShadowCoordinates();
       component.ngOnDestroy();
     }));
   });

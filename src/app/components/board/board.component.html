@@ -8,9 +8,11 @@
       [attr.data-testid]="
         square.isPlayer
           ? 'player-piece'
-          : square.color !== 'white'
+          : square.color === 'white'
+          ? 'square'
+          : square.solid
           ? 'solid-piece'
-          : 'square'
+          : 'shadow-block'
       "
     ></div>
   </div>
