@@ -24,6 +24,7 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   gravity = this.inputs.downInput.pipe(
     startWith(''),
+    takeUntil(this.destroy),
     switchMap(() =>
       interval(1000).pipe(
         takeUntil(this.destroy),

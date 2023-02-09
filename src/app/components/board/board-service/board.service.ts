@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Board, Row, Coordinate } from './models';
+import { Board, Row, Block } from './models';
 
 @Injectable({
   providedIn: 'root',
@@ -29,14 +29,14 @@ export class BoardService {
     return board;
   }
 
-  lockPieceInplace(cordinates: Coordinate[]) {
+  lockPieceInplace(cordinates: Block) {
     const prevBoard = this.value;
     cordinates.forEach((c) => {
       prevBoard[c.y][c.x].isPlayer = false;
     });
     this.board.next(prevBoard);
   }
-  clearPiece(cordinates: Coordinate[]) {
+  clearPiece(cordinates: Block) {
     const prevBoard = this.value;
     cordinates.forEach((c) => {
       prevBoard[c.y][c.x].color = 'white';
@@ -44,7 +44,7 @@ export class BoardService {
     });
     this.board.next(prevBoard);
   }
-  setPiece(cordinates: Coordinate[]) {
+  setPiece(cordinates: Block) {
     const prevBoard = this.value;
     cordinates.forEach((c) => {
       prevBoard[c.y][c.x].color = 'orange';

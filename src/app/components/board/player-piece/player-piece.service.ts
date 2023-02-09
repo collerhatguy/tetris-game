@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BoardService } from '../board-service/board.service';
-import { Coordinate } from '../board-service/models';
+import { Block, Coordinate } from '../board-service/models';
 
 type Direction = 'left' | 'right' | 'down';
 
@@ -9,7 +9,7 @@ type Direction = 'left' | 'right' | 'down';
   providedIn: 'root',
 })
 export class PlayerPieceService {
-  private playerPiece = new BehaviorSubject<Coordinate[]>([]);
+  private playerPiece = new BehaviorSubject<Block>([]);
 
   value$ = this.playerPiece.asObservable();
 
@@ -19,9 +19,9 @@ export class PlayerPieceService {
   constructor(private board: BoardService) {}
 
   private getNewlyOccupiedAreas(
-    newPosition: Coordinate[],
+    newPosition: Block,
     currentPosition = this.value
-  ): Coordinate[] {
+  ): Block {
     return newPosition.filter(
       (c) => !currentPosition.find((c2) => c2.x === c.x && c.y === c2.y)
     );
@@ -47,7 +47,7 @@ export class PlayerPieceService {
     }
   }
 
-  private isInvalidPosition(piece: Coordinate[]) {
+  private isInvalidPosition(piece: Block) {
     const newlyOccupied = this.getNewlyOccupiedAreas(piece);
     const currentBoard = this.board.value;
     return newlyOccupied.some((c) => {
