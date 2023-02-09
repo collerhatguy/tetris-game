@@ -1,5 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { interval, tap, Subject, pairwise, takeUntil } from 'rxjs';
+import {
+  interval,
+  tap,
+  Subject,
+  pairwise,
+  takeUntil,
+  switchMap,
+  startWith,
+} from 'rxjs';
 import { BoardService } from './board-service/board.service';
 import { PlayerInputService } from './player-input/player-input.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
@@ -14,9 +22,14 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   private destroy = new Subject();
 
-  gravity = interval(1000).pipe(
-    takeUntil(this.destroy),
-    tap(() => this.playerPiece.moveDown())
+  gravity = this.inputs.downInput.pipe(
+    startWith(''),
+    switchMap(() =>
+      interval(1000).pipe(
+        takeUntil(this.destroy),
+        tap(() => this.playerPiece.moveDown())
+      )
+    )
   );
 
   constructor(
@@ -33,6 +46,9 @@ export class BoardComponent implements OnDestroy, OnInit {
     this.inputs.rightInput
       .pipe(takeUntil(this.destroy))
       .subscribe(() => this.playerPiece.moveRight());
+    this.inputs.downInput
+      .pipe(takeUntil(this.destroy))
+      .subscribe(() => this.playerPiece.moveDown());
     this.playerPiece.value$
       .pipe(clone(), pairwise(), takeUntil(this.destroy))
       .subscribe(([prev, current]) => {

@@ -3,6 +3,7 @@ import { fromEvent, throttleTime } from 'rxjs';
 import { filterInputs } from 'src/app/utils/operators';
 import {
   allInputs,
+  downInputs,
   inputsPerSecond,
   leftInputs,
   rightInputs,
@@ -21,6 +22,8 @@ export class PlayerInputService {
 
   leftInput = this.significantInputs.pipe(filterInputs(leftInputs));
   rightInput = this.significantInputs.pipe(filterInputs(rightInputs));
+
+  downInput = this.keyEvents.pipe(filterInputs(downInputs));
 
   constructor() {}
 }

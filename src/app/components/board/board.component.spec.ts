@@ -54,6 +54,13 @@ describe('BoardComponent', () => {
       code: 'KeyD',
     } as KeyboardEvent);
   };
+  const pressS = () => {
+    fireEvent.keyDown(window, {
+      key: 's',
+      charCode: 83,
+      code: 'KeyS',
+    } as KeyboardEvent);
+  };
 
   describe('movement', () => {
     it('after being rendered for a second an orange square will appear at the top of the grid', fakeAsync(async () => {
@@ -144,6 +151,51 @@ describe('BoardComponent', () => {
       expect(prevCoordinates).not.toEqual(currentCoordinates);
       expect(currentCoordinates).toEqual(expectedCoordinates);
 
+      component.ngOnDestroy();
+    }));
+
+    it('will go down if I hit "s" button and is not throttled', fakeAsync(async () => {
+      component.ngOnInit();
+      tick(1000);
+      let prevCoordinates = await getPlayerCoordinates();
+      pressS();
+      let currentCoordinates = await getPlayerCoordinates();
+
+      let expectedCoordinates = prevCoordinates.map((c) => ({
+        ...c,
+        y: c.y + 1,
+      }));
+
+      expect(currentCoordinates).toEqual(expectedCoordinates);
+      pressS();
+
+      prevCoordinates = currentCoordinates;
+
+      currentCoordinates = await getPlayerCoordinates();
+
+      expectedCoordinates = prevCoordinates.map((c) => ({
+        ...c,
+        y: c.y + 1,
+      }));
+
+      expect(currentCoordinates).toEqual(expectedCoordinates);
+      component.ngOnDestroy();
+    }));
+
+    it('gravity is reset when the player hits down so as to avoid unexpected input', fakeAsync(async () => {
+      component.ngOnInit();
+      tick(1000);
+      let prevCoordinates = await getPlayerCoordinates();
+      tick(900);
+      pressS();
+      tick(100);
+      let currentCoordinates = await getPlayerCoordinates();
+      let expectedCoordinates = prevCoordinates.map((c) => ({
+        ...c,
+        y: c.y + 1,
+      }));
+
+      expect(currentCoordinates).toEqual(expectedCoordinates);
       component.ngOnDestroy();
     }));
   });
