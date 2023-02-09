@@ -2,7 +2,7 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { fireEvent, render, screen } from '@testing-library/angular';
 import { BoardService } from './board-service/board.service';
 import { BoardComponent } from './board.component';
-import { PlayerInputService } from './player-input/player-input.service';
+import { PlayerInputService } from '../../services/player-input/player-input.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
 
 describe('BoardComponent', () => {

@@ -9,7 +9,7 @@ import {
   startWith,
 } from 'rxjs';
 import { BoardService } from './board-service/board.service';
-import { PlayerInputService } from './player-input/player-input.service';
+import { PlayerInputService } from '../../services/player-input/player-input.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
 import { clone } from '../../utils/operators';
 @Component({

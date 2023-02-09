@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import { BoardService } from '../board-service/board.service';
-import { Block, Coordinate } from '../board-service/models';
-
-type Direction = 'left' | 'right' | 'down';
+import { Block } from '../board-service/models';
 
 @Injectable({
   providedIn: 'root',
@@ -16,16 +15,10 @@ export class PlayerPieceService {
   get value() {
     return this.playerPiece.value;
   }
-  constructor(private board: BoardService) {}
-
-  private getNewlyOccupiedAreas(
-    newPosition: Block,
-    currentPosition = this.value
-  ): Block {
-    return newPosition.filter(
-      (c) => !currentPosition.find((c2) => c2.x === c.x && c.y === c2.y)
-    );
-  }
+  constructor(
+    private board: BoardService,
+    private blockMovement: BlockMovementService
+  ) {}
 
   private createRandomPiece() {
     return [
@@ -36,53 +29,41 @@ export class PlayerPieceService {
     ];
   }
 
-  private getFuturePosition(direction: Direction) {
-    switch (direction) {
-      case 'down':
-        return this.value.map((c) => ({ ...c, y: c.y + 1 }));
-      case 'left':
-        return this.value.map((c) => ({ ...c, x: c.x - 1 }));
-      case 'right':
-        return this.value.map((c) => ({ ...c, x: c.x + 1 }));
-    }
-  }
-
-  private isInvalidPosition(piece: Block) {
-    const newlyOccupied = this.getNewlyOccupiedAreas(piece);
-    const currentBoard = this.board.value;
-    return newlyOccupied.some((c) => {
-      const hitGround = c.y === currentBoard.length;
-      if (hitGround) return true;
-      const outsideOfBounds = c.x < 0 || c.x > currentBoard[0].length - 1;
-      if (outsideOfBounds) return true;
-      const overlapsWithOtherPiece = currentBoard[c.y][c.x].color !== 'white';
-      return overlapsWithOtherPiece;
-    });
-  }
-
   moveDown() {
     const createNewBlock = this.value.length === 0;
     const newValue = createNewBlock
       ? this.createRandomPiece()
-      : this.getFuturePosition('down');
+      : this.blockMovement.getFuturePosition('down', this.value);
 
-    const hitTheGround = this.isInvalidPosition(newValue);
+    const hitTheGround = this.blockMovement.isInvalidMove(
+      this.value,
+      newValue,
+      this.board.value
+    );
 
     this.playerPiece.next(hitTheGround ? [] : newValue);
   }
 
   moveLeft() {
-    const newValue = this.getFuturePosition('left');
+    const newValue = this.blockMovement.getFuturePosition('left', this.value);
 
-    const isInvalid = this.isInvalidPosition(newValue);
+    const isInvalid = this.blockMovement.isInvalidMove(
+      this.value,
+      newValue,
+      this.board.value
+    );
 
     !isInvalid && this.playerPiece.next(newValue);
   }
 
   moveRight() {
-    const newValue = this.getFuturePosition('right');
+    const newValue = this.blockMovement.getFuturePosition('right', this.value);
 
-    const isInvalid = this.isInvalidPosition(newValue);
+    const isInvalid = this.blockMovement.isInvalidMove(
+      this.value,
+      newValue,
+      this.board.value
+    );
 
     !isInvalid && this.playerPiece.next(newValue);
   }
