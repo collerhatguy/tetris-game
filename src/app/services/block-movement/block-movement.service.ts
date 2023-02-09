@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Block, Board } from 'src/app/components/board/board-service/models';
+import {
+  Block,
+  Board,
+  Coordinate,
+} from 'src/app/components/board/board-service/models';
 
 type Direction = 'left' | 'right' | 'down';
 
@@ -18,22 +22,27 @@ export class BlockMovementService {
     }
   }
 
-  getNewlyOccupiedAreas(newPosition: Block, currentPosition: Block): Block {
+  private getNewlyOccupiedAreas(
+    newPosition: Block,
+    currentPosition: Block
+  ): Block {
     return newPosition.filter(
       (c) => !currentPosition.find((c2) => c2.x === c.x && c.y === c2.y)
     );
   }
 
+  private isInvalidCoordinate(c: Coordinate, board: Board): boolean {
+    const hitGround = c.y === board.length;
+    if (hitGround) return true;
+    const outsideOfBounds = c.x < 0 || c.x > board[0].length - 1;
+    if (outsideOfBounds) return true;
+    const overlapsWithOtherPiece = board[c.y][c.x].color !== 'white';
+    return overlapsWithOtherPiece;
+  }
+
   isInvalidMove(prev: Block, current: Block, board: Board) {
     const newlyOccupied = this.getNewlyOccupiedAreas(current, prev);
-    return newlyOccupied.some((c) => {
-      const hitGround = c.y === board.length;
-      if (hitGround) return true;
-      const outsideOfBounds = c.x < 0 || c.x > board[0].length - 1;
-      if (outsideOfBounds) return true;
-      const overlapsWithOtherPiece = board[c.y][c.x].color !== 'white';
-      return overlapsWithOtherPiece;
-    });
+    return newlyOccupied.some((c) => this.isInvalidCoordinate(c, board));
   }
   constructor() {}
 }
