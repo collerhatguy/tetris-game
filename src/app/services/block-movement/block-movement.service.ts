@@ -4,8 +4,7 @@ import {
   Block,
   Coordinate,
 } from 'src/app/components/board/board-service/models';
-
-type Direction = 'left' | 'right' | 'down';
+import { Direction } from './models';
 
 @Injectable({
   providedIn: 'root',

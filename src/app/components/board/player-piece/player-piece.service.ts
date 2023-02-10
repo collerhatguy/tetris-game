@@ -1,5 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
+import {
+  Observable,
+  filter,
+  switchMap,
+  interval,
+  startWith,
+  map,
+  merge,
+  tap,
+} from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
+import { Direction } from 'src/app/services/block-movement/models';
+import { PlayerInputService } from 'src/app/services/player-input/player-input.service';
 import { Store } from 'src/app/utils/store';
 import { Block } from '../board-service/models';
 
@@ -7,7 +19,10 @@ import { Block } from '../board-service/models';
   providedIn: 'root',
 })
 export class PlayerPieceService extends Store<Block> {
-  constructor(private blockMovement: BlockMovementService) {
+  constructor(
+    private blockMovement: BlockMovementService,
+    private playerInput: PlayerInputService
+  ) {
     super([]);
   }
 
@@ -20,7 +35,22 @@ export class PlayerPieceService extends Store<Block> {
     ];
   }
 
-  moveDown() {
+  private gravity: Observable<'down'> = this.playerInput.input.pipe(
+    filter((direction) => direction === 'down'),
+    startWith(''),
+    switchMap(() => interval(1000).pipe(map(() => 'down' as const)))
+  );
+
+  allInputs = merge(this.playerInput.input, this.gravity).pipe(
+    tap((direction) => this.move(direction))
+  );
+
+  private move(direction: Direction) {
+    if (direction === 'down') return this.moveDown();
+    this.moveHorizontally(direction);
+  }
+
+  private moveDown() {
     const createNewBlock = this.state.length === 0;
     const newValue = createNewBlock
       ? this.createRandomPiece()
@@ -40,13 +70,5 @@ export class PlayerPieceService extends Store<Block> {
     const isInvalid = this.blockMovement.isInvalidMove(this.state, newValue);
 
     !isInvalid && this.setState(newValue);
-  }
-
-  moveLeft() {
-    this.moveHorizontally('left');
-  }
-
-  moveRight() {
-    this.moveHorizontally('right');
   }
 }

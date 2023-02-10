@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { fromEvent, throttleTime } from 'rxjs';
+import { fromEvent, throttleTime, map, Observable, merge } from 'rxjs';
 import { filterInputs } from 'src/app/utils/operators';
+import { Direction } from '../block-movement/models';
 import {
   allInputs,
   downInputs,
@@ -20,10 +21,26 @@ export class PlayerInputService {
     throttleTime(1000 / inputsPerSecond)
   );
 
-  leftInput = this.significantInputs.pipe(filterInputs(leftInputs));
-  rightInput = this.significantInputs.pipe(filterInputs(rightInputs));
+  private leftInput: Observable<'left'> = this.significantInputs.pipe(
+    filterInputs(leftInputs),
+    map(() => 'left')
+  );
 
-  downInput = this.keyEvents.pipe(filterInputs(downInputs));
+  private rightInput: Observable<'right'> = this.significantInputs.pipe(
+    filterInputs(rightInputs),
+    map(() => 'right')
+  );
+
+  private downInput: Observable<'down'> = this.keyEvents.pipe(
+    filterInputs(downInputs),
+    map(() => 'down')
+  );
+
+  input: Observable<Direction> = merge(
+    this.downInput,
+    this.leftInput,
+    this.rightInput
+  );
 
   constructor() {}
 }

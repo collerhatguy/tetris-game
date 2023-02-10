@@ -24,36 +24,15 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   private destroy = new Subject();
 
-  gravity = this.inputs.downInput.pipe(
-    startWith(''),
-    takeUntil(this.destroy),
-    switchMap(() =>
-      interval(1000).pipe(
-        takeUntil(this.destroy),
-        tap(() => this.playerPiece.moveDown())
-      )
-    )
-  );
-
   constructor(
     private playerPiece: PlayerPieceService,
     private shadowPiece: ShadowPieceService,
-    private board: BoardService,
-    private inputs: PlayerInputService
+    private board: BoardService
   ) {}
 
   ngOnInit(): void {
-    this.gravity.subscribe();
+    this.playerPiece.allInputs.pipe(takeUntil(this.destroy)).subscribe();
     this.shadowPiece.trackPlayerPiece.pipe(takeUntil(this.destroy)).subscribe();
-    this.inputs.leftInput
-      .pipe(takeUntil(this.destroy))
-      .subscribe(() => this.playerPiece.moveLeft());
-    this.inputs.rightInput
-      .pipe(takeUntil(this.destroy))
-      .subscribe(() => this.playerPiece.moveRight());
-    this.inputs.downInput
-      .pipe(takeUntil(this.destroy))
-      .subscribe(() => this.playerPiece.moveDown());
     this.playerPiece.state$
       .pipe(clone(), pairwise(), takeUntil(this.destroy))
       .subscribe(([prev, current]) => {
