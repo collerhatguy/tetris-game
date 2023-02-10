@@ -96,11 +96,12 @@ export class BoardService extends Store<Board> {
     indexes.forEach((index) => {
       board[index] = this.createEmptyRow();
       const upperRowIndex = index - 1;
-      for (let i = upperRowIndex; i > 0; i--) {
+      for (let i = upperRowIndex; i >= 0; i--) {
         // move each piece down one spot
         board[i].forEach((square, x) => {
           board[i + 1][x] = { ...square };
         });
+        board[i] = this.createEmptyRow();
       }
     });
     this.setState(board);

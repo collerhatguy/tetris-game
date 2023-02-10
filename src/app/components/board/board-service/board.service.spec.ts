@@ -5,7 +5,7 @@ import { copy } from 'src/app/utils/copy';
 import { BoardService } from './board.service';
 import { Block, Coordinate } from './models';
 
-fdescribe('BoardService', () => {
+describe('BoardService', () => {
   let service: BoardService;
   let sub: Subscription;
   beforeEach(() => {
@@ -53,5 +53,15 @@ fdescribe('BoardService', () => {
     expect(lastRowFirstSquare.solid).toBeTrue();
     const second2lastRowFirstSquare = service.state[service.boardHeight - 2][0];
     expect(second2lastRowFirstSquare.solid).toBeFalse();
+  });
+
+  it('should move the top most row if it is filled', () => {
+    const lastRowCordinates = getLastRow();
+    service.lockPieceInplace([{ x: 0, y: 0 }]);
+    service.lockPieceInplace(lastRowCordinates);
+    const secondRowFirstSquare = service.state[1][0];
+    expect(secondRowFirstSquare.solid).toBeTrue();
+    const firstRowFirstSquare = service.state[0][0];
+    expect(firstRowFirstSquare.solid).toBeFalse();
   });
 });
