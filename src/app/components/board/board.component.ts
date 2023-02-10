@@ -20,7 +20,7 @@ import { Square } from './board-service/models';
   styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements OnDestroy, OnInit {
-  board$ = this.board.value$;
+  board$ = this.board.state$;
 
   private destroy = new Subject();
 

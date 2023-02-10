@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BoardService } from 'src/app/components/board/board-service/board.service';
 import {
   Block,
-  Board,
   Coordinate,
 } from 'src/app/components/board/board-service/models';
 
@@ -37,7 +36,7 @@ export class BlockMovementService {
     if (hitGround) return true;
     const outsideOfBounds = c.x < 0 || c.x > this.board.boardWidth;
     if (outsideOfBounds) return true;
-    const overlapsWithOtherPiece = this.board.value[c.y][c.x].solid;
+    const overlapsWithOtherPiece = this.board.state[c.y][c.x].solid;
     return overlapsWithOtherPiece;
   }
 
