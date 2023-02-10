@@ -36,6 +36,7 @@ export class BoardComponent implements OnDestroy, OnInit {
     this.playerPiece.updateBoardBasedOnPiece
       .pipe(takeUntil(this.destroy))
       .subscribe();
+    this.board.clearsFullRows.pipe(takeUntil(this.destroy)).subscribe();
   }
 
   ngOnDestroy(): void {
