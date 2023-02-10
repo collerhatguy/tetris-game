@@ -8,11 +8,14 @@ import {
   map,
   merge,
   tap,
+  pairwise,
 } from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import { Direction } from 'src/app/services/block-movement/models';
 import { PlayerInputService } from 'src/app/services/player-input/player-input.service';
+import { clone } from 'src/app/utils/operators';
 import { Store } from 'src/app/utils/store';
+import { BoardService } from '../board-service/board.service';
 import { Block } from '../board-service/models';
 
 @Injectable({
@@ -21,7 +24,8 @@ import { Block } from '../board-service/models';
 export class PlayerPieceService extends Store<Block> {
   constructor(
     private blockMovement: BlockMovementService,
-    private playerInput: PlayerInputService
+    private playerInput: PlayerInputService,
+    private board: BoardService
   ) {
     super([]);
   }
@@ -43,6 +47,18 @@ export class PlayerPieceService extends Store<Block> {
 
   allInputs = merge(this.playerInput.input, this.gravity).pipe(
     tap((direction) => this.move(direction))
+  );
+
+  updateBoard = this.state$.pipe(
+    clone(),
+    pairwise(),
+    tap(([prev, current]) => {
+      const hitGround = current.length === 0;
+      hitGround
+        ? this.board.lockPieceInplace(prev)
+        : this.board.clearPiece(prev);
+      this.board.setPlayerPiece(current);
+    })
   );
 
   private move(direction: Direction) {

@@ -33,15 +33,7 @@ export class BoardComponent implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.playerPiece.allInputs.pipe(takeUntil(this.destroy)).subscribe();
     this.shadowPiece.trackPlayerPiece.pipe(takeUntil(this.destroy)).subscribe();
-    this.playerPiece.state$
-      .pipe(clone(), pairwise(), takeUntil(this.destroy))
-      .subscribe(([prev, current]) => {
-        const hitGround = current.length === 0;
-        hitGround
-          ? this.board.lockPieceInplace(prev)
-          : this.board.clearPiece(prev);
-        this.board.setPlayerPiece(current);
-      });
+    this.playerPiece.updateBoard.pipe(takeUntil(this.destroy)).subscribe();
   }
 
   ngOnDestroy(): void {
