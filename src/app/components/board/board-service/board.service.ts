@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { filter, map, tap } from 'rxjs';
 import { log } from 'src/app/utils/operators';
 import { Store } from 'src/app/utils/store';
 import { Board, Row, Block, Square } from './models';
@@ -80,4 +80,28 @@ export class BoardService extends Store<Board> {
     });
     this.setState(prevBoard);
   }
+
+  private rowIsFull(row: Row) {
+    return row.every((square) => square.solid && !square.isPlayer);
+  }
+
+  private clearRows(indexes: number[]) {
+    const board = this.state;
+    indexes.forEach((index) => {
+      board[index] = board[index].map(() => ({ ...this.emptyBlock }));
+    });
+    this.setState(board);
+  }
+
+  clearsFullRows = this.state$.pipe(
+    map((board) =>
+      board.reduce(
+        (fullRows: number[], row, index) =>
+          this.rowIsFull(row) ? [...fullRows, index] : fullRows,
+        []
+      )
+    ),
+    filter((rows) => rows.length !== 0),
+    tap((fullRows) => this.clearRows(fullRows))
+  );
 }
