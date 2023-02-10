@@ -31,19 +31,22 @@ export class PlayerPieceService extends Store<Block> {
     this.setState(hitTheGround ? [] : newValue);
   }
 
-  moveLeft() {
-    const newValue = this.blockMovement.getFuturePosition('left', this.state);
+  private moveHorizontally(direction: 'left' | 'right') {
+    const newValue = this.blockMovement.getFuturePosition(
+      direction,
+      this.state
+    );
 
     const isInvalid = this.blockMovement.isInvalidMove(this.state, newValue);
 
     !isInvalid && this.setState(newValue);
   }
 
+  moveLeft() {
+    this.moveHorizontally('left');
+  }
+
   moveRight() {
-    const newValue = this.blockMovement.getFuturePosition('right', this.state);
-
-    const isInvalid = this.blockMovement.isInvalidMove(this.state, newValue);
-
-    !isInvalid && this.setState(newValue);
+    this.moveHorizontally('right');
   }
 }
