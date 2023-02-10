@@ -7,8 +7,8 @@ import { Board, Row, Block, Square } from './models';
   providedIn: 'root',
 })
 export class BoardService {
-  private readonly boardHeight = 20;
-  private readonly boardWidth = 10;
+  readonly boardHeight = 20;
+  readonly boardWidth = 10;
   private readonly emptyBlock: Square = Object.freeze({
     solid: false,
     isPlayer: false,

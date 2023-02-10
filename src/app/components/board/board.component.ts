@@ -54,7 +54,7 @@ export class BoardComponent implements OnDestroy, OnInit {
     this.inputs.downInput
       .pipe(takeUntil(this.destroy))
       .subscribe(() => this.playerPiece.moveDown());
-    this.playerPiece.value$
+    this.playerPiece.state$
       .pipe(clone(), pairwise(), takeUntil(this.destroy))
       .subscribe(([prev, current]) => {
         const hitGround = current.length === 0;

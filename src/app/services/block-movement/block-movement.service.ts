@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BoardService } from 'src/app/components/board/board-service/board.service';
 import {
   Block,
   Board,
@@ -31,18 +32,18 @@ export class BlockMovementService {
     );
   }
 
-  private isInvalidCoordinate(c: Coordinate, board: Board): boolean {
-    const hitGround = c.y === board.length;
+  private isInvalidCoordinate(c: Coordinate): boolean {
+    const hitGround = c.y === this.board.boardHeight;
     if (hitGround) return true;
-    const outsideOfBounds = c.x < 0 || c.x > board[0].length - 1;
+    const outsideOfBounds = c.x < 0 || c.x > this.board.boardWidth;
     if (outsideOfBounds) return true;
-    const overlapsWithOtherPiece = board[c.y][c.x].solid;
+    const overlapsWithOtherPiece = this.board.value[c.y][c.x].solid;
     return overlapsWithOtherPiece;
   }
 
-  isInvalidMove(prev: Block, current: Block, board: Board) {
+  isInvalidMove(prev: Block, current: Block) {
     const newlyOccupied = this.getNewlyOccupiedAreas(current, prev);
-    return newlyOccupied.some((c) => this.isInvalidCoordinate(c, board));
+    return newlyOccupied.some((c) => this.isInvalidCoordinate(c));
   }
-  constructor() {}
+  constructor(private board: BoardService) {}
 }

@@ -20,15 +20,11 @@ export class ShadowPieceService extends Store<Block> {
 
   private getLowestPoint(block: Block): Block {
     const newBlock = this.blockMovement.getFuturePosition('down', block);
-    const valid = !this.blockMovement.isInvalidMove(
-      block,
-      newBlock,
-      this.board.value
-    );
+    const valid = !this.blockMovement.isInvalidMove(block, newBlock);
     return valid ? this.getLowestPoint(newBlock) : block;
   }
 
-  trackPlayerPiece = this.playerPiece.value$.pipe(
+  trackPlayerPiece = this.playerPiece.state$.pipe(
     map((block) => {
       if (!block.length) return block;
       return this.getLowestPoint(block);

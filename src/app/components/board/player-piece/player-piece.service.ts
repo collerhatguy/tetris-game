@@ -1,24 +1,15 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
-import { BoardService } from '../board-service/board.service';
+import { Store } from 'src/app/utils/store';
 import { Block } from '../board-service/models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class PlayerPieceService {
-  private playerPiece = new BehaviorSubject<Block>([]);
-
-  value$ = this.playerPiece.asObservable();
-
-  get value() {
-    return this.playerPiece.value;
+export class PlayerPieceService extends Store<Block> {
+  constructor(private blockMovement: BlockMovementService) {
+    super([]);
   }
-  constructor(
-    private board: BoardService,
-    private blockMovement: BlockMovementService
-  ) {}
 
   private createRandomPiece() {
     return [
@@ -30,41 +21,29 @@ export class PlayerPieceService {
   }
 
   moveDown() {
-    const createNewBlock = this.value.length === 0;
+    const createNewBlock = this.state.length === 0;
     const newValue = createNewBlock
       ? this.createRandomPiece()
-      : this.blockMovement.getFuturePosition('down', this.value);
+      : this.blockMovement.getFuturePosition('down', this.state);
 
-    const hitTheGround = this.blockMovement.isInvalidMove(
-      this.value,
-      newValue,
-      this.board.value
-    );
+    const hitTheGround = this.blockMovement.isInvalidMove(this.state, newValue);
 
-    this.playerPiece.next(hitTheGround ? [] : newValue);
+    this.setState(hitTheGround ? [] : newValue);
   }
 
   moveLeft() {
-    const newValue = this.blockMovement.getFuturePosition('left', this.value);
+    const newValue = this.blockMovement.getFuturePosition('left', this.state);
 
-    const isInvalid = this.blockMovement.isInvalidMove(
-      this.value,
-      newValue,
-      this.board.value
-    );
+    const isInvalid = this.blockMovement.isInvalidMove(this.state, newValue);
 
-    !isInvalid && this.playerPiece.next(newValue);
+    !isInvalid && this.setState(newValue);
   }
 
   moveRight() {
-    const newValue = this.blockMovement.getFuturePosition('right', this.value);
+    const newValue = this.blockMovement.getFuturePosition('right', this.state);
 
-    const isInvalid = this.blockMovement.isInvalidMove(
-      this.value,
-      newValue,
-      this.board.value
-    );
+    const isInvalid = this.blockMovement.isInvalidMove(this.state, newValue);
 
-    !isInvalid && this.playerPiece.next(newValue);
+    !isInvalid && this.setState(newValue);
   }
 }
