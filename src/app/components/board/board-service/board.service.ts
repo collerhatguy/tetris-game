@@ -85,10 +85,23 @@ export class BoardService extends Store<Board> {
     return row.every((square) => square.solid && !square.isPlayer);
   }
 
+  private createEmptyRow() {
+    const row: Row = new Array(this.boardWidth);
+    row.fill({ ...this.emptyBlock });
+    return row;
+  }
+
   private clearRows(indexes: number[]) {
     const board = this.state;
     indexes.forEach((index) => {
-      board[index] = board[index].map(() => ({ ...this.emptyBlock }));
+      board[index] = this.createEmptyRow();
+      const upperRowIndex = index - 1;
+      for (let i = upperRowIndex; i > 0; i--) {
+        // move each piece down one spot
+        board[i].forEach((square, x) => {
+          board[i + 1][x] = { ...square };
+        });
+      }
     });
     this.setState(board);
   }
@@ -102,6 +115,6 @@ export class BoardService extends Store<Board> {
       )
     ),
     filter((rows) => rows.length !== 0),
-    tap((fullRows) => this.clearRows(fullRows))
+    tap((fullRows) => this.clearRows(fullRows.reverse()))
   );
 }
