@@ -9,6 +9,8 @@ import {
   merge,
   tap,
   pairwise,
+  mergeMap,
+  distinctUntilChanged,
 } from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import { Direction } from 'src/app/services/block-movement/models';
@@ -46,11 +48,13 @@ export class PlayerPieceService extends Store<Block> {
   );
 
   allInputs = merge(this.playerInput.input, this.gravity).pipe(
-    tap((direction) => this.move(direction))
+    tap((direction) => this.move(direction)),
+    map(() => this.state)
   );
 
-  updateBoard = this.state$.pipe(
-    clone(),
+  updateBoardBasedOnPiece = this.state$.pipe(
+    clone(), // this is something I had to do becuase of how references work in JS
+    // if you were to remove it then the prev and current below would be identical every time
     pairwise(),
     tap(([prev, current]) => {
       const hitGround = current.length === 0;
