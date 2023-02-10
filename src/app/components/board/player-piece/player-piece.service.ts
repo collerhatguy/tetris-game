@@ -1,24 +1,36 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, OnInit } from '@angular/core';
+import {
+  Observable,
+  filter,
+  switchMap,
+  interval,
+  startWith,
+  map,
+  merge,
+  tap,
+  pairwise,
+  mergeMap,
+  distinctUntilChanged,
+} from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
+import { Direction } from 'src/app/services/block-movement/models';
+import { PlayerInputService } from 'src/app/services/player-input/player-input.service';
+import { clone } from 'src/app/utils/operators';
+import { Store } from 'src/app/utils/store';
 import { BoardService } from '../board-service/board.service';
 import { Block } from '../board-service/models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class PlayerPieceService {
-  private playerPiece = new BehaviorSubject<Block>([]);
-
-  value$ = this.playerPiece.asObservable();
-
-  get value() {
-    return this.playerPiece.value;
-  }
+export class PlayerPieceService extends Store<Block> {
   constructor(
-    private board: BoardService,
-    private blockMovement: BlockMovementService
-  ) {}
+    private blockMovement: BlockMovementService,
+    private playerInput: PlayerInputService,
+    private board: BoardService
+  ) {
+    super([]);
+  }
 
   private createRandomPiece() {
     return [
@@ -29,42 +41,54 @@ export class PlayerPieceService {
     ];
   }
 
-  moveDown() {
-    const createNewBlock = this.value.length === 0;
+  private gravity: Observable<'down'> = this.playerInput.input.pipe(
+    filter((direction) => direction === 'down'),
+    startWith(''),
+    switchMap(() => interval(1000).pipe(map(() => 'down' as const)))
+  );
+
+  allInputs = merge(this.playerInput.input, this.gravity).pipe(
+    tap((direction) => this.move(direction)),
+    map(() => this.state)
+  );
+
+  updateBoardBasedOnPiece = this.state$.pipe(
+    clone(), // this is something I had to do becuase of how references work in JS
+    // if you were to remove it then the prev and current below would be identical every time
+    pairwise(),
+    tap(([prev, current]) => {
+      const hitGround = current.length === 0;
+      hitGround
+        ? this.board.lockPieceInplace(prev)
+        : this.board.clearPiece(prev);
+      this.board.setPlayerPiece(current);
+    })
+  );
+
+  private move(direction: Direction) {
+    if (direction === 'down') return this.moveDown();
+    this.moveHorizontally(direction);
+  }
+
+  private moveDown() {
+    const createNewBlock = this.state.length === 0;
     const newValue = createNewBlock
       ? this.createRandomPiece()
-      : this.blockMovement.getFuturePosition('down', this.value);
+      : this.blockMovement.getFuturePosition('down', this.state);
 
-    const hitTheGround = this.blockMovement.isInvalidMove(
-      this.value,
-      newValue,
-      this.board.value
-    );
+    const hitTheGround = this.blockMovement.isInvalidMove(this.state, newValue);
 
-    this.playerPiece.next(hitTheGround ? [] : newValue);
+    this.setState(hitTheGround ? [] : newValue);
   }
 
-  moveLeft() {
-    const newValue = this.blockMovement.getFuturePosition('left', this.value);
-
-    const isInvalid = this.blockMovement.isInvalidMove(
-      this.value,
-      newValue,
-      this.board.value
+  private moveHorizontally(direction: 'left' | 'right') {
+    const newValue = this.blockMovement.getFuturePosition(
+      direction,
+      this.state
     );
 
-    !isInvalid && this.playerPiece.next(newValue);
-  }
+    const isInvalid = this.blockMovement.isInvalidMove(this.state, newValue);
 
-  moveRight() {
-    const newValue = this.blockMovement.getFuturePosition('right', this.value);
-
-    const isInvalid = this.blockMovement.isInvalidMove(
-      this.value,
-      newValue,
-      this.board.value
-    );
-
-    !isInvalid && this.playerPiece.next(newValue);
+    !isInvalid && this.setState(newValue);
   }
 }

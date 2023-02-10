@@ -18,25 +18,16 @@ export class ShadowPieceService extends Store<Block> {
     super([]);
   }
 
-  trackPlayerPiece = this.playerPiece.value$.pipe(
+  private getLowestPoint(block: Block): Block {
+    const newBlock = this.blockMovement.getFuturePosition('down', block);
+    const valid = !this.blockMovement.isInvalidMove(block, newBlock);
+    return valid ? this.getLowestPoint(newBlock) : block;
+  }
+
+  trackPlayerPiece = this.playerPiece.state$.pipe(
     map((block) => {
       if (!block.length) return block;
-      let isValid = true;
-      let prevBlock = block;
-      while (isValid) {
-        const newBlock = this.blockMovement.getFuturePosition(
-          'down',
-          prevBlock
-        );
-        const valid = !this.blockMovement.isInvalidMove(
-          prevBlock,
-          newBlock,
-          this.board.value
-        );
-        if (valid) prevBlock = newBlock;
-        else isValid = false;
-      }
-      return prevBlock;
+      return this.getLowestPoint(block);
     }),
     pairwise(),
     tap(([prev, current]) => {

@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { log } from 'src/app/utils/operators';
+import { Store } from 'src/app/utils/store';
 import { Board, Row, Block, Square } from './models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class BoardService {
-  private readonly boardHeight = 20;
-  private readonly boardWidth = 10;
+export class BoardService extends Store<Board> {
+  readonly boardHeight = 20;
+  readonly boardWidth = 10;
   private readonly emptyBlock: Square = Object.freeze({
     solid: false,
     isPlayer: false,
@@ -33,12 +34,9 @@ export class BoardService {
     color: 'orange',
   });
 
-  private board = new BehaviorSubject<Board>(this.getInitialBoard());
-
-  value$ = this.board.asObservable();
-
-  get value() {
-    return this.board.value;
+  constructor() {
+    super([]);
+    this.setState(this.getInitialBoard());
   }
 
   private getInitialBoard(): Board {
@@ -54,32 +52,32 @@ export class BoardService {
   }
 
   lockPieceInplace(cordinates: Block) {
-    const prevBoard = this.value;
+    const prevBoard = this.state;
     cordinates.forEach((c) => {
       prevBoard[c.y][c.x] = { ...this.setBlock };
     });
-    this.board.next(prevBoard);
+    this.setState(prevBoard);
   }
 
   clearPiece(cordinates: Block) {
-    const prevBoard = this.value;
+    const prevBoard = this.state;
     cordinates.forEach((c) => {
       prevBoard[c.y][c.x] = { ...this.emptyBlock };
     });
-    this.board.next(prevBoard);
+    this.setState(prevBoard);
   }
   setPlayerPiece(cordinates: Block) {
-    const prevBoard = this.value;
+    const prevBoard = this.state;
     cordinates.forEach((c) => {
       prevBoard[c.y][c.x] = { ...this.playerBlock };
     });
-    this.board.next(prevBoard);
+    this.setState(prevBoard);
   }
   setShadowPiece(cordinates: Block) {
-    const prevBoard = this.value;
+    const prevBoard = this.state;
     cordinates.forEach((c) => {
       prevBoard[c.y][c.x] = { ...this.shadowBlock };
     });
-    this.board.next(prevBoard);
+    this.setState(prevBoard);
   }
 }
