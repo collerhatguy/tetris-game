@@ -72,8 +72,12 @@ export class BoardService extends Store<Board> {
     this.setState(prevBoard);
   }
 
+  private squareIsFull(square: Square) {
+    return square.solid && !square.isPlayer;
+  }
+
   private rowIsFull(row: Row) {
-    return row.every((square) => square.solid && !square.isPlayer);
+    return row.every((square) => this.squareIsFull(square));
   }
 
   private createEmptyRow() {
@@ -82,30 +86,35 @@ export class BoardService extends Store<Board> {
     return row;
   }
 
+  private moveUpperRowsDown(board: Board, startingRowIndex: number) {
+    for (let i = startingRowIndex; i >= 0; i--) {
+      board[i].forEach((square, x) => {
+        board[i + 1][x] = { ...square };
+      });
+    }
+  }
+
   private clearRows(indexes: number[]) {
     const board = this.state;
     indexes.forEach((index) => {
       board[index] = this.createEmptyRow();
       const upperRowIndex = index - 1;
-      for (let i = upperRowIndex; i >= 0; i--) {
-        // move each piece down one spot
-        board[i].forEach((square, x) => {
-          board[i + 1][x] = { ...square };
-        });
-      }
+      this.moveUpperRowsDown(board, upperRowIndex);
     });
     board[0] = this.createEmptyRow();
     this.setState(board);
   }
 
+  private getFullRowIndexes(board: Board) {
+    return board.reduce(
+      (fullRows: number[], row, index) =>
+        this.rowIsFull(row) ? [...fullRows, index] : fullRows,
+      []
+    );
+  }
+
   clearsFullRows = this.state$.pipe(
-    map((board) =>
-      board.reduce(
-        (fullRows: number[], row, index) =>
-          this.rowIsFull(row) ? [...fullRows, index] : fullRows,
-        []
-      )
-    ),
+    map((board) => this.getFullRowIndexes(board)),
     filter((rows) => rows.length !== 0),
     tap((fullRows) => this.clearRows(fullRows))
   );
