@@ -92,9 +92,9 @@ export class BoardService extends Store<Board> {
         board[i].forEach((square, x) => {
           board[i + 1][x] = { ...square };
         });
-        board[i] = this.createEmptyRow();
       }
     });
+    board[0] = this.createEmptyRow();
     this.setState(board);
   }
 
@@ -107,6 +107,6 @@ export class BoardService extends Store<Board> {
       )
     ),
     filter((rows) => rows.length !== 0),
-    tap((fullRows) => this.clearRows(fullRows.reverse()))
+    tap((fullRows) => this.clearRows(fullRows))
   );
 }
