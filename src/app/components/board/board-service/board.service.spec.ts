@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Subscription } from 'rxjs';
-import { copy } from 'src/app/utils/copy';
+import { RowClearingService } from '../row-clearing/row-clearing.service';
 
 import { BoardService } from './board.service';
 import { Block, Coordinate } from './models';
@@ -9,10 +9,14 @@ describe('BoardService', () => {
   let service: BoardService;
   let sub: Subscription;
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [RowClearingService],
+    });
     service = TestBed.inject(BoardService);
-    sub = service.clearsFullRows.subscribe();
+    const rowClearingService = TestBed.inject(RowClearingService);
+    sub = rowClearingService.clearsFullRows.subscribe();
   });
+
   afterEach(() => sub.unsubscribe());
 
   it('should be created', () => {

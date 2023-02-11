@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
-import { filter, map, tap } from 'rxjs';
 import { Store } from 'src/app/utils/store';
-import { Board, Row, Block, Square } from './models';
+import {
+  Board,
+  Row,
+  Block,
+  createEmptyBlock,
+  createPlayerBlock,
+  createShadowBlock,
+  createSolidBlock,
+} from './models';
 
 @Injectable({
   providedIn: 'root',
@@ -9,38 +16,6 @@ import { Board, Row, Block, Square } from './models';
 export class BoardService extends Store<Board> {
   readonly boardHeight = 20;
   readonly boardWidth = 10;
-
-  private createEmptyBlock(): Square {
-    return {
-      solid: false,
-      isPlayer: false,
-      color: 'white',
-    };
-  }
-
-  private createSolidBlock(): Square {
-    return {
-      solid: true,
-      isPlayer: false,
-      color: 'orange',
-    };
-  }
-
-  private createShadowBlock(): Square {
-    return {
-      solid: false,
-      isPlayer: false,
-      color: 'orange',
-    };
-  }
-
-  private createPlayerBlock(): Square {
-    return {
-      solid: true,
-      isPlayer: true,
-      color: 'orange',
-    };
-  }
 
   constructor() {
     super([]);
@@ -53,7 +28,7 @@ export class BoardService extends Store<Board> {
       const row: Row = [];
       board.push(row);
       for (let j = 0; j < this.boardWidth; j++) {
-        row.push(this.createEmptyBlock());
+        row.push(createEmptyBlock());
       }
     }
     return board;
@@ -62,7 +37,7 @@ export class BoardService extends Store<Board> {
   lockPieceInplace(cordinates: Block) {
     const prevBoard = this.state;
     cordinates.forEach((c) => {
-      prevBoard[c.y][c.x] = this.createSolidBlock();
+      prevBoard[c.y][c.x] = createSolidBlock();
     });
     this.setState(prevBoard);
   }
@@ -70,59 +45,12 @@ export class BoardService extends Store<Board> {
   movePiece(prev: Block, current: Block, type: 'player' | 'shadow' = 'player') {
     const prevBoard = this.state;
     prev.forEach((c) => {
-      prevBoard[c.y][c.x] = this.createEmptyBlock();
+      prevBoard[c.y][c.x] = createEmptyBlock();
     });
     current.forEach((c) => {
       prevBoard[c.y][c.x] =
-        type === 'player' ? this.createPlayerBlock() : this.createShadowBlock();
+        type === 'player' ? createPlayerBlock() : createShadowBlock();
     });
     this.setState(prevBoard);
   }
-
-  private squareIsFull(square: Square) {
-    return square.solid && !square.isPlayer;
-  }
-
-  private rowIsFull(row: Row) {
-    return row.every((square) => this.squareIsFull(square));
-  }
-
-  private createEmptyRow() {
-    const row: Row = new Array(this.boardWidth);
-    row.fill(this.createEmptyBlock());
-    return row;
-  }
-
-  private moveUpperRowsDown(board: Board, startingRowIndex: number) {
-    for (let i = startingRowIndex; i >= 0; i--) {
-      board[i].forEach((square, x) => {
-        board[i + 1][x] = { ...square };
-      });
-    }
-  }
-
-  private clearRows(indexes: number[]) {
-    const board = this.state;
-    indexes.forEach((index) => {
-      board[index] = this.createEmptyRow();
-      const upperRowIndex = index - 1;
-      this.moveUpperRowsDown(board, upperRowIndex);
-    });
-    board[0] = this.createEmptyRow();
-    this.setState(board);
-  }
-
-  private getFullRowIndexes(board: Board) {
-    return board.reduce(
-      (fullRows: number[], row, index) =>
-        this.rowIsFull(row) ? [...fullRows, index] : fullRows,
-      []
-    );
-  }
-
-  clearsFullRows = this.state$.pipe(
-    map((board) => this.getFullRowIndexes(board)),
-    filter((rows) => rows.length !== 0),
-    tap((fullRows) => this.clearRows(fullRows))
-  );
 }

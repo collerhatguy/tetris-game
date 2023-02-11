@@ -1,19 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {
-  interval,
-  tap,
-  Subject,
-  pairwise,
-  takeUntil,
-  switchMap,
-  startWith,
-} from 'rxjs';
+import { Subject, takeUntil, Observable } from 'rxjs';
 import { BoardService } from './board-service/board.service';
-import { PlayerInputService } from '../../services/player-input/player-input.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
-import { clone } from '../../utils/operators';
+import { RowClearingService } from './row-clearing/row-clearing.service';
 import { ShadowPieceService } from './shadow-piece/shadow-piece.service';
-import { Square } from './board-service/models';
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
@@ -27,16 +17,18 @@ export class BoardComponent implements OnDestroy, OnInit {
   constructor(
     private playerPiece: PlayerPieceService,
     private shadowPiece: ShadowPieceService,
-    private board: BoardService
+    private board: BoardService,
+    private rowClearing: RowClearingService
   ) {}
 
+  private subscribe(obs: Observable<any>) {
+    obs.pipe(takeUntil(this.destroy)).subscribe();
+  }
+
   ngOnInit(): void {
-    this.playerPiece.allInputs.pipe(takeUntil(this.destroy)).subscribe();
-    this.shadowPiece.trackPlayerPiece.pipe(takeUntil(this.destroy)).subscribe();
-    this.playerPiece.updateBoardBasedOnPiece
-      .pipe(takeUntil(this.destroy))
-      .subscribe();
-    this.board.clearsFullRows.pipe(takeUntil(this.destroy)).subscribe();
+    this.subscribe(this.shadowPiece.trackPlayerPiece);
+    this.subscribe(this.playerPiece.updateBoardBasedOnPiece);
+    this.subscribe(this.rowClearing.clearsFullRows);
   }
 
   ngOnDestroy(): void {
