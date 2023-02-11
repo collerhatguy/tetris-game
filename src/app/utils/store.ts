@@ -9,7 +9,7 @@ export class Store<T> {
   get state(): T {
     return this._state$.getValue();
   }
-  protected setState(nextState: T): void {
+  setState(nextState: T): void {
     this._state$.next(nextState);
   }
 }

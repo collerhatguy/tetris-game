@@ -15,3 +15,35 @@ export interface Coordinate {
 }
 
 export type Block = Coordinate[];
+
+export function createEmptyBlock(): Square {
+  return {
+    solid: false,
+    isPlayer: false,
+    color: 'white',
+  };
+}
+
+export function createSolidBlock(): Square {
+  return {
+    solid: true,
+    isPlayer: false,
+    color: 'orange',
+  };
+}
+
+export function createShadowBlock(): Square {
+  return {
+    solid: false,
+    isPlayer: false,
+    color: 'orange',
+  };
+}
+
+export function createPlayerBlock(): Square {
+  return {
+    solid: true,
+    isPlayer: true,
+    color: 'orange',
+  };
+}

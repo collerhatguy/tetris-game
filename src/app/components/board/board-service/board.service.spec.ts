@@ -1,6 +1,5 @@
 import { TestBed } from '@angular/core/testing';
 import { Subscription } from 'rxjs';
-import { copy } from 'src/app/utils/copy';
 
 import { BoardService } from './board.service';
 import { Block, Coordinate } from './models';
