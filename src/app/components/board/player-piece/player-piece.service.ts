@@ -47,12 +47,13 @@ export class PlayerPieceService extends Store<Block> {
     switchMap(() => interval(1000).pipe(map(() => 'down' as const)))
   );
 
-  allInputs = merge(this.playerInput.input, this.gravity).pipe(
+  private allInputs = merge(this.playerInput.input, this.gravity).pipe(
     tap((direction) => this.move(direction)),
-    map(() => this.state)
+    map(() => this.state),
+    startWith(this.state)
   );
 
-  updateBoardBasedOnPiece = this.state$.pipe(
+  updateBoardBasedOnPiece = this.allInputs.pipe(
     clone(), // this is something I had to do becuase of how references work in JS
     // if you were to remove it then the prev and current below would be identical every time
     pairwise(),
