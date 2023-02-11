@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil, Observable } from 'rxjs';
 import { BoardService } from './board-service/board.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
+import { RowClearingService } from './row-clearing/row-clearing.service';
 import { ShadowPieceService } from './shadow-piece/shadow-piece.service';
 @Component({
   selector: 'app-board',
@@ -16,7 +17,8 @@ export class BoardComponent implements OnDestroy, OnInit {
   constructor(
     private playerPiece: PlayerPieceService,
     private shadowPiece: ShadowPieceService,
-    private board: BoardService
+    private board: BoardService,
+    private rowClearing: RowClearingService
   ) {}
 
   private subscribe(obs: Observable<any>) {
@@ -27,7 +29,7 @@ export class BoardComponent implements OnDestroy, OnInit {
     this.subscribe(this.playerPiece.allInputs);
     this.subscribe(this.shadowPiece.trackPlayerPiece);
     this.subscribe(this.playerPiece.updateBoardBasedOnPiece);
-    this.subscribe(this.board.clearsFullRows);
+    this.subscribe(this.rowClearing.clearsFullRows);
   }
 
   ngOnDestroy(): void {
