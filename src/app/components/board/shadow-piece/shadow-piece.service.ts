@@ -31,8 +31,7 @@ export class ShadowPieceService extends Store<Block> {
     }),
     pairwise(),
     tap(([prev, current]) => {
-      this.board.clearPiece(prev);
-      this.board.setShadowPiece(current);
+      this.board.movePiece(prev, current, 'shadow');
     })
   );
 }

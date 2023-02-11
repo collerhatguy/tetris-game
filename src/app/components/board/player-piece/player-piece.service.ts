@@ -60,8 +60,7 @@ export class PlayerPieceService extends Store<Block> {
       const hitGround = current.length === 0;
       hitGround
         ? this.board.lockPieceInplace(prev)
-        : this.board.clearPiece(prev);
-      this.board.setPlayerPiece(current);
+        : this.board.movePiece(prev, current);
     })
   );
 
