@@ -59,24 +59,15 @@ export class BoardService extends Store<Board> {
     this.setState(prevBoard);
   }
 
-  clearPiece(cordinates: Block) {
+  movePiece(prev: Block, current: Block, type: 'player' | 'shadow' = 'player') {
     const prevBoard = this.state;
-    cordinates.forEach((c) => {
+    prev.forEach((c) => {
       prevBoard[c.y][c.x] = { ...this.emptyBlock };
     });
-    this.setState(prevBoard);
-  }
-  setPlayerPiece(cordinates: Block) {
-    const prevBoard = this.state;
-    cordinates.forEach((c) => {
-      prevBoard[c.y][c.x] = { ...this.playerBlock };
-    });
-    this.setState(prevBoard);
-  }
-  setShadowPiece(cordinates: Block) {
-    const prevBoard = this.state;
-    cordinates.forEach((c) => {
-      prevBoard[c.y][c.x] = { ...this.shadowBlock };
+    current.forEach((c) => {
+      prevBoard[c.y][c.x] = {
+        ...(type === 'player' ? this.playerBlock : this.shadowBlock),
+      };
     });
     this.setState(prevBoard);
   }
