@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { filter, map, tap } from 'rxjs';
 import { Store } from 'src/app/utils/store';
 import {
   Board,
   Row,
   Block,
-  Square,
   createEmptyBlock,
   createPlayerBlock,
   createShadowBlock,
