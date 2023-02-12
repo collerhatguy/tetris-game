@@ -17,6 +17,7 @@ import { Direction } from 'src/app/services/block-movement/models';
 import { PlayerInputService } from 'src/app/services/player-input/player-input.service';
 import { clone } from 'src/app/utils/operators';
 import { Store } from 'src/app/utils/store';
+import { BlockGenerationService } from '../block-generation/block-generation.service';
 import { BoardService } from '../board-service/board.service';
 import { Block } from '../board-service/models';
 
@@ -27,18 +28,10 @@ export class PlayerPieceService extends Store<Block> {
   constructor(
     private blockMovement: BlockMovementService,
     private playerInput: PlayerInputService,
-    private board: BoardService
+    private board: BoardService,
+    private blockGeneration: BlockGenerationService
   ) {
     super([]);
-  }
-
-  private createRandomPiece() {
-    return [
-      { x: 4, y: 0 },
-      { x: 5, y: 0 },
-      { x: 4, y: 1 },
-      { x: 5, y: 1 },
-    ];
   }
 
   private gravity: Observable<'down'> = this.playerInput.input.pipe(
@@ -73,7 +66,7 @@ export class PlayerPieceService extends Store<Block> {
   private moveDown() {
     const createNewBlock = this.state.length === 0;
     const newValue = createNewBlock
-      ? this.createRandomPiece()
+      ? this.blockGeneration.getNextBlock()
       : this.blockMovement.getFuturePosition('down', this.state);
 
     const hitTheGround = this.blockMovement.isInvalidMove(this.state, newValue);

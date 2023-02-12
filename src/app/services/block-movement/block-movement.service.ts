@@ -31,9 +31,9 @@ export class BlockMovementService {
   }
 
   private isInvalidCoordinate(c: Coordinate): boolean {
-    const hitGround = c.y === this.board.boardHeight;
+    const hitGround = c.y >= this.board.boardHeight;
     if (hitGround) return true;
-    const outsideOfBounds = c.x < 0 || c.x > this.board.boardWidth;
+    const outsideOfBounds = c.x < 0 || c.x > this.board.boardWidth - 1;
     if (outsideOfBounds) return true;
     const overlapsWithOtherPiece = this.board.state[c.y][c.x].solid;
     return overlapsWithOtherPiece;
