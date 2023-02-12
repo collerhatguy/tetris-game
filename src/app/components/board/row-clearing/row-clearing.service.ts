@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { filter, map, tap } from 'rxjs';
-import { BoardService } from '../board-service/board.service';
 import { Board, createEmptyBlock, Row, Square } from '../board-service/models';
 
 @Injectable({
@@ -16,7 +14,7 @@ export class RowClearingService {
   }
 
   private createEmptyRow() {
-    const row: Row = new Array(this.board.boardWidth);
+    const row: Row = new Array(10);
     row.fill(createEmptyBlock());
     return row;
   }
@@ -29,15 +27,14 @@ export class RowClearingService {
     }
   }
 
-  private clearRows(indexes: number[]) {
-    const board = this.board.state;
+  private clearRows(indexes: number[], board: Board) {
     indexes.forEach((index) => {
       board[index] = this.createEmptyRow();
       const upperRowIndex = index - 1;
       this.moveUpperRowsDown(board, upperRowIndex);
     });
     board[0] = this.createEmptyRow();
-    this.board.setState(board);
+    return board;
   }
 
   private getFullRowIndexes(board: Board) {
@@ -48,10 +45,9 @@ export class RowClearingService {
     );
   }
 
-  clearsFullRows = this.board.state$.pipe(
-    map((board) => this.getFullRowIndexes(board)),
-    filter((rows) => rows.length !== 0),
-    tap((fullRows) => this.clearRows(fullRows))
-  );
-  constructor(private board: BoardService) {}
+  clearFullRows(board: Board) {
+    const fullRowIndexes = this.getFullRowIndexes(board);
+    if (fullRowIndexes.length === 0) return board;
+    return this.clearRows(fullRowIndexes, board);
+  }
 }

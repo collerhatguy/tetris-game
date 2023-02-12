@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from 'src/app/utils/store';
+import { RowClearingService } from '../row-clearing/row-clearing.service';
 import {
   Board,
   Row,
@@ -17,9 +18,14 @@ export class BoardService extends Store<Board> {
   readonly boardHeight = 20;
   readonly boardWidth = 10;
 
-  constructor() {
+  constructor(private rowClearing: RowClearingService) {
     super([]);
     this.setState(this.getInitialBoard());
+  }
+
+  private setBoardWithRowClearing(board: Board) {
+    const clearedBoard = this.rowClearing.clearFullRows(board);
+    this.setState(clearedBoard);
   }
 
   private getInitialBoard(): Board {
@@ -39,7 +45,7 @@ export class BoardService extends Store<Board> {
     cordinates.forEach((c) => {
       prevBoard[c.y][c.x] = createSolidBlock();
     });
-    this.setState(prevBoard);
+    this.setBoardWithRowClearing(prevBoard);
   }
 
   movePiece(prev: Block, current: Block, type: 'player' | 'shadow' = 'player') {
