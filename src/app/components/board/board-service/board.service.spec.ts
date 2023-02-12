@@ -7,17 +7,12 @@ import { Block, Coordinate } from './models';
 
 describe('BoardService', () => {
   let service: BoardService;
-  let sub: Subscription;
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [RowClearingService],
     });
     service = TestBed.inject(BoardService);
-    const rowClearingService = TestBed.inject(RowClearingService);
-    sub = rowClearingService.clearsFullRows.subscribe();
   });
-
-  afterEach(() => sub.unsubscribe());
 
   it('should be created', () => {
     expect(service).toBeTruthy();
