@@ -3,7 +3,7 @@ import { BoardService } from '../board-service/board.service';
 
 import { BlockGenerationService } from './block-generation.service';
 
-fdescribe('BlockGenerationService', () => {
+describe('BlockGenerationService', () => {
   let service: BlockGenerationService;
 
   beforeEach(() => {
