@@ -18,7 +18,43 @@ export class BlockMovementService {
         return currentPosition.map((c) => ({ ...c, x: c.x - 1 }));
       case 'right':
         return currentPosition.map((c) => ({ ...c, x: c.x + 1 }));
+      case 'rotateRight':
+        return this.rotate(currentPosition);
+      case 'rotateLeft':
+        return this.rotate(currentPosition);
     }
+  }
+
+  private getAxis(block: Block): Coordinate {
+    const { xSum, ySum } = block.reduce(
+      (sum, square) => {
+        sum.xSum += square.x;
+        sum.ySum += square.y;
+        return sum;
+      },
+      {
+        xSum: 0,
+        ySum: 0,
+      }
+    );
+
+    return {
+      x: Math.floor(xSum / block.length),
+      y: Math.floor(ySum / block.length),
+    };
+  }
+
+  private rotateRight(axis: Coordinate, block: Block) {
+    return block.map((c) => ({
+      x: axis.x - (c.y - axis.y),
+      y: c.x - axis.x + axis.y,
+    }));
+  }
+
+  private rotate(block: Block): Block {
+    const axis = this.getAxis(block);
+
+    return this.rotateRight(axis, block);
   }
 
   private getNewlyOccupiedAreas(

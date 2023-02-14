@@ -60,6 +60,7 @@ export class PlayerPieceService extends Store<Block> {
 
   private move(direction: Direction) {
     if (direction === 'down') return this.moveDown();
+    if (direction === 'rotateRight' || direction === 'rotateLeft') return;
     this.moveHorizontally(direction);
   }
 

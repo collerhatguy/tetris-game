@@ -1,1 +1,6 @@
-export type Direction = 'left' | 'right' | 'down';
+export type Direction =
+  | 'left'
+  | 'right'
+  | 'down'
+  | 'rotateLeft'
+  | 'rotateRight';
