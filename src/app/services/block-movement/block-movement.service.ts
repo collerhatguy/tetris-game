@@ -4,7 +4,7 @@ import {
   Block,
   Coordinate,
 } from 'src/app/components/board/board-service/models';
-import { Direction } from './models';
+import { Direction, RotationalDirection } from './models';
 
 @Injectable({
   providedIn: 'root',
@@ -19,9 +19,9 @@ export class BlockMovementService {
       case 'right':
         return currentPosition.map((c) => ({ ...c, x: c.x + 1 }));
       case 'rotateRight':
-        return this.rotate(currentPosition, 'right');
+        return this.rotate(currentPosition, direction);
       case 'rotateLeft':
-        return this.rotate(currentPosition, 'left');
+        return this.rotate(currentPosition, direction);
     }
   }
 
@@ -61,7 +61,7 @@ export class BlockMovementService {
     return num - Math.floor(num) === 0.5;
   }
 
-  private rotate(block: Block, direction: 'left' | 'right'): Block {
+  private rotate(block: Block, direction: RotationalDirection): Block {
     const { x, y } = this.getBlockAverage(block);
 
     const isSquare = this.isHalfFraction(x) && this.isHalfFraction(y);
@@ -73,7 +73,7 @@ export class BlockMovementService {
       y: Math.floor(y),
     };
 
-    return direction === 'right'
+    return direction === 'rotateRight'
       ? this.rotateRight(axis, block)
       : this.rotateLeft(axis, block);
   }
@@ -90,7 +90,8 @@ export class BlockMovementService {
   private isInvalidCoordinate(c: Coordinate): boolean {
     const hitGround = c.y >= this.board.boardHeight;
     if (hitGround) return true;
-    const outsideOfBounds = c.x < 0 || c.x > this.board.boardWidth - 1;
+    const outsideOfBounds =
+      c.x < 0 || c.x > this.board.boardWidth - 1 || c.y < 0;
     if (outsideOfBounds) return true;
     const overlapsWithOtherPiece = this.board.state[c.y][c.x].solid;
     return overlapsWithOtherPiece;

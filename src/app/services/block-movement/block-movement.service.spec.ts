@@ -21,6 +21,8 @@ describe('BlockMovementService', () => {
     expect(inValid).toBeTrue();
     inValid = service.isInvalidMove([], [{ x: 0, y: 200 }]);
     expect(inValid).toBeTrue();
+    inValid = service.isInvalidMove([], [{ x: 0, y: -1 }]);
+    expect(inValid).toBeTrue();
   });
 
   describe('rotation', () => {
