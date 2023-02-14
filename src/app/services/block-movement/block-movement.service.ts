@@ -57,12 +57,14 @@ export class BlockMovementService {
     }));
   }
 
+  private isHalfFraction(num: number) {
+    return num - Math.floor(num) === 0.5;
+  }
+
   private rotate(block: Block, direction: 'left' | 'right'): Block {
     const { x, y } = this.getBlockAverage(block);
 
-    const isSquare =
-      (x + 1) % Math.floor(x + 1) === 0.5 &&
-      (y + 1) % Math.floor(y + 1) === 0.5;
+    const isSquare = this.isHalfFraction(x) && this.isHalfFraction(y);
 
     if (isSquare) return block;
 
