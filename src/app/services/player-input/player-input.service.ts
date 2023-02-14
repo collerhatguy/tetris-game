@@ -3,11 +3,13 @@ import { fromEvent, throttleTime, map, Observable, merge } from 'rxjs';
 import { filterInputs } from 'src/app/utils/operators';
 import { Direction } from '../block-movement/models';
 import {
-  allInputs,
+  throttledInputs,
   downInputs,
   inputsPerSecond,
   leftInputs,
   rightInputs,
+  rotateLeftInputs,
+  rotateRightInputs,
 } from './constants';
 
 @Injectable({
@@ -17,7 +19,7 @@ export class PlayerInputService {
   private keyEvents = fromEvent<KeyboardEvent>(window, 'keydown');
 
   private significantInputs = this.keyEvents.pipe(
-    filterInputs(allInputs),
+    filterInputs(throttledInputs),
     throttleTime(1000 / inputsPerSecond)
   );
 
@@ -36,10 +38,22 @@ export class PlayerInputService {
     map(() => 'down')
   );
 
+  private rotateLeftInput: Observable<'rotateLeft'> = this.keyEvents.pipe(
+    filterInputs(rotateLeftInputs),
+    map(() => 'rotateLeft')
+  );
+
+  private rotateRightInput: Observable<'rotateRight'> = this.keyEvents.pipe(
+    filterInputs(rotateRightInputs),
+    map(() => 'rotateRight')
+  );
+
   input: Observable<Direction> = merge(
     this.downInput,
     this.leftInput,
-    this.rightInput
+    this.rightInput,
+    this.rotateLeftInput,
+    this.rotateRightInput
   );
 
   constructor() {}

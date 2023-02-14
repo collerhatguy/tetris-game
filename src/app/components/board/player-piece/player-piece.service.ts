@@ -13,7 +13,10 @@ import {
   distinctUntilChanged,
 } from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
-import { Direction } from 'src/app/services/block-movement/models';
+import {
+  Direction,
+  RotationalDirection,
+} from 'src/app/services/block-movement/models';
 import { PlayerInputService } from 'src/app/services/player-input/player-input.service';
 import { clone } from 'src/app/utils/operators';
 import { Store } from 'src/app/utils/store';
@@ -60,7 +63,20 @@ export class PlayerPieceService extends Store<Block> {
 
   private move(direction: Direction) {
     if (direction === 'down') return this.moveDown();
+    if (direction === 'rotateRight' || direction === 'rotateLeft')
+      return this.rotate(direction);
     this.moveHorizontally(direction);
+  }
+
+  private rotate(direction: RotationalDirection) {
+    const newValue = this.blockMovement.getFuturePosition(
+      direction,
+      this.state
+    );
+
+    const isInvalid = this.blockMovement.isInvalidMove(this.state, newValue);
+
+    !isInvalid && this.setState(newValue);
   }
 
   private moveDown() {
