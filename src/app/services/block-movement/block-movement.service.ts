@@ -25,22 +25,8 @@ export class BlockMovementService {
     }
   }
 
-  private getBlockSum(block: Block) {
-    return block.reduce(
-      (sum, square) => {
-        sum.xSum += square.x;
-        sum.ySum += square.y;
-        return sum;
-      },
-      {
-        xSum: 0,
-        ySum: 0,
-      }
-    );
-  }
-
-  private getAxis(block: Block): Coordinate {
-    const { xSum, ySum } = block.reduce(
+  private getBlockAverage(block: Block) {
+    const sum = block.reduce(
       (sum, square) => {
         sum.xSum += square.x;
         sum.ySum += square.y;
@@ -52,12 +38,9 @@ export class BlockMovementService {
       }
     );
 
-    const xAverage = xSum / block.length;
-    const yAverage = ySum / block.length;
-    console.log(xAverage, yAverage);
     return {
-      x: Math.floor(xAverage),
-      y: Math.floor(yAverage),
+      x: sum.xSum / block.length,
+      y: sum.ySum / block.length,
     };
   }
 
@@ -75,15 +58,16 @@ export class BlockMovementService {
   }
 
   private rotate(block: Block, direction: 'left' | 'right'): Block {
-    const { xSum, ySum } = this.getBlockSum(block);
-    const xAverage = xSum / block.length;
-    const yAverage = ySum / block.length;
+    const { x, y } = this.getBlockAverage(block);
 
-    const isSquare = xAverage % 0.5 === 0 && yAverage % 0.5 === 0;
+    const isSquare = x % 0.5 === 0 && y % 0.5 === 0;
 
     if (isSquare) return block;
 
-    const axis = this.getAxis(block);
+    const axis = {
+      x: Math.floor(x),
+      y: Math.floor(y),
+    };
 
     return direction === 'right'
       ? this.rotateRight(axis, block)
