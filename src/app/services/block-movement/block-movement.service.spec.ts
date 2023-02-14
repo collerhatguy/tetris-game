@@ -38,5 +38,19 @@ describe('BlockMovementService', () => {
         .done();
       expect(newBlock).toEqual(expected);
     });
+    it('can rotate a 3 width block left', () => {
+      const block = new BlockBuilder({ x: 5, y: 0 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockRight()
+        .done();
+      const newBlock = service.getFuturePosition('rotateLeft', block);
+      const expected = new BlockBuilder({ x: 4, y: 1 })
+        .addBlockRight()
+        .addBlockRight()
+        .addBlockAbove()
+        .done();
+      expect(newBlock).toEqual(expected);
+    });
   });
 });

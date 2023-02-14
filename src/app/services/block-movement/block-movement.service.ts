@@ -19,9 +19,9 @@ export class BlockMovementService {
       case 'right':
         return currentPosition.map((c) => ({ ...c, x: c.x + 1 }));
       case 'rotateRight':
-        return this.rotate(currentPosition);
+        return this.rotate(currentPosition, 'right');
       case 'rotateLeft':
-        return this.rotate(currentPosition);
+        return this.rotate(currentPosition, 'left');
     }
   }
 
@@ -50,11 +50,19 @@ export class BlockMovementService {
       y: c.x - axis.x + axis.y,
     }));
   }
+  private rotateLeft(axis: Coordinate, block: Block) {
+    return block.map((c) => ({
+      x: axis.x + (c.y - axis.y),
+      y: axis.y - (c.x - axis.x),
+    }));
+  }
 
-  private rotate(block: Block): Block {
+  private rotate(block: Block, direction: 'left' | 'right'): Block {
     const axis = this.getAxis(block);
 
-    return this.rotateRight(axis, block);
+    return direction === 'right'
+      ? this.rotateRight(axis, block)
+      : this.rotateLeft(axis, block);
   }
 
   private getNewlyOccupiedAreas(
