@@ -60,7 +60,9 @@ export class BlockMovementService {
   private rotate(block: Block, direction: 'left' | 'right'): Block {
     const { x, y } = this.getBlockAverage(block);
 
-    const isSquare = x % 0.5 === 0 && y % 0.5 === 0;
+    const isSquare =
+      (x + 1) % Math.floor(x + 1) === 0.5 &&
+      (y + 1) % Math.floor(y + 1) === 0.5;
 
     if (isSquare) return block;
 

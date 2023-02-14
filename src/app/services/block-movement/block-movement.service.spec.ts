@@ -66,5 +66,19 @@ describe('BlockMovementService', () => {
         .done();
       expect(newBlock).toEqual(expected);
     });
+    it('can rotate the line block', () => {
+      const block = new BlockBuilder({ x: 5, y: 0 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done();
+      const newBlock = service.getFuturePosition('rotateRight', block);
+      const expected = new BlockBuilder({ x: 6, y: 1 })
+        .addBlockLeft()
+        .addBlockLeft()
+        .addBlockLeft()
+        .done();
+      expect(newBlock).toEqual(expected);
+    });
   });
 });
