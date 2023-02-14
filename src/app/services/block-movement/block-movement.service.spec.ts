@@ -52,5 +52,19 @@ describe('BlockMovementService', () => {
         .done();
       expect(newBlock).toEqual(expected);
     });
+    it('will not change a square block', () => {
+      const block = new BlockBuilder({ x: 5, y: 0 })
+        .addBlockBelow()
+        .addBlockRight()
+        .addBlockAbove()
+        .done();
+      const newBlock = service.getFuturePosition('rotateLeft', block);
+      const expected = new BlockBuilder({ x: 5, y: 0 })
+        .addBlockBelow()
+        .addBlockRight()
+        .addBlockAbove()
+        .done();
+      expect(newBlock).toEqual(expected);
+    });
   });
 });
