@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   Observable,
   filter,
@@ -9,8 +9,6 @@ import {
   merge,
   tap,
   pairwise,
-  mergeMap,
-  distinctUntilChanged,
 } from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import {
