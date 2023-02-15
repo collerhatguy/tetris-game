@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BoardService } from 'src/app/components/board/board-service/board.service';
-import {
-  Block,
-  Coordinate,
-} from 'src/app/components/board/board-service/models';
-import { Direction, RotationalDirection } from './models';
+import { Block } from 'src/app/components/board/board-service/models';
+import { Direction } from './models';
 import { PredictMovementService } from './predict-movement.service';
 import { ValidateMovementService } from './validate-movement.service';
 
