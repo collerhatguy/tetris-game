@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Store } from 'src/app/utils/store';
 import { RowClearingService } from '../row-clearing/row-clearing.service';
+import { ShadowPieceService } from '../shadow-piece/shadow-piece.service';
 import {
   Board,
   Row,
@@ -18,7 +19,10 @@ export class BoardService extends Store<Board> {
   readonly boardHeight = 20;
   readonly boardWidth = 10;
 
-  constructor(private rowClearing: RowClearingService) {
+  constructor(
+    private rowClearing: RowClearingService,
+    private shadow: ShadowPieceService
+  ) {
     super([]);
     this.setState(this.getInitialBoard());
   }
@@ -48,15 +52,24 @@ export class BoardService extends Store<Board> {
     this.setBoardWithRowClearing(prevBoard);
   }
 
-  movePiece(prev: Block, current: Block, type: 'player' | 'shadow' = 'player') {
+  movePiece(prev: Block, current: Block) {
     const prevBoard = this.state;
     prev.forEach((c) => {
       prevBoard[c.y][c.x] = createEmptyBlock();
     });
-    current.forEach((c) => {
-      prevBoard[c.y][c.x] =
-        type === 'player' ? createPlayerBlock() : createShadowBlock();
+    const prevShadow = this.shadow.calculateShadowBlock(prev);
+    prevShadow.forEach((c) => {
+      prevBoard[c.y][c.x] = createEmptyBlock();
     });
+
+    const currentShadow = this.shadow.calculateShadowBlock(current);
+    currentShadow.forEach((c) => {
+      prevBoard[c.y][c.x] = createShadowBlock();
+    });
+    current.forEach((c) => {
+      prevBoard[c.y][c.x] = createPlayerBlock();
+    });
+
     this.setState(prevBoard);
   }
 }

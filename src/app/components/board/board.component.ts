@@ -16,7 +16,6 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   constructor(
     private playerPiece: PlayerPieceService,
-    private shadowPiece: ShadowPieceService,
     private board: BoardService
   ) {}
 
@@ -25,7 +24,6 @@ export class BoardComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.subscribe(this.shadowPiece.trackPlayerPiece);
     this.subscribe(this.playerPiece.updateBoardBasedOnPiece);
   }
 

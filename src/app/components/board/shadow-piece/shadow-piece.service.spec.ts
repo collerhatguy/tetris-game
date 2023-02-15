@@ -17,4 +17,9 @@ describe('ShadowPieceService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('does not run infinitly when an empty array is passed', () => {
+    const res = service.calculateShadowBlock([]);
+    expect(res).toEqual([]);
+  });
 });
