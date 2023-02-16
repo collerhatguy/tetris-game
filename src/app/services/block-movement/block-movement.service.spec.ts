@@ -17,12 +17,12 @@ describe('BlockMovementService', () => {
   });
 
   it('does not break if you pass it out of bound values', () => {
-    let inValid = service.isInvalidMove([], [{ x: 100, y: 0 }]);
-    expect(inValid).toBeTrue();
-    inValid = service.isInvalidMove([], [{ x: 0, y: 200 }]);
-    expect(inValid).toBeTrue();
-    inValid = service.isInvalidMove([], [{ x: 0, y: -1 }]);
-    expect(inValid).toBeTrue();
+    let valid = service.isValidMove([], [{ x: 100, y: 0 }]);
+    expect(valid).toBeFalse();
+    valid = service.isValidMove([], [{ x: 0, y: 200 }]);
+    expect(valid).toBeFalse();
+    valid = service.isValidMove([], [{ x: 0, y: -1 }]);
+    expect(valid).toBeFalse();
   });
 
   describe('rotation', () => {

@@ -11,7 +11,7 @@ export class ShadowPieceService {
   calculateShadowBlock(block: Block): Block {
     if (block.length === 0) return block;
     const newBlock = this.blockMovement.getFuturePosition('down', block);
-    const valid = !this.blockMovement.isInvalidMove(block, newBlock);
+    const valid = this.blockMovement.isValidMove(block, newBlock);
     return valid ? this.calculateShadowBlock(newBlock) : block;
   }
 }

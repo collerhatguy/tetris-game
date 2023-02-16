@@ -87,19 +87,19 @@ export class BlockMovementService {
     );
   }
 
-  private isInvalidCoordinate(c: Coordinate): boolean {
+  private isValidCoordinate(c: Coordinate): boolean {
     const board = this.injector.get(BoardService);
     const hitGround = c.y >= board.boardHeight;
-    if (hitGround) return true;
+    if (hitGround) return false;
     const outsideOfBounds = c.x < 0 || c.x > board.boardWidth - 1 || c.y < 0;
-    if (outsideOfBounds) return true;
+    if (outsideOfBounds) return false;
     const overlapsWithOtherPiece = board.state[c.y][c.x].solid;
-    return overlapsWithOtherPiece;
+    return !overlapsWithOtherPiece;
   }
 
-  isInvalidMove(prev: Block, current: Block) {
+  isValidMove(prev: Block, current: Block) {
     const newlyOccupied = this.getNewlyOccupiedAreas(current, prev);
-    return newlyOccupied.some((c) => this.isInvalidCoordinate(c));
+    return newlyOccupied.every((c) => this.isValidCoordinate(c));
   }
   constructor(private injector: Injector) {}
 }

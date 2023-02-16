@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
   Observable,
   filter,
@@ -9,8 +9,6 @@ import {
   merge,
   tap,
   pairwise,
-  mergeMap,
-  distinctUntilChanged,
 } from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import {
@@ -74,9 +72,9 @@ export class PlayerPieceService extends Store<Block> {
       this.state
     );
 
-    const isInvalid = this.blockMovement.isInvalidMove(this.state, newValue);
+    const valid = this.blockMovement.isValidMove(this.state, newValue);
 
-    !isInvalid && this.setState(newValue);
+    valid && this.setState(newValue);
   }
 
   private moveDown() {
@@ -85,7 +83,7 @@ export class PlayerPieceService extends Store<Block> {
       ? this.blockGeneration.getNextBlock()
       : this.blockMovement.getFuturePosition('down', this.state);
 
-    const hitTheGround = this.blockMovement.isInvalidMove(this.state, newValue);
+    const hitTheGround = !this.blockMovement.isValidMove(this.state, newValue);
 
     this.setState(hitTheGround ? [] : newValue);
   }
@@ -96,8 +94,8 @@ export class PlayerPieceService extends Store<Block> {
       this.state
     );
 
-    const isInvalid = this.blockMovement.isInvalidMove(this.state, newValue);
+    const valid = this.blockMovement.isValidMove(this.state, newValue);
 
-    !isInvalid && this.setState(newValue);
+    valid && this.setState(newValue);
   }
 }
