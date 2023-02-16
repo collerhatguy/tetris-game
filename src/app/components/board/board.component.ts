@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil, Observable } from 'rxjs';
 import { BoardService } from './board-service/board.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
-import { ShadowPieceService } from './shadow-piece/shadow-piece.service';
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
@@ -15,7 +14,6 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   constructor(
     private playerPiece: PlayerPieceService,
-    private shadowPiece: ShadowPieceService,
     private board: BoardService
   ) {}
 
@@ -24,7 +22,6 @@ export class BoardComponent implements OnDestroy, OnInit {
   }
 
   ngOnInit(): void {
-    this.subscribe(this.shadowPiece.trackPlayerPiece);
     this.subscribe(this.playerPiece.updateBoardBasedOnPiece);
   }
 

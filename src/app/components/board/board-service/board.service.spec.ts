@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { Subscription } from 'rxjs';
+import { BlockBuilder } from '../block-generation/model';
 import { RowClearingService } from '../row-clearing/row-clearing.service';
 
 import { BoardService } from './board.service';
-import { Block, Coordinate } from './models';
+import { Block, Coordinate, Square } from './models';
 
 describe('BoardService', () => {
   let service: BoardService;
@@ -81,5 +81,51 @@ describe('BoardService', () => {
     const second2LastRowFirstSquare = service.state[service.boardHeight - 2][0];
     expect(lastRowFirstSquare.solid).toBeTrue();
     expect(second2LastRowFirstSquare.solid).toBeTrue();
+  });
+
+  const isShadow = (sqr: Square) => {
+    expect(sqr.solid).toBeFalse();
+    expect(sqr.isPlayer).toBeFalse();
+    expect(sqr.color === 'white').toBeFalse();
+  };
+  const isPlayer = (sqr: Square) => {
+    expect(sqr.solid).toBeTrue();
+    expect(sqr.isPlayer).toBeTrue();
+    expect(sqr.color === 'white').toBeFalse();
+  };
+  const isEmpty = (sqr: Square) => {
+    expect(sqr.solid).toBeFalse();
+    expect(sqr.isPlayer).toBeFalse();
+    expect(sqr.color === 'white').toBeTrue();
+  };
+
+  describe('shadow block', () => {
+    it('should have a shadow block tracking the player', () => {
+      const player = new BlockBuilder({ x: 0, y: 0 }).done();
+      service.movePiece([], player);
+      const board = service.state;
+      const shadow = board.at(-1)?.at(0) as Square;
+      isShadow(shadow);
+
+      const nextPosition = new BlockBuilder({ x: 1, y: 0 }).done();
+      service.movePiece(player, nextPosition);
+      const newBoard = service.state;
+      const nextShadow = newBoard.at(-1)?.at(1) as Square;
+      const prevShadow = newBoard.at(-1)?.at(0) as Square;
+      isEmpty(prevShadow);
+      isShadow(nextShadow);
+    });
+
+    it('the shadow block should not override the player block', () => {
+      const player = new BlockBuilder({ x: 0, y: service.boardHeight - 2 })
+        .addBlockAbove()
+        .done();
+      service.movePiece([], player);
+      const board = service.state;
+      const shadow = board.at(-1)?.at(0) as Square;
+      const player2 = board.at(-2)?.at(0) as Square;
+      isShadow(shadow);
+      isPlayer(player2);
+    });
   });
 });

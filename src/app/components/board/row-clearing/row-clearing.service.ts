@@ -1,10 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
+import { BoardService } from '../board-service/board.service';
 import { Board, createEmptyBlock, Row, Square } from '../board-service/models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RowClearingService {
+  constructor(private injector: Injector) {}
+
   private squareIsFull(square: Square) {
     return square.solid && !square.isPlayer;
   }
@@ -14,7 +17,8 @@ export class RowClearingService {
   }
 
   private createEmptyRow() {
-    const row: Row = new Array(10);
+    const board = this.injector.get(BoardService);
+    const row: Row = new Array(board.boardWidth);
     row.fill(createEmptyBlock());
     return row;
   }

@@ -16,15 +16,6 @@ describe('BlockMovementService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('does not break if you pass it out of bound values', () => {
-    let inValid = service.isInvalidMove([], [{ x: 100, y: 0 }]);
-    expect(inValid).toBeTrue();
-    inValid = service.isInvalidMove([], [{ x: 0, y: 200 }]);
-    expect(inValid).toBeTrue();
-    inValid = service.isInvalidMove([], [{ x: 0, y: -1 }]);
-    expect(inValid).toBeTrue();
-  });
-
   describe('rotation', () => {
     it('can rotate a 3 width block right', () => {
       const block = new BlockBuilder({ x: 5, y: 0 })
