@@ -73,5 +73,29 @@ describe('BlockMovementService', () => {
         .done();
       expect(newBlock).toEqual(expected);
     });
+    it('rotating a block 4 times to the right results in the original block', () => {
+      const block = new BlockBuilder({ x: 5, y: 5 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done();
+      let newBlock = service.getFuturePosition('rotateRight', block);
+      newBlock = service.getFuturePosition('rotateRight', newBlock);
+      newBlock = service.getFuturePosition('rotateRight', newBlock);
+      newBlock = service.getFuturePosition('rotateRight', newBlock);
+      expect(newBlock).toEqual(block);
+    });
+    it('rotating a block 4 times to the left results in the original block', () => {
+      const block = new BlockBuilder({ x: 5, y: 5 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done();
+      let newBlock = service.getFuturePosition('rotateLeft', block);
+      newBlock = service.getFuturePosition('rotateLeft', newBlock);
+      newBlock = service.getFuturePosition('rotateLeft', newBlock);
+      newBlock = service.getFuturePosition('rotateLeft', newBlock);
+      expect(newBlock).toEqual(block);
+    });
   });
 });

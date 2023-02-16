@@ -60,6 +60,10 @@ export class BlockMovementService {
     return num - Math.floor(num) === 0.5;
   }
 
+  private lastPosition: Block = [];
+
+  private lastAxis: Coordinate | undefined;
+
   private rotate(block: Block, direction: RotationalDirection): Block {
     const { x, y } = this.getBlockAverage(block);
 
@@ -67,13 +71,21 @@ export class BlockMovementService {
 
     if (isSquare) return block;
 
-    const axis = {
+    const alreadyRotated =
+      JSON.stringify(block) === JSON.stringify(this.lastPosition);
+    const newAxis = {
       x: Math.floor(x),
       y: Math.floor(y),
     };
+    const axis = alreadyRotated ? this.lastAxis ?? newAxis : newAxis;
 
-    return direction === 'rotateRight'
-      ? this.rotateRight(axis, block)
-      : this.rotateLeft(axis, block);
+    const newBlock =
+      direction === 'rotateRight'
+        ? this.rotateRight(axis, block)
+        : this.rotateLeft(axis, block);
+
+    this.lastAxis = axis;
+    this.lastPosition = [...newBlock];
+    return newBlock;
   }
 }
