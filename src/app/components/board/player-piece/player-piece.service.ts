@@ -13,6 +13,7 @@ import {
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import {
   Direction,
+  HorizontalDirection,
   RotationalDirection,
 } from 'src/app/services/block-movement/models';
 import { ValidateMovementService } from 'src/app/services/block-movement/validate-movement/validate-movement.service';
@@ -90,7 +91,7 @@ export class PlayerPieceService extends Store<Block> {
     this.setState(hitTheGround ? [] : newValue);
   }
 
-  private moveHorizontally(direction: 'left' | 'right') {
+  private moveHorizontally(direction: HorizontalDirection) {
     const newValue = this.blockMovement.getFuturePosition(
       direction,
       this.state
