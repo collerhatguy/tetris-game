@@ -2,8 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil, Observable } from 'rxjs';
 import { BoardService } from './board-service/board.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
-import { RowClearingService } from './row-clearing/row-clearing.service';
-import { ShadowPieceService } from './shadow-piece/shadow-piece.service';
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',

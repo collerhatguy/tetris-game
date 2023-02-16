@@ -15,6 +15,7 @@ import {
   Direction,
   RotationalDirection,
 } from 'src/app/services/block-movement/models';
+import { ValidateMovementService } from 'src/app/services/block-movement/validate-movement/validate-movement.service';
 import { PlayerInputService } from 'src/app/services/player-input/player-input.service';
 import { clone } from 'src/app/utils/operators';
 import { Store } from 'src/app/utils/store';
@@ -28,6 +29,7 @@ import { Block } from '../board-service/models';
 export class PlayerPieceService extends Store<Block> {
   constructor(
     private blockMovement: BlockMovementService,
+    private validate: ValidateMovementService,
     private playerInput: PlayerInputService,
     private board: BoardService,
     private blockGeneration: BlockGenerationService
@@ -72,7 +74,7 @@ export class PlayerPieceService extends Store<Block> {
       this.state
     );
 
-    const valid = this.blockMovement.isValidMove(this.state, newValue);
+    const valid = this.validate.isValidMove(this.state, newValue);
 
     valid && this.setState(newValue);
   }
@@ -83,7 +85,7 @@ export class PlayerPieceService extends Store<Block> {
       ? this.blockGeneration.getNextBlock()
       : this.blockMovement.getFuturePosition('down', this.state);
 
-    const hitTheGround = !this.blockMovement.isValidMove(this.state, newValue);
+    const hitTheGround = !this.validate.isValidMove(this.state, newValue);
 
     this.setState(hitTheGround ? [] : newValue);
   }
@@ -94,7 +96,7 @@ export class PlayerPieceService extends Store<Block> {
       this.state
     );
 
-    const valid = this.blockMovement.isValidMove(this.state, newValue);
+    const valid = this.validate.isValidMove(this.state, newValue);
 
     valid && this.setState(newValue);
   }
