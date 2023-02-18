@@ -5,11 +5,13 @@ import { BlockMovementService } from './block-movement.service';
 
 describe('BlockMovementService', () => {
   let service: BlockMovementService;
+  let board: BoardService;
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [BoardService],
     });
     service = TestBed.inject(BlockMovementService);
+    board = TestBed.inject(BoardService);
   });
 
   it('should be created', () => {
@@ -17,7 +19,7 @@ describe('BlockMovementService', () => {
   });
 
   describe('rotation', () => {
-    it('can rotate a 3 width block right', () => {
+    it('can rotate a L block right', () => {
       const block = new BlockBuilder({ x: 5, y: 0 })
         .addBlockBelow()
         .addBlockBelow()
@@ -31,7 +33,21 @@ describe('BlockMovementService', () => {
         .done();
       expect(newBlock).toEqual(expected);
     });
-    it('can rotate a 3 width block left', () => {
+    it('can rotate a J block right', () => {
+      const block = new BlockBuilder({ x: 5, y: 0 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockLeft()
+        .done();
+      const newBlock = service.getFuturePosition('rotateRight', block);
+      const expected = new BlockBuilder({ x: 6, y: 1 })
+        .addBlockLeft()
+        .addBlockLeft()
+        .addBlockAbove()
+        .done();
+      expect(newBlock).toEqual(expected);
+    });
+    it('can rotate an L block left', () => {
       const block = new BlockBuilder({ x: 5, y: 0 })
         .addBlockBelow()
         .addBlockBelow()
@@ -96,6 +112,23 @@ describe('BlockMovementService', () => {
       newBlock = service.getFuturePosition('rotateLeft', newBlock);
       newBlock = service.getFuturePosition('rotateLeft', newBlock);
       expect(newBlock).toEqual(block);
+    });
+    describe('wall kicking', () => {
+      it('if I rotate right and that postion is occuppied I will get the position immediatly left of that', () => {
+        const block = new BlockBuilder({ x: 5, y: 5 })
+          .addBlockBelow()
+          .addBlockBelow()
+          .addBlockLeft()
+          .done();
+        board.lockPieceInplace([{ x: 4, y: 5 }]);
+        const newBlock = service.getFuturePosition('rotateRight', block);
+        const expected = new BlockBuilder({ x: 5, y: 6 })
+          .addBlockLeft()
+          .addBlockLeft()
+          .addBlockAbove()
+          .done();
+        expect(newBlock).toEqual(expected);
+      });
     });
   });
 });

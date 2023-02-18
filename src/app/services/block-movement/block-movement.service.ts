@@ -4,6 +4,7 @@ import {
   Coordinate,
 } from 'src/app/components/board/board-service/models';
 import { Direction, RotationalDirection } from './models';
+import { ValidateMovementService } from './validate-movement/validate-movement.service';
 
 @Injectable({
   providedIn: 'root',
@@ -73,10 +74,8 @@ export class BlockMovementService {
 
     const alreadyRotated =
       JSON.stringify(block) === JSON.stringify(this.lastPosition);
-    const newAxis = {
-      x: Math.floor(x),
-      y: Math.floor(y),
-    };
+
+    const newAxis = block[1];
     const axis = alreadyRotated ? this.lastAxis ?? newAxis : newAxis;
 
     const newBlock =
@@ -84,8 +83,17 @@ export class BlockMovementService {
         ? this.rotateRight(axis, block)
         : this.rotateLeft(axis, block);
 
+    const valid = this.validate.isValidMove(block, newBlock);
+    if (!valid) {
+      return newBlock.map((c) => ({
+        ...c,
+        x: c.x + (direction === 'rotateRight' ? -1 : 1),
+      }));
+    }
     this.lastAxis = axis;
     this.lastPosition = [...newBlock];
     return newBlock;
   }
+
+  constructor(private validate: ValidateMovementService) {}
 }
