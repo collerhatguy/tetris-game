@@ -85,10 +85,18 @@ export class BlockMovementService {
 
     const valid = this.validate.isValidMove(block, newBlock);
     if (!valid) {
-      return newBlock.map((c) => ({
+      const kickedBlock = newBlock.map((c) => ({
         ...c,
         x: c.x + (direction === 'rotateRight' ? -1 : 1),
       }));
+      const valid2 = this.validate.isValidMove(block, kickedBlock);
+      if (!valid2) {
+        return kickedBlock.map((c) => ({
+          ...c,
+          y: c.y + 1,
+        }));
+      }
+      return kickedBlock;
     }
     this.lastAxis = axis;
     this.lastPosition = [...newBlock];

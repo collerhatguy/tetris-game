@@ -129,6 +129,24 @@ describe('BlockMovementService', () => {
           .done();
         expect(newBlock).toEqual(expected);
       });
+      it('if the previous cases final value is impossible then I will get the position immediatly below that one', () => {
+        const block = new BlockBuilder({ x: 5, y: 5 })
+          .addBlockBelow()
+          .addBlockBelow()
+          .addBlockLeft()
+          .done();
+        board.lockPieceInplace([
+          { x: 4, y: 5 },
+          { x: 3, y: 5 },
+        ]);
+        const newBlock = service.getFuturePosition('rotateRight', block);
+        const expected = new BlockBuilder({ x: 5, y: 7 })
+          .addBlockLeft()
+          .addBlockLeft()
+          .addBlockAbove()
+          .done();
+        expect(newBlock).toEqual(expected);
+      });
     });
   });
 });
