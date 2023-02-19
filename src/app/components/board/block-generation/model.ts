@@ -37,3 +37,11 @@ export class BlockBuilder {
     return this;
   }
 }
+
+type Position = '0' | 'R' | '2' | 'L';
+type Shape = 'O' | 'L' | 'J' | 'S' | 'Z' | 'I' | 'T';
+class Tetronome {
+  position: Position = '0';
+  coordinates: Block = [];
+  constructor(public shape: Shape) {}
+}

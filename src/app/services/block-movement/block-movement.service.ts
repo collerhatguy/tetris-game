@@ -65,6 +65,10 @@ export class BlockMovementService {
 
   private lastAxis: Coordinate | undefined;
 
+  // problem: in order to implement wall kicking properly I need to be able to track what rotation the player is in
+  // options: I can create a tetronome class that tracks the coordinates and rotation of the block and the type
+  // or i can dynamically calculate that from the coordinates.
+
   private rotate(block: Block, direction: RotationalDirection): Block {
     const { x, y } = this.getBlockAverage(block);
 
