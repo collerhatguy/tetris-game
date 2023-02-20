@@ -38,7 +38,26 @@ export class BlockBuilder {
   }
 }
 
-export class Tetronomo {
+type Position = '0' | 'R' | '2' | 'L';
+
+export class Tetronomo extends Array<Coordinate> {
+  private positions: Position[] = ['0', 'R', '2', 'L'];
+  private _position: number = 0;
+
+  get position(): Position {
+    return this.positions.at(this._position) as Position;
+  }
+
+  rotateRight() {
+    this._position = (this._position + 1) % this.positions.length;
+  }
+  rotateLeft() {
+    this._position = (this._position - 1) % this.positions.length;
+  }
+
+  constructor(...args: Coordinate[]) {
+    super(...args);
+  }
   static moveDown(block: Block) {
     return block.map((c) => ({ ...c, y: c.y + 1 }));
   }

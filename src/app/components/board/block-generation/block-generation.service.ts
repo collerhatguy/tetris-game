@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BoardService } from '../board-service/board.service';
 import { Block } from '../board-service/models';
-import { BlockBuilder } from './model';
+import { BlockBuilder, Tetronomo } from './model';
 
 @Injectable({
   providedIn: 'root',
@@ -71,6 +71,6 @@ export class BlockGenerationService {
     const index = Math.floor(random * this.blockBag.length);
     const [nextBlock] = this.blockBag.splice(index, 1);
     if (this.blockBag.length === 0) this.blockBag = [...this.allBlocks];
-    return nextBlock;
+    return new Tetronomo(...nextBlock);
   }
 }
