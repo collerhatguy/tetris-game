@@ -4,6 +4,7 @@ import { BoardService } from './board-service/board.service';
 import { BoardComponent } from './board.component';
 import { PlayerInputService } from '../../services/player-input/player-input.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
+import { Tetronomo } from './block-generation/model';
 
 describe('BoardComponent', () => {
   let component: BoardComponent;
@@ -100,10 +101,7 @@ describe('BoardComponent', () => {
       pressA();
       const currentCoordinates = await getPlayerCoordinates();
 
-      const expectedCoordinates = prevCoordinates.map((c) => ({
-        ...c,
-        x: c.x - 1,
-      }));
+      const expectedCoordinates = Tetronomo.moveLeft(prevCoordinates);
       expect(prevCoordinates).not.toEqual(currentCoordinates);
       expect(currentCoordinates).toEqual(expectedCoordinates);
 
@@ -138,10 +136,7 @@ describe('BoardComponent', () => {
       pressA();
       let currentCoordinates = await getPlayerCoordinates();
 
-      let expectedCoordinates = prevCoordinates.map((c) => ({
-        ...c,
-        x: c.x + 1,
-      }));
+      let expectedCoordinates = Tetronomo.moveRight(prevCoordinates);
       expect(prevCoordinates).not.toEqual(currentCoordinates);
       expect(currentCoordinates).toEqual(expectedCoordinates);
 
@@ -152,10 +147,7 @@ describe('BoardComponent', () => {
 
       currentCoordinates = await getPlayerCoordinates();
 
-      expectedCoordinates = prevCoordinates.map((c) => ({
-        ...c,
-        x: c.x - 1,
-      }));
+      expectedCoordinates = Tetronomo.moveLeft(prevCoordinates);
 
       expect(prevCoordinates).not.toEqual(currentCoordinates);
       expect(currentCoordinates).toEqual(expectedCoordinates);
@@ -170,10 +162,7 @@ describe('BoardComponent', () => {
       pressS();
       let currentCoordinates = await getPlayerCoordinates();
 
-      let expectedCoordinates = prevCoordinates.map((c) => ({
-        ...c,
-        y: c.y + 1,
-      }));
+      let expectedCoordinates = Tetronomo.moveDown(prevCoordinates);
 
       expect(currentCoordinates).toEqual(expectedCoordinates);
       pressS();
@@ -182,10 +171,7 @@ describe('BoardComponent', () => {
 
       currentCoordinates = await getPlayerCoordinates();
 
-      expectedCoordinates = prevCoordinates.map((c) => ({
-        ...c,
-        y: c.y + 1,
-      }));
+      expectedCoordinates = Tetronomo.moveDown(prevCoordinates);
 
       expect(currentCoordinates).toEqual(expectedCoordinates);
       component.ngOnDestroy();
@@ -199,10 +185,7 @@ describe('BoardComponent', () => {
       pressS();
       tick(100);
       let currentCoordinates = await getPlayerCoordinates();
-      let expectedCoordinates = prevCoordinates.map((c) => ({
-        ...c,
-        y: c.y + 1,
-      }));
+      let expectedCoordinates = Tetronomo.moveDown(prevCoordinates);
 
       expect(currentCoordinates).toEqual(expectedCoordinates);
       component.ngOnDestroy();

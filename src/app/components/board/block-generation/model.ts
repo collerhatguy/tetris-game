@@ -37,3 +37,15 @@ export class BlockBuilder {
     return this;
   }
 }
+
+export class Tetronomo {
+  static moveDown(block: Block) {
+    return block.map((c) => ({ ...c, y: c.y + 1 }));
+  }
+  static moveLeft(block: Block) {
+    return block.map((c) => ({ ...c, x: c.x - 1 }));
+  }
+  static moveRight(block: Block) {
+    return block.map((c) => ({ ...c, x: c.x + 1 }));
+  }
+}

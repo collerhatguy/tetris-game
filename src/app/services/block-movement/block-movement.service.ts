@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Tetronomo } from 'src/app/components/board/block-generation/model';
 import {
   Block,
   Coordinate,
@@ -12,11 +13,11 @@ export class BlockMovementService {
   getFuturePosition(direction: Direction, currentPosition: Block) {
     switch (direction) {
       case 'down':
-        return currentPosition.map((c) => ({ ...c, y: c.y + 1 }));
+        return Tetronomo.moveDown(currentPosition);
       case 'left':
-        return currentPosition.map((c) => ({ ...c, x: c.x - 1 }));
+        return Tetronomo.moveLeft(currentPosition);
       case 'right':
-        return currentPosition.map((c) => ({ ...c, x: c.x + 1 }));
+        return Tetronomo.moveRight(currentPosition);
       case 'rotateRight':
         return this.rotate(currentPosition, direction);
       case 'rotateLeft':
