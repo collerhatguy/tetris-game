@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import { ValidateMovementService } from 'src/app/services/block-movement/validate-movement/validate-movement.service';
+import { Tetronomo } from '../block-generation/model';
 import { Block } from '../board-service/models';
 
 @Injectable({
@@ -12,7 +13,7 @@ export class ShadowPieceService {
     private movement: BlockMovementService
   ) {}
 
-  calculateShadowBlock(block: Block): Block {
+  calculateShadowBlock(block: Tetronomo): Tetronomo {
     if (block.length === 0) return block;
     const newBlock = this.movement.getFuturePosition('down', block);
     const valid = this.validate.isValidMove(block, newBlock);

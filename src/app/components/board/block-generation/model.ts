@@ -8,7 +8,7 @@ export class BlockBuilder {
   done() {
     const finalBlock = [...this.block];
     this.block = [this.initialPoint];
-    return finalBlock;
+    return new Tetronomo(...finalBlock);
   }
 
   addBlockBelow() {
@@ -45,7 +45,7 @@ export class Tetronomo extends Array<Coordinate> {
   private _position: number = 0;
 
   get position(): Position {
-    return this.positions.at(this._position) as Position;
+    return this.positions.at(this._position)!;
   }
 
   rotateRight() {
@@ -58,13 +58,13 @@ export class Tetronomo extends Array<Coordinate> {
   constructor(...args: Coordinate[]) {
     super(...args);
   }
-  static moveDown(block: Block) {
-    return block.map((c) => ({ ...c, y: c.y + 1 }));
+  static moveDown(block: Tetronomo) {
+    return new Tetronomo(...block.map((c) => ({ ...c, y: c.y + 1 })));
   }
-  static moveLeft(block: Block) {
-    return block.map((c) => ({ ...c, x: c.x - 1 }));
+  static moveLeft(block: Tetronomo) {
+    return new Tetronomo(...block.map((c) => ({ ...c, x: c.x - 1 })));
   }
-  static moveRight(block: Block) {
-    return block.map((c) => ({ ...c, x: c.x + 1 }));
+  static moveRight(block: Tetronomo) {
+    return new Tetronomo(...block.map((c) => ({ ...c, x: c.x + 1 })));
   }
 }

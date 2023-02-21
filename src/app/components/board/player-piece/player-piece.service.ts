@@ -21,13 +21,14 @@ import { PlayerInputService } from 'src/app/services/player-input/player-input.s
 import { clone } from 'src/app/utils/operators';
 import { Store } from 'src/app/utils/store';
 import { BlockGenerationService } from '../block-generation/block-generation.service';
+import { Tetronomo } from '../block-generation/model';
 import { BoardService } from '../board-service/board.service';
 import { Block } from '../board-service/models';
 
 @Injectable({
   providedIn: 'root',
 })
-export class PlayerPieceService extends Store<Block> {
+export class PlayerPieceService extends Store<Tetronomo> {
   constructor(
     private blockMovement: BlockMovementService,
     private validate: ValidateMovementService,
@@ -35,7 +36,7 @@ export class PlayerPieceService extends Store<Block> {
     private board: BoardService,
     private blockGeneration: BlockGenerationService
   ) {
-    super([]);
+    super(new Tetronomo());
   }
 
   private gravity: Observable<'down'> = this.playerInput.input.pipe(
@@ -88,7 +89,7 @@ export class PlayerPieceService extends Store<Block> {
 
     const hitTheGround = !this.validate.isValidMove(this.state, newValue);
 
-    this.setState(hitTheGround ? [] : newValue);
+    this.setState(hitTheGround ? new Tetronomo() : newValue);
   }
 
   private moveHorizontally(direction: HorizontalDirection) {

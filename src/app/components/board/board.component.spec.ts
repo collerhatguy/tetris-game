@@ -31,14 +31,16 @@ describe('BoardComponent', () => {
   const getShadowBlock = () => screen.findAllByTestId('shadow-block');
 
   const getBlock = (elements: HTMLElement[]) =>
-    elements.map((piece) => {
-      const string = piece.getAttribute('coordinate') as string;
-      const [x, y] = string.split('-');
-      return {
-        x: parseInt(x),
-        y: parseInt(y),
-      };
-    });
+    new Tetronomo(
+      ...elements.map((piece) => {
+        const string = piece.getAttribute('coordinate') as string;
+        const [x, y] = string.split('-');
+        return {
+          x: parseInt(x),
+          y: parseInt(y),
+        };
+      })
+    );
 
   const getPlayerCoordinates = async () => {
     const playerPieces = await getPlayerBlock();
@@ -101,7 +103,9 @@ describe('BoardComponent', () => {
       pressA();
       const currentCoordinates = await getPlayerCoordinates();
 
-      const expectedCoordinates = Tetronomo.moveLeft(prevCoordinates);
+      const expectedCoordinates = Tetronomo.moveLeft(
+        new Tetronomo(...prevCoordinates)
+      );
       expect(prevCoordinates).not.toEqual(currentCoordinates);
       expect(currentCoordinates).toEqual(expectedCoordinates);
 
@@ -115,10 +119,9 @@ describe('BoardComponent', () => {
       pressD();
       const currentCoordinates = await getPlayerCoordinates();
 
-      const expectedCoordinates = prevCoordinates.map((c) => ({
-        ...c,
-        x: c.x + 1,
-      }));
+      const expectedCoordinates = Tetronomo.moveRight(
+        new Tetronomo(...prevCoordinates)
+      );
       expect(prevCoordinates).not.toEqual(currentCoordinates);
       expect(currentCoordinates).toEqual(expectedCoordinates);
 
@@ -136,7 +139,9 @@ describe('BoardComponent', () => {
       pressA();
       let currentCoordinates = await getPlayerCoordinates();
 
-      let expectedCoordinates = Tetronomo.moveRight(prevCoordinates);
+      let expectedCoordinates = Tetronomo.moveRight(
+        new Tetronomo(...prevCoordinates)
+      );
       expect(prevCoordinates).not.toEqual(currentCoordinates);
       expect(currentCoordinates).toEqual(expectedCoordinates);
 
@@ -147,7 +152,9 @@ describe('BoardComponent', () => {
 
       currentCoordinates = await getPlayerCoordinates();
 
-      expectedCoordinates = Tetronomo.moveLeft(prevCoordinates);
+      expectedCoordinates = Tetronomo.moveLeft(
+        new Tetronomo(...prevCoordinates)
+      );
 
       expect(prevCoordinates).not.toEqual(currentCoordinates);
       expect(currentCoordinates).toEqual(expectedCoordinates);
@@ -162,7 +169,9 @@ describe('BoardComponent', () => {
       pressS();
       let currentCoordinates = await getPlayerCoordinates();
 
-      let expectedCoordinates = Tetronomo.moveDown(prevCoordinates);
+      let expectedCoordinates = Tetronomo.moveDown(
+        new Tetronomo(...prevCoordinates)
+      );
 
       expect(currentCoordinates).toEqual(expectedCoordinates);
       pressS();
@@ -171,7 +180,9 @@ describe('BoardComponent', () => {
 
       currentCoordinates = await getPlayerCoordinates();
 
-      expectedCoordinates = Tetronomo.moveDown(prevCoordinates);
+      expectedCoordinates = Tetronomo.moveDown(
+        new Tetronomo(...prevCoordinates)
+      );
 
       expect(currentCoordinates).toEqual(expectedCoordinates);
       component.ngOnDestroy();
@@ -185,7 +196,9 @@ describe('BoardComponent', () => {
       pressS();
       tick(100);
       let currentCoordinates = await getPlayerCoordinates();
-      let expectedCoordinates = Tetronomo.moveDown(prevCoordinates);
+      let expectedCoordinates = Tetronomo.moveDown(
+        new Tetronomo(...prevCoordinates)
+      );
 
       expect(currentCoordinates).toEqual(expectedCoordinates);
       component.ngOnDestroy();

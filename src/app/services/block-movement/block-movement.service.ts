@@ -10,7 +10,10 @@ import { Direction, RotationalDirection } from './models';
   providedIn: 'root',
 })
 export class BlockMovementService {
-  getFuturePosition(direction: Direction, currentPosition: Block) {
+  getFuturePosition(
+    direction: Direction,
+    currentPosition: Tetronomo
+  ): Tetronomo {
     switch (direction) {
       case 'down':
         return Tetronomo.moveDown(currentPosition);
@@ -65,7 +68,7 @@ export class BlockMovementService {
 
   private lastAxis: Coordinate | undefined;
 
-  private rotate(block: Block, direction: RotationalDirection): Block {
+  private rotate(block: Tetronomo, direction: RotationalDirection): Tetronomo {
     const { x, y } = this.getBlockAverage(block);
 
     const isSquare = this.isHalfFraction(x) && this.isHalfFraction(y);
@@ -87,6 +90,6 @@ export class BlockMovementService {
 
     this.lastAxis = axis;
     this.lastPosition = [...newBlock];
-    return newBlock;
+    return new Tetronomo(...newBlock);
   }
 }
