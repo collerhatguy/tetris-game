@@ -50,10 +50,6 @@ export class BlockMovementService {
     return tetro;
   }
 
-  private isHalfFraction(num: number) {
-    return num - Math.floor(num) === 0.5;
-  }
-
   private lastPosition: Block = [];
 
   private lastAxis: Coordinate | undefined;

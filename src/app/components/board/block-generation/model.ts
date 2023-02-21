@@ -40,7 +40,7 @@ export class BlockBuilder {
   }
 }
 
-type Position = '0' | 'R' | '2' | 'L';
+export type Position = '0' | 'R' | '2' | 'L';
 export type Shape = 'O' | 'I' | 'J' | 'L' | 'S' | 'Z' | 'T';
 export class Tetronomo extends Array<Coordinate> {
   shape: Shape = 'I';
