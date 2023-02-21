@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { BlockBuilder } from '../block-generation/model';
+import { BlockBuilder, Tetronomo } from '../block-generation/model';
 import { RowClearingService } from '../row-clearing/row-clearing.service';
 
 import { BoardService } from './board.service';
@@ -102,7 +102,7 @@ describe('BoardService', () => {
   describe('shadow block', () => {
     it('should have a shadow block tracking the player', () => {
       const player = new BlockBuilder({ x: 0, y: 0 }).done();
-      service.movePiece([], player);
+      service.movePiece(new Tetronomo(), player);
       const board = service.state;
       const shadow = board.at(-1)?.at(0) as Square;
       isShadow(shadow);
@@ -120,7 +120,7 @@ describe('BoardService', () => {
       const player = new BlockBuilder({ x: 0, y: service.boardHeight - 2 })
         .addBlockAbove()
         .done();
-      service.movePiece([], player);
+      service.movePiece(new Tetronomo(), player);
       const board = service.state;
       const shadow = board.at(-1)?.at(0) as Square;
       const player2 = board.at(-2)?.at(0) as Square;

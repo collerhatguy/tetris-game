@@ -31,6 +31,7 @@ describe('BlockMovementService', () => {
         .addBlockLeft()
         .addBlockBelow()
         .done();
+      expected.rotateRight();
       expect(newBlock).toEqual(expected);
     });
     it('can rotate a J block right', () => {
@@ -45,6 +46,7 @@ describe('BlockMovementService', () => {
         .addBlockLeft()
         .addBlockAbove()
         .done();
+      expected.rotateRight();
       expect(newBlock).toEqual(expected);
     });
     it('can rotate an L block left', () => {
@@ -59,6 +61,7 @@ describe('BlockMovementService', () => {
         .addBlockRight()
         .addBlockAbove()
         .done();
+      expected.rotateLeft();
       expect(newBlock).toEqual(expected);
     });
     it('will not change a square block', () => {
@@ -87,6 +90,7 @@ describe('BlockMovementService', () => {
         .addBlockLeft()
         .addBlockLeft()
         .done();
+      expected.rotateRight();
       expect(newBlock).toEqual(expected);
     });
     it('rotating a block 4 times to the right results in the original block', () => {
@@ -146,6 +150,28 @@ describe('BlockMovementService', () => {
           .addBlockAbove()
           .done();
         expect(newBlock).toEqual(expected);
+      });
+      it('rotating to the right will cause the blocks postion to move change', () => {
+        const block = new BlockBuilder({ x: 5, y: 5 })
+          .addBlockBelow()
+          .addBlockBelow()
+          .addBlockRight()
+          .done();
+        let newBlock = service.getFuturePosition('rotateRight', block);
+        expect(newBlock.position).toBe('R');
+        newBlock = service.getFuturePosition('rotateRight', newBlock);
+        expect(newBlock.position).toBe('2');
+        newBlock = service.getFuturePosition('rotateRight', newBlock);
+        expect(newBlock.position).toBe('L');
+      });
+      it('rotating left will not change the shape', () => {
+        const block = new BlockBuilder({ x: 5, y: 5 })
+          .addBlockBelow()
+          .addBlockBelow()
+          .addBlockRight()
+          .done('L');
+        const newBlock = service.getFuturePosition('rotateRight', block);
+        expect(newBlock.shape).toBe('L');
       });
     });
   });

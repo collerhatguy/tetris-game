@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Tetronomo } from 'src/app/components/board/block-generation/model';
 import {
   Block,
   Coordinate,
@@ -10,14 +11,17 @@ import { ValidateMovementService } from './validate-movement/validate-movement.s
   providedIn: 'root',
 })
 export class BlockMovementService {
-  getFuturePosition(direction: Direction, currentPosition: Block) {
+  getFuturePosition(
+    direction: Direction,
+    currentPosition: Tetronomo
+  ): Tetronomo {
     switch (direction) {
       case 'down':
-        return currentPosition.map((c) => ({ ...c, y: c.y + 1 }));
+        return Tetronomo.moveDown(currentPosition);
       case 'left':
-        return currentPosition.map((c) => ({ ...c, x: c.x - 1 }));
+        return Tetronomo.moveLeft(currentPosition);
       case 'right':
-        return currentPosition.map((c) => ({ ...c, x: c.x + 1 }));
+        return Tetronomo.moveRight(currentPosition);
       case 'rotateRight':
         return this.rotate(currentPosition, direction);
       case 'rotateLeft':
@@ -44,17 +48,25 @@ export class BlockMovementService {
     };
   }
 
-  private rotateRight(axis: Coordinate, block: Block) {
-    return block.map((c) => ({
+  private rotateRight(axis: Coordinate, block: Tetronomo) {
+    const rotated = block.map((c) => ({
       x: axis.x - (c.y - axis.y),
       y: c.x - axis.x + axis.y,
     }));
+    const tetro = new Tetronomo(...rotated);
+    tetro.rotateRight(block.position);
+    tetro.shape = block.shape;
+    return tetro;
   }
-  private rotateLeft(axis: Coordinate, block: Block) {
-    return block.map((c) => ({
+  private rotateLeft(axis: Coordinate, block: Tetronomo) {
+    const rotated = block.map((c) => ({
       x: axis.x + (c.y - axis.y),
       y: axis.y - (c.x - axis.x),
     }));
+    const tetro = new Tetronomo(...rotated);
+    tetro.rotateLeft(block.position);
+    tetro.shape = block.shape;
+    return tetro;
   }
 
   private isHalfFraction(num: number) {
@@ -65,11 +77,7 @@ export class BlockMovementService {
 
   private lastAxis: Coordinate | undefined;
 
-  // problem: in order to implement wall kicking properly I need to be able to track what rotation the player is in
-  // options: I can create a tetronome class that tracks the coordinates and rotation of the block and the type
-  // or i can dynamically calculate that from the coordinates.
-
-  private rotate(block: Block, direction: RotationalDirection): Block {
+  private rotate(block: Tetronomo, direction: RotationalDirection): Tetronomo {
     const { x, y } = this.getBlockAverage(block);
 
     const isSquare = this.isHalfFraction(x) && this.isHalfFraction(y);
@@ -89,16 +97,13 @@ export class BlockMovementService {
 
     const valid = this.validate.isValidMove(block, newBlock);
     if (!valid) {
-      const kickedBlock = newBlock.map((c) => ({
-        ...c,
-        x: c.x + (direction === 'rotateRight' ? -1 : 1),
-      }));
+      const kickedBlock =
+        direction === 'rotateRight'
+          ? Tetronomo.moveLeft(newBlock)
+          : Tetronomo.moveRight(newBlock);
       const valid2 = this.validate.isValidMove(block, kickedBlock);
       if (!valid2) {
-        return kickedBlock.map((c) => ({
-          ...c,
-          y: c.y + 1,
-        }));
+        return Tetronomo.moveDown(kickedBlock);
       }
       return kickedBlock;
     }

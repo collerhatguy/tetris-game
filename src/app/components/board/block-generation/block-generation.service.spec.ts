@@ -43,4 +43,11 @@ describe('BlockGenerationService', () => {
 
     expect(firstIterationOfBlocks).toEqual(secondIterationOfBlocks);
   });
+  it('will always create the blocks in the "0" position', () => {
+    const firstIterationOfBlocks = [];
+    for (let i = 0; i < 7; i++) {
+      firstIterationOfBlocks.push(service.getNextBlock());
+    }
+    expect(firstIterationOfBlocks.every((t) => t.position === '0')).toBeTrue();
+  });
 });

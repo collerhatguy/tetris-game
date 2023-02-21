@@ -1,5 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { BlockBuilder } from 'src/app/components/board/block-generation/model';
+import {
+  BlockBuilder,
+  Tetronomo,
+} from 'src/app/components/board/block-generation/model';
 import { BoardService } from 'src/app/components/board/board-service/board.service';
 
 import { ValidateMovementService } from './validate-movement.service';
@@ -44,7 +47,7 @@ describe('ValidateMovementService', () => {
   it('will not return false if the player overlaps with thier previous position', () => {
     const block = new BlockBuilder({ x: 0, y: 0 }).addBlockBelow().done();
     const block2 = new BlockBuilder({ x: 0, y: 1 }).addBlockBelow().done();
-    board.movePiece([], block);
+    board.movePiece(new Tetronomo(), block);
     const valid = service.isValidMove(block, block2);
     expect(valid).toBeTrue();
   });
