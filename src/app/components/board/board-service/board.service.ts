@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from 'src/app/utils/store';
+import { Tetronomo } from '../block-generation/model';
 import { RowClearingService } from '../row-clearing/row-clearing.service';
 import { ShadowPieceService } from '../shadow-piece/shadow-piece.service';
 import {
@@ -52,7 +53,7 @@ export class BoardService extends Store<Board> {
     this.setBoardWithRowClearing(prevBoard);
   }
 
-  movePiece(prev: Block, current: Block) {
+  movePiece(prev: Tetronomo, current: Tetronomo) {
     const prevBoard = this.state;
     prev.forEach((c) => {
       prevBoard[c.y][c.x] = createEmptyBlock();

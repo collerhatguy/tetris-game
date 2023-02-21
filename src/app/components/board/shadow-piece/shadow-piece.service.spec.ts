@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Tetronomo } from '../block-generation/model';
 import { BoardService } from '../board-service/board.service';
 import { PlayerPieceService } from '../player-piece/player-piece.service';
 
@@ -19,7 +20,7 @@ describe('ShadowPieceService', () => {
   });
 
   it('does not run infinitly when an empty array is passed', () => {
-    const res = service.calculateShadowBlock([]);
-    expect(res).toEqual([]);
+    const res = service.calculateShadowBlock(new Tetronomo());
+    expect(res).toEqual(new Tetronomo());
   });
 });
