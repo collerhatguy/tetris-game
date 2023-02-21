@@ -14,21 +14,46 @@ type WallKickData = {
   };
 };
 
+const alternatePositions1 = [
+  { x: -1, y: 0 },
+  { x: -1, y: 1 },
+  { x: 0, y: -2 },
+  { x: -1, y: -2 },
+];
+const alternatePositions2 = [
+  { x: 1, y: 0 },
+  { x: 1, y: -1 },
+  { x: 0, y: 2 },
+  { x: 1, y: 2 },
+];
+const alternatePositions3 = [
+  { x: -1, y: 0 },
+  { x: -1, y: -1 },
+  { x: 0, y: 2 },
+  { x: -1, y: 2 },
+];
+const alternatePositions4 = [
+  { x: 1, y: 0 },
+  { x: 1, y: 1 },
+  { x: 0, y: -2 },
+  { x: 1, y: -2 },
+];
+
 export const wallKickData: WallKickData = {
   '0': {
-    rotateLeft: [{ x: -1, y: 0 }],
-    rotateRight: [{ x: 1, y: 0 }],
+    rotateLeft: alternatePositions4,
+    rotateRight: alternatePositions1,
   },
   R: {
-    rotateLeft: [{ x: 1, y: 0 }],
-    rotateRight: [{ x: 1, y: 0 }],
+    rotateLeft: alternatePositions2,
+    rotateRight: alternatePositions2,
   },
   '2': {
-    rotateLeft: [{ x: -1, y: 0 }],
-    rotateRight: [{ x: 1, y: 0 }],
+    rotateLeft: alternatePositions1,
+    rotateRight: alternatePositions4,
   },
   L: {
-    rotateLeft: [{ x: -1, y: 0 }],
-    rotateRight: [{ x: -1, y: 0 }],
+    rotateLeft: alternatePositions3,
+    rotateRight: alternatePositions3,
   },
 };
