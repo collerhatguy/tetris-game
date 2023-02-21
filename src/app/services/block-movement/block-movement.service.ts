@@ -47,17 +47,23 @@ export class BlockMovementService {
     };
   }
 
-  private rotateRight(axis: Coordinate, block: Block) {
-    return block.map((c) => ({
+  private rotateRight(axis: Coordinate, block: Tetronomo) {
+    const rotated = block.map((c) => ({
       x: axis.x - (c.y - axis.y),
       y: c.x - axis.x + axis.y,
     }));
+    const tetro = new Tetronomo(...rotated);
+    tetro.rotateRight(block.position);
+    return tetro;
   }
-  private rotateLeft(axis: Coordinate, block: Block) {
-    return block.map((c) => ({
+  private rotateLeft(axis: Coordinate, block: Tetronomo) {
+    const rotated = block.map((c) => ({
       x: axis.x + (c.y - axis.y),
       y: axis.y - (c.x - axis.x),
     }));
+    const tetro = new Tetronomo(...rotated);
+    tetro.rotateLeft(block.position);
+    return tetro;
   }
 
   private isHalfFraction(num: number) {
@@ -77,6 +83,7 @@ export class BlockMovementService {
 
     const alreadyRotated =
       JSON.stringify(block) === JSON.stringify(this.lastPosition);
+
     const newAxis = {
       x: Math.floor(x),
       y: Math.floor(y),
@@ -90,6 +97,6 @@ export class BlockMovementService {
 
     this.lastAxis = axis;
     this.lastPosition = [...newBlock];
-    return new Tetronomo(...newBlock);
+    return newBlock;
   }
 }

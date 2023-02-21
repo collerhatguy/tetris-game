@@ -48,11 +48,13 @@ export class Tetronomo extends Array<Coordinate> {
     return this.positions.at(this._position)!;
   }
 
-  rotateRight() {
-    this._position = (this._position + 1) % this.positions.length;
+  rotateRight(prev?: Position) {
+    this._position = (prev ? this.positions.indexOf(prev) : this._position) + 1;
+    if (this._position > this.positions.length - 1) this._position = 0;
   }
-  rotateLeft() {
-    this._position = (this._position - 1) % this.positions.length;
+  rotateLeft(prev?: Position) {
+    this._position = (prev ? this.positions.indexOf(prev) : this._position) - 1;
+    if (this._position < 0) this._position = this.positions.length - 1;
   }
 
   constructor(...args: Coordinate[]) {
