@@ -69,13 +69,13 @@ describe('BlockMovementService', () => {
         .addBlockBelow()
         .addBlockRight()
         .addBlockAbove()
-        .done();
+        .done('O');
       const newBlock = service.getFuturePosition('rotateLeft', block);
       const expected = new BlockBuilder({ x: 5, y: 0 })
         .addBlockBelow()
         .addBlockRight()
         .addBlockAbove()
-        .done();
+        .done('O');
       expect(newBlock).toEqual(expected);
     });
     it('can rotate the line block', () => {
@@ -151,7 +151,7 @@ describe('BlockMovementService', () => {
           .done();
         expect(newBlock).toEqual(expected);
       });
-      it('rotating to the right will cause the blocks postion to move change', () => {
+      it('rotating to the right will cause the blocks postion to change', () => {
         const block = new BlockBuilder({ x: 5, y: 5 })
           .addBlockBelow()
           .addBlockBelow()

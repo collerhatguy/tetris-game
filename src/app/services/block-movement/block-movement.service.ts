@@ -29,25 +29,6 @@ export class BlockMovementService {
     }
   }
 
-  private getBlockAverage(block: Block) {
-    const sum = block.reduce(
-      (sum, square) => {
-        sum.xSum += square.x;
-        sum.ySum += square.y;
-        return sum;
-      },
-      {
-        xSum: 0,
-        ySum: 0,
-      }
-    );
-
-    return {
-      x: sum.xSum / block.length,
-      y: sum.ySum / block.length,
-    };
-  }
-
   private rotateRight(axis: Coordinate, block: Tetronomo) {
     const rotated = block.map((c) => ({
       x: axis.x - (c.y - axis.y),
@@ -78,11 +59,7 @@ export class BlockMovementService {
   private lastAxis: Coordinate | undefined;
 
   private rotate(block: Tetronomo, direction: RotationalDirection): Tetronomo {
-    const { x, y } = this.getBlockAverage(block);
-
-    const isSquare = this.isHalfFraction(x) && this.isHalfFraction(y);
-
-    if (isSquare) return block;
+    if (block.shape === 'O') return block;
 
     const alreadyRotated =
       JSON.stringify(block) === JSON.stringify(this.lastPosition);
