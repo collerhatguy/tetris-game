@@ -54,6 +54,7 @@ export class BlockMovementService {
     }));
     const tetro = new Tetronomo(...rotated);
     tetro.rotateRight(block.position);
+    tetro.shape = block.shape;
     return tetro;
   }
   private rotateLeft(axis: Coordinate, block: Tetronomo) {
@@ -63,6 +64,7 @@ export class BlockMovementService {
     }));
     const tetro = new Tetronomo(...rotated);
     tetro.rotateLeft(block.position);
+    tetro.shape = block.shape;
     return tetro;
   }
 

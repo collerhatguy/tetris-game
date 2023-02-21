@@ -113,5 +113,14 @@ describe('BlockMovementService', () => {
       newBlock = service.getFuturePosition('rotateRight', newBlock);
       expect(newBlock.position).toBe('L');
     });
+    it('rotating left will not change the shape', () => {
+      const block = new BlockBuilder({ x: 5, y: 5 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockRight()
+        .done('L');
+      const newBlock = service.getFuturePosition('rotateRight', block);
+      expect(newBlock.shape).toBe('L');
+    });
   });
 });

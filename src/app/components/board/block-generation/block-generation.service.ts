@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BoardService } from '../board-service/board.service';
-import { BlockBuilder, Tetronomo } from './model';
+import { BlockBuilder, Shape, Tetronomo } from './model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,42 +16,42 @@ export class BlockGenerationService {
     .addBlockRight()
     .addBlockBelow()
     .addBlockLeft()
-    .done();
+    .done('O');
 
   private readonly lineBlock = this.blockBuilder
     .addBlockBelow()
     .addBlockBelow()
     .addBlockBelow()
-    .done();
+    .done('I');
 
   private readonly SBlock = this.blockBuilder
     .addBlockBelow()
     .addBlockRight()
     .addBlockBelow()
-    .done();
+    .done('S');
 
   private readonly ZBlock = this.blockBuilder
     .addBlockBelow()
     .addBlockLeft()
     .addBlockBelow()
-    .done();
+    .done('Z');
 
   private readonly JBlock = this.blockBuilder
     .addBlockBelow()
     .addBlockRight()
     .addBlockRight()
-    .done();
+    .done('J');
 
   private readonly LBlock = this.blockBuilder
     .addBlockBelow()
     .addBlockLeft()
     .addBlockLeft()
-    .done();
+    .done('L');
 
   private readonly TBlock = this.blockBuilder
     .addBlockBelow()
     .addBlockLeftAndRight()
-    .done();
+    .done('T');
 
   private allBlocks: Tetronomo[] = [
     this.sqaureBlock,
