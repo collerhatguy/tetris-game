@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Tetronomo } from 'src/app/components/board/block-generation/model';
+import {
+  Position,
+  Tetronomo,
+} from 'src/app/components/board/block-generation/model';
 import {
   Block,
   Coordinate,
 } from 'src/app/components/board/board-service/models';
-import { Direction, RotationalDirection } from './models';
+import { Direction, RotationalDirection, wallKickData } from './models';
+import { ValidateMovementService } from './validate-movement/validate-movement.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,32 +32,13 @@ export class BlockMovementService {
     }
   }
 
-  private getBlockAverage(block: Block) {
-    const sum = block.reduce(
-      (sum, square) => {
-        sum.xSum += square.x;
-        sum.ySum += square.y;
-        return sum;
-      },
-      {
-        xSum: 0,
-        ySum: 0,
-      }
-    );
-
-    return {
-      x: sum.xSum / block.length,
-      y: sum.ySum / block.length,
-    };
-  }
-
   private rotateRight(axis: Coordinate, block: Tetronomo) {
     const rotated = block.map((c) => ({
       x: axis.x - (c.y - axis.y),
       y: c.x - axis.x + axis.y,
     }));
     const tetro = new Tetronomo(...rotated);
-    tetro.rotateRight(block.position);
+    tetro.rotate('rotateRight', block.position);
     tetro.shape = block.shape;
     return tetro;
   }
@@ -63,13 +48,9 @@ export class BlockMovementService {
       y: axis.y - (c.x - axis.x),
     }));
     const tetro = new Tetronomo(...rotated);
-    tetro.rotateLeft(block.position);
+    tetro.rotate('rotateLeft', block.position);
     tetro.shape = block.shape;
     return tetro;
-  }
-
-  private isHalfFraction(num: number) {
-    return num - Math.floor(num) === 0.5;
   }
 
   private lastPosition: Block = [];
@@ -77,19 +58,12 @@ export class BlockMovementService {
   private lastAxis: Coordinate | undefined;
 
   private rotate(block: Tetronomo, direction: RotationalDirection): Tetronomo {
-    const { x, y } = this.getBlockAverage(block);
-
-    const isSquare = this.isHalfFraction(x) && this.isHalfFraction(y);
-
-    if (isSquare) return block;
+    if (block.shape === 'O') return block;
 
     const alreadyRotated =
       JSON.stringify(block) === JSON.stringify(this.lastPosition);
 
-    const newAxis = {
-      x: Math.floor(x),
-      y: Math.floor(y),
-    };
+    const newAxis = block[1];
     const axis = alreadyRotated ? this.lastAxis ?? newAxis : newAxis;
 
     const newBlock =
@@ -97,8 +71,36 @@ export class BlockMovementService {
         ? this.rotateRight(axis, block)
         : this.rotateLeft(axis, block);
 
+    const kickedBlock = this.wallKick(newBlock, direction, block.position);
     this.lastAxis = axis;
-    this.lastPosition = [...newBlock];
-    return newBlock;
+    this.lastPosition = [...kickedBlock];
+    return kickedBlock;
   }
+
+  private wallKick(
+    block: Tetronomo,
+    direction: RotationalDirection,
+    prevPosition: Position
+  ): Tetronomo {
+    const valid = this.validate.isValidMove(new Tetronomo(), block);
+    if (valid) return block;
+    const alternativePositions = wallKickData[prevPosition][direction];
+    for (let c of alternativePositions) {
+      const copy = new Tetronomo(...[...block]);
+      const kickCordinates = copy.map((coordinate) => ({
+        x: coordinate.x + c.x,
+        y: coordinate.y + c.y,
+      }));
+      const valid = this.validate.isValidMove(new Tetronomo(), kickCordinates);
+      if (valid) {
+        const tetro = new Tetronomo(...kickCordinates);
+        tetro.rotate(direction, prevPosition);
+        tetro.shape = block.shape;
+        return tetro;
+      }
+    }
+    return block;
+  }
+
+  constructor(private validate: ValidateMovementService) {}
 }

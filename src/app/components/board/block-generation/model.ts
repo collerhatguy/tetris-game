@@ -1,3 +1,4 @@
+import { RotationalDirection } from 'src/app/services/block-movement/models';
 import { Block, Coordinate } from '../board-service/models';
 
 export class BlockBuilder {
@@ -40,7 +41,7 @@ export class BlockBuilder {
   }
 }
 
-type Position = '0' | 'R' | '2' | 'L';
+export type Position = '0' | 'R' | '2' | 'L';
 export type Shape = 'O' | 'I' | 'J' | 'L' | 'S' | 'Z' | 'T';
 export class Tetronomo extends Array<Coordinate> {
   shape: Shape = 'I';
@@ -51,19 +52,24 @@ export class Tetronomo extends Array<Coordinate> {
     return this.positions.at(this._position)!;
   }
 
-  rotateRight(prev?: Position) {
+  private rotateRight(prev?: Position) {
     const initialPosition = prev
       ? this.positions.indexOf(prev)
       : this._position;
     this._position = initialPosition + 1;
     if (this._position > this.positions.length - 1) this._position = 0;
   }
-  rotateLeft(prev?: Position) {
+
+  private rotateLeft(prev?: Position) {
     const initialPosition = prev
       ? this.positions.indexOf(prev)
       : this._position;
     this._position = initialPosition - 1;
     if (this._position < 0) this._position = this.positions.length - 1;
+  }
+
+  rotate(direction: RotationalDirection, prev?: Position) {
+    direction === 'rotateLeft' ? this.rotateLeft(prev) : this.rotateRight(prev);
   }
 
   constructor(...args: Coordinate[]) {
