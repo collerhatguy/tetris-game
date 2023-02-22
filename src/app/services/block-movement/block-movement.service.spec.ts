@@ -131,6 +131,8 @@ describe('BlockMovementService', () => {
           .addBlockLeft()
           .addBlockAbove()
           .done();
+        console.log(newBlock);
+        console.log(expected);
         expect(newBlock).toEqual(expected);
       });
       it('if the previous cases final value is impossible then I will get the position immediatly below that one', () => {

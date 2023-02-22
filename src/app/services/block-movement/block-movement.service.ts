@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Tetronomo } from 'src/app/components/board/block-generation/model';
+import {
+  Position,
+  Tetronomo,
+} from 'src/app/components/board/block-generation/model';
 import {
   Block,
   Coordinate,
 } from 'src/app/components/board/board-service/models';
-import { Direction, RotationalDirection } from './models';
+import { Direction, RotationalDirection, wallKickData } from './models';
 import { ValidateMovementService } from './validate-movement/validate-movement.service';
 
 @Injectable({
@@ -68,21 +71,31 @@ export class BlockMovementService {
         ? this.rotateRight(axis, block)
         : this.rotateLeft(axis, block);
 
-    const valid = this.validate.isValidMove(block, newBlock);
-    if (!valid) {
-      const kickedBlock =
-        direction === 'rotateRight'
-          ? Tetronomo.moveLeft(newBlock)
-          : Tetronomo.moveRight(newBlock);
-      const valid2 = this.validate.isValidMove(block, kickedBlock);
-      if (!valid2) {
-        return Tetronomo.moveDown(kickedBlock);
-      }
-      return kickedBlock;
-    }
+    const kickedBlock = this.wallKick(newBlock, direction, block.position);
     this.lastAxis = axis;
-    this.lastPosition = [...newBlock];
-    return newBlock;
+    this.lastPosition = [...kickedBlock];
+    return kickedBlock;
+  }
+
+  private wallKick(
+    block: Tetronomo,
+    direction: RotationalDirection,
+    prevPosition: Position
+  ): Tetronomo {
+    const alternativePositions = wallKickData[prevPosition][direction];
+    const valid = this.validate.isValidMove(new Tetronomo(), block);
+    if (valid) return block;
+    for (let c of alternativePositions) {
+      const copy = new Tetronomo(...[...block]);
+      const kickCordinates = copy.map((coordinate) => ({
+        x: coordinate.x + c.x,
+        y: coordinate.y + c.y,
+      }));
+      console.log('kickCordinates', c);
+      const valid = this.validate.isValidMove(new Tetronomo(), kickCordinates);
+      if (valid) return new Tetronomo(...kickCordinates);
+    }
+    return block;
   }
 
   constructor(private validate: ValidateMovementService) {}
