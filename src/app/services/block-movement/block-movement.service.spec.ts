@@ -31,7 +31,7 @@ describe('BlockMovementService', () => {
         .addBlockLeft()
         .addBlockBelow()
         .done();
-      expected.rotateRight();
+      expected.rotate('rotateRight');
       expect(newBlock).toEqual(expected);
     });
     it('can rotate a J block right', () => {
@@ -46,7 +46,7 @@ describe('BlockMovementService', () => {
         .addBlockLeft()
         .addBlockAbove()
         .done();
-      expected.rotateRight();
+      expected.rotate('rotateRight');
       expect(newBlock).toEqual(expected);
     });
     it('can rotate an L block left', () => {
@@ -61,7 +61,7 @@ describe('BlockMovementService', () => {
         .addBlockRight()
         .addBlockAbove()
         .done();
-      expected.rotateLeft();
+      expected.rotate('rotateLeft');
       expect(newBlock).toEqual(expected);
     });
     it('will not change a square block', () => {
@@ -90,7 +90,7 @@ describe('BlockMovementService', () => {
         .addBlockLeft()
         .addBlockLeft()
         .done();
-      expected.rotateRight();
+      expected.rotate('rotateRight');
       expect(newBlock).toEqual(expected);
     });
     it('rotating a block 4 times to the right results in the original block', () => {
@@ -131,7 +131,7 @@ describe('BlockMovementService', () => {
           .addBlockLeft()
           .addBlockAbove()
           .done('J');
-        expected.rotateRight();
+        expected.rotate('rotateRight');
         expect(newBlock).toEqual(expected);
       });
       it('if the previous cases final value is impossible then I will get the position immediatly below that one', () => {
@@ -147,7 +147,7 @@ describe('BlockMovementService', () => {
           .addBlockLeft()
           .addBlockAbove()
           .done('J');
-        expected.rotateRight();
+        expected.rotate('rotateRight');
         expect(newBlock).toEqual(expected);
       });
       it('rotating to the right will cause the blocks postion to change', () => {

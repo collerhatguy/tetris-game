@@ -38,7 +38,7 @@ export class BlockMovementService {
       y: c.x - axis.x + axis.y,
     }));
     const tetro = new Tetronomo(...rotated);
-    tetro.rotateRight(block.position);
+    tetro.rotate('rotateRight', block.position);
     tetro.shape = block.shape;
     return tetro;
   }
@@ -48,7 +48,7 @@ export class BlockMovementService {
       y: axis.y - (c.x - axis.x),
     }));
     const tetro = new Tetronomo(...rotated);
-    tetro.rotateLeft(block.position);
+    tetro.rotate('rotateLeft', block.position);
     tetro.shape = block.shape;
     return tetro;
   }
@@ -94,9 +94,7 @@ export class BlockMovementService {
       const valid = this.validate.isValidMove(new Tetronomo(), kickCordinates);
       if (valid) {
         const tetro = new Tetronomo(...kickCordinates);
-        direction === 'rotateLeft'
-          ? tetro.rotateLeft(prevPosition)
-          : tetro.rotateRight(prevPosition);
+        tetro.rotate(direction, prevPosition);
         tetro.shape = block.shape;
         return tetro;
       }
