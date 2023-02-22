@@ -93,7 +93,12 @@ export class BlockMovementService {
       }));
       const valid = this.validate.isValidMove(new Tetronomo(), kickCordinates);
       if (valid) {
-        return new Tetronomo(...kickCordinates);
+        const tetro = new Tetronomo(...kickCordinates);
+        direction === 'rotateLeft'
+          ? tetro.rotateLeft(prevPosition)
+          : tetro.rotateRight(prevPosition);
+        tetro.shape = block.shape;
+        return tetro;
       }
     }
     return block;
