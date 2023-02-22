@@ -131,8 +131,6 @@ describe('BlockMovementService', () => {
           .addBlockLeft()
           .addBlockAbove()
           .done();
-        console.log(newBlock);
-        console.log(expected);
         expect(newBlock).toEqual(expected);
       });
       it('if the previous cases final value is impossible then I will get the position immediatly below that one', () => {
@@ -141,12 +139,9 @@ describe('BlockMovementService', () => {
           .addBlockBelow()
           .addBlockLeft()
           .done();
-        board.lockPieceInplace([
-          { x: 4, y: 5 },
-          { x: 3, y: 5 },
-        ]);
+        board.lockPieceInplace([{ x: 4, y: 6 }]);
         const newBlock = service.getFuturePosition('rotateRight', block);
-        const expected = new BlockBuilder({ x: 5, y: 7 })
+        const expected = new BlockBuilder({ x: 5, y: 5 })
           .addBlockLeft()
           .addBlockLeft()
           .addBlockAbove()

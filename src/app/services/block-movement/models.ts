@@ -16,27 +16,27 @@ type WallKickData = {
 
 const alternatePositions1 = [
   { x: -1, y: 0 },
-  { x: -1, y: 1 },
-  { x: 0, y: -2 },
-  { x: -1, y: -2 },
-];
-const alternatePositions2 = [
-  { x: 1, y: 0 },
-  { x: 1, y: -1 },
-  { x: 0, y: 2 },
-  { x: 1, y: 2 },
-];
-const alternatePositions3 = [
-  { x: -1, y: 0 },
   { x: -1, y: -1 },
   { x: 0, y: 2 },
   { x: -1, y: 2 },
 ];
-const alternatePositions4 = [
+const alternatePositions2 = [
   { x: 1, y: 0 },
   { x: 1, y: 1 },
   { x: 0, y: -2 },
   { x: 1, y: -2 },
+];
+const alternatePositions3 = [
+  { x: -1, y: 0 },
+  { x: -1, y: 1 },
+  { x: 0, y: -2 },
+  { x: -1, y: -2 },
+];
+const alternatePositions4 = [
+  { x: 1, y: 0 },
+  { x: 1, y: -1 },
+  { x: 0, y: 2 },
+  { x: 1, y: 2 },
 ];
 
 export const wallKickData: WallKickData = {

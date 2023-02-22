@@ -82,18 +82,19 @@ export class BlockMovementService {
     direction: RotationalDirection,
     prevPosition: Position
   ): Tetronomo {
-    const alternativePositions = wallKickData[prevPosition][direction];
     const valid = this.validate.isValidMove(new Tetronomo(), block);
     if (valid) return block;
+    const alternativePositions = wallKickData[prevPosition][direction];
     for (let c of alternativePositions) {
       const copy = new Tetronomo(...[...block]);
       const kickCordinates = copy.map((coordinate) => ({
         x: coordinate.x + c.x,
         y: coordinate.y + c.y,
       }));
-      console.log('kickCordinates', c);
       const valid = this.validate.isValidMove(new Tetronomo(), kickCordinates);
-      if (valid) return new Tetronomo(...kickCordinates);
+      if (valid) {
+        return new Tetronomo(...kickCordinates);
+      }
     }
     return block;
   }
