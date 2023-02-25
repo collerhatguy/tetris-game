@@ -23,7 +23,7 @@ import { Store } from 'src/app/utils/store';
 import { BlockGenerationService } from '../block-generation/block-generation.service';
 import { Tetronomo } from '../block-generation/model';
 import { BoardService } from '../board-service/board.service';
-import { Block } from '../board-service/models';
+import { LevelTrackingService } from '../level-tracking/level-tracking.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +34,8 @@ export class PlayerPieceService extends Store<Tetronomo> {
     private validate: ValidateMovementService,
     private playerInput: PlayerInputService,
     private board: BoardService,
-    private blockGeneration: BlockGenerationService
+    private blockGeneration: BlockGenerationService,
+    private levelTracking: LevelTrackingService
   ) {
     super(new Tetronomo());
   }
