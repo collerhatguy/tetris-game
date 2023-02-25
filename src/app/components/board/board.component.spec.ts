@@ -27,6 +27,11 @@ describe('BoardComponent', () => {
     expect(squares.length).toBe(200);
   });
 
+  it('renders the current level', () => {
+    const level = screen.getByTestId('level');
+    expect(level.textContent).toContain('1');
+  });
+
   const getPlayerBlock = () => screen.findAllByTestId('player-piece');
   const getShadowBlock = () => screen.findAllByTestId('shadow-block');
 
