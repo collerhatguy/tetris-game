@@ -39,5 +39,10 @@ describe('teronomo', () => {
       tetro.rotate('rotateRight', '2');
       expect(tetro.position).toBe('L');
     });
+    it('maintains the right rotation if moved down', () => {
+      tetro.rotate('rotateLeft');
+      const res = Tetronomo.moveDown(tetro);
+      expect(res.position === 'L').toBeTrue();
+    });
   });
 });

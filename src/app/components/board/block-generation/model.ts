@@ -76,12 +76,18 @@ export class Tetronomo extends Array<Coordinate> {
     super(...args);
   }
   static moveDown(block: Tetronomo) {
-    return new Tetronomo(...block.map((c) => ({ ...c, y: c.y + 1 })));
+    const res = new Tetronomo(...block.map((c) => ({ ...c, y: c.y + 1 })));
+    res._position = block._position;
+    return res;
   }
   static moveLeft(block: Tetronomo) {
-    return new Tetronomo(...block.map((c) => ({ ...c, x: c.x - 1 })));
+    const res = new Tetronomo(...block.map((c) => ({ ...c, x: c.x - 1 })));
+    res._position = block._position;
+    return res;
   }
   static moveRight(block: Tetronomo) {
-    return new Tetronomo(...block.map((c) => ({ ...c, x: c.x + 1 })));
+    const res = new Tetronomo(...block.map((c) => ({ ...c, x: c.x + 1 })));
+    res._position = block._position;
+    return res;
   }
 }
