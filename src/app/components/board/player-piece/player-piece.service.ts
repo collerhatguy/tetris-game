@@ -23,7 +23,8 @@ import { Store } from 'src/app/utils/store';
 import { BlockGenerationService } from '../block-generation/block-generation.service';
 import { Tetronomo } from '../block-generation/model';
 import { BoardService } from '../board-service/board.service';
-import { Block } from '../board-service/models';
+import { GravityService } from '../gravity/gravity.service';
+import { LevelTrackingService } from '../level-tracking/level-tracking.service';
 
 @Injectable({
   providedIn: 'root',
@@ -34,18 +35,13 @@ export class PlayerPieceService extends Store<Tetronomo> {
     private validate: ValidateMovementService,
     private playerInput: PlayerInputService,
     private board: BoardService,
-    private blockGeneration: BlockGenerationService
+    private blockGeneration: BlockGenerationService,
+    private gravity: GravityService
   ) {
     super(new Tetronomo());
   }
 
-  private gravity: Observable<'down'> = this.playerInput.input.pipe(
-    filter((direction) => direction === 'down'),
-    startWith(''),
-    switchMap(() => interval(1000).pipe(map(() => 'down' as const)))
-  );
-
-  private allInputs = merge(this.playerInput.input, this.gravity).pipe(
+  private allInputs = merge(this.playerInput.input, this.gravity.gravity).pipe(
     tap((direction) => this.move(direction)),
     map(() => this.state),
     startWith(this.state)

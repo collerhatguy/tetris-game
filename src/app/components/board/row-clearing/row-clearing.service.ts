@@ -1,4 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { BoardService } from '../board-service/board.service';
 import { Board, createEmptyBlock, Row, Square } from '../board-service/models';
 
@@ -49,9 +50,18 @@ export class RowClearingService {
     );
   }
 
+  private _rowsCleared$ = new BehaviorSubject(0);
+
+  rowsCleared$ = this._rowsCleared$.asObservable();
+
+  get rowsCleared() {
+    return this._rowsCleared$.value;
+  }
+
   clearFullRows(board: Board) {
     const fullRowIndexes = this.getFullRowIndexes(board);
     if (fullRowIndexes.length === 0) return board;
+    this._rowsCleared$.next(this.rowsCleared + fullRowIndexes.length);
     return this.clearRows(fullRowIndexes, board);
   }
 }
