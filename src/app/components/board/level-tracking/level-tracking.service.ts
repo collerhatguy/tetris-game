@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { map, startWith } from 'rxjs';
+import { map, mergeMap, pairwise, scan, startWith, withLatestFrom } from 'rxjs';
+import { log } from 'src/app/utils/operators';
 import { RowClearingService } from '../row-clearing/row-clearing.service';
 
 @Injectable({
@@ -11,5 +12,22 @@ export class LevelTrackingService {
   level = this.clearing.rowsCleared$.pipe(
     map((rows) => Math.floor(rows / 10) + 1),
     startWith(1)
+  );
+
+  private rowsJustCleared = this.clearing.rowsCleared$.pipe(
+    log(),
+    pairwise(),
+    map(([prev, curr]) => curr - prev)
+  );
+
+  private rowScoreMap = new Map<number, number>().set(1, 40).set(2, 100);
+
+  score = this.rowsJustCleared.pipe(
+    withLatestFrom(this.level),
+    log(),
+    map(
+      ([numberCleared, level]) => this.rowScoreMap.get(numberCleared)! * level
+    ),
+    scan((totalScore, addition) => totalScore + addition, 0)
   );
 }

@@ -40,4 +40,19 @@ describe('LevelTrackingService', () => {
     expect(spy.getLastValue()).toBe(2);
     spy.unsubscribe();
   });
+
+  it('score will increase be 40 when 1 row is cleared at level 1', () => {
+    const spy = subscribeSpyTo(service.score);
+    rowsCleared.next(0);
+    rowsCleared.next(1);
+    expect(spy.getLastValue()).toBe(40);
+    spy.unsubscribe();
+  });
+  it('score will increase by 100 when 2 rows are cleared at lvl 1', () => {
+    const spy = subscribeSpyTo(service.score);
+    rowsCleared.next(0);
+    rowsCleared.next(2);
+    expect(spy.getLastValue()).toBe(100);
+    spy.unsubscribe();
+  });
 });
