@@ -69,4 +69,17 @@ describe('LevelTrackingService', () => {
     expect(spy.getLastValue()).toBe(1200);
     spy.unsubscribe();
   });
+  it('is multipied by the level', () => {
+    const spy = subscribeSpyTo(service.score);
+    rowsCleared.next(0);
+    rowsCleared.next(4);
+    rowsCleared.next(8);
+    rowsCleared.next(10);
+    const prevScore = spy.getLastValue()!;
+    rowsCleared.next(11);
+    const newScore = spy.getLastValue()!;
+    const netScore = newScore - prevScore;
+    expect(netScore).toBe(2 * 40);
+    spy.unsubscribe();
+  });
 });
