@@ -55,4 +55,18 @@ describe('LevelTrackingService', () => {
     expect(spy.getLastValue()).toBe(100);
     spy.unsubscribe();
   });
+  it('will increase by 300 for 3 rows', () => {
+    const spy = subscribeSpyTo(service.score);
+    rowsCleared.next(0);
+    rowsCleared.next(3);
+    expect(spy.getLastValue()).toBe(300);
+    spy.unsubscribe();
+  });
+  it('will increase by 1200 for 4 rows', () => {
+    const spy = subscribeSpyTo(service.score);
+    rowsCleared.next(0);
+    rowsCleared.next(4);
+    expect(spy.getLastValue()).toBe(1200);
+    spy.unsubscribe();
+  });
 });

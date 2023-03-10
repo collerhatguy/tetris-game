@@ -20,7 +20,11 @@ export class LevelTrackingService {
     map(([prev, curr]) => curr - prev)
   );
 
-  private rowScoreMap = new Map<number, number>().set(1, 40).set(2, 100);
+  private rowScoreMap = new Map<number, number>()
+    .set(1, 40)
+    .set(2, 100)
+    .set(3, 300)
+    .set(4, 1200);
 
   score = this.rowsJustCleared.pipe(
     withLatestFrom(this.level),
