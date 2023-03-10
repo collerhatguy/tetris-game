@@ -15,7 +15,6 @@ export class LevelTrackingService {
   );
 
   private rowsJustCleared = this.clearing.rowsCleared$.pipe(
-    log(),
     pairwise(),
     map(([prev, curr]) => curr - prev)
   );
@@ -28,10 +27,11 @@ export class LevelTrackingService {
 
   score = this.rowsJustCleared.pipe(
     withLatestFrom(this.level),
-    log(),
     map(
       ([numberCleared, level]) => this.rowScoreMap.get(numberCleared)! * level
     ),
-    scan((totalScore, addition) => totalScore + addition, 0)
+    scan((totalScore, addition) => totalScore + addition, 0),
+    startWith(0),
+    log()
   );
 }

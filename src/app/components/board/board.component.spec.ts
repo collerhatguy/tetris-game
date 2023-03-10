@@ -5,13 +5,21 @@ import { BoardComponent } from './board.component';
 import { PlayerInputService } from '../../services/player-input/player-input.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
 import { Tetronomo } from './block-generation/model';
+import { LevelTrackingService } from './level-tracking/level-tracking.service';
+import { RowClearingService } from './row-clearing/row-clearing.service';
 
 describe('BoardComponent', () => {
   let component: BoardComponent;
 
   beforeEach(async () => {
     const res = await render(BoardComponent, {
-      providers: [PlayerPieceService, BoardService, PlayerInputService],
+      providers: [
+        PlayerPieceService,
+        BoardService,
+        PlayerInputService,
+        LevelTrackingService,
+        RowClearingService,
+      ],
     });
     component = res.fixture.componentInstance;
     component.ngOnDestroy();
@@ -30,6 +38,11 @@ describe('BoardComponent', () => {
   it('renders the current level', () => {
     const level = screen.getByTestId('level');
     expect(level.textContent).toContain('1');
+  });
+
+  it('renders the current score', () => {
+    const score = screen.getByTestId('score');
+    expect(score.textContent).toContain('0');
   });
 
   const getPlayerBlock = () => screen.findAllByTestId('player-piece');

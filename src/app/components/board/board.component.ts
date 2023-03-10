@@ -13,6 +13,8 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   level$ = this.level.level;
 
+  score$ = this.level.score;
+
   private destroy = new Subject();
 
   constructor(
