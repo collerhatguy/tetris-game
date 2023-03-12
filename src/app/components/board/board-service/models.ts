@@ -35,19 +35,19 @@ export function createEmptyBlock(): Square {
   };
 }
 
-export function createSolidBlock(): Square {
+export function createSolidBlock(shape: Shape): Square {
   return {
     solid: true,
     isPlayer: false,
-    color: 'DarkOrange',
+    color: shapeToColorMap.get(shape)!,
   };
 }
 
-export function createShadowBlock(): Square {
+export function createShadowBlock(shape: Shape): Square {
   return {
     solid: false,
     isPlayer: false,
-    color: 'DarkOrange',
+    color: shapeToColorMap.get(shape)!,
   };
 }
 

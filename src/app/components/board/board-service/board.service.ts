@@ -45,10 +45,10 @@ export class BoardService extends Store<Board> {
     return board;
   }
 
-  lockPieceInplace(cordinates: Block) {
+  lockPieceInplace(cordinates: Tetronomo) {
     const prevBoard = this.state;
     cordinates.forEach((c) => {
-      prevBoard[c.y][c.x] = createSolidBlock();
+      prevBoard[c.y][c.x] = createSolidBlock(cordinates.shape);
     });
     this.setBoardWithRowClearing(prevBoard);
   }
@@ -65,7 +65,7 @@ export class BoardService extends Store<Board> {
 
     const currentShadow = this.shadow.calculateShadowBlock(current);
     currentShadow.forEach((c) => {
-      prevBoard[c.y][c.x] = createShadowBlock();
+      prevBoard[c.y][c.x] = createShadowBlock(current.shape);
     });
     console.log(current.shape);
     current.forEach((c) => {

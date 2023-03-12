@@ -124,7 +124,8 @@ describe('BlockMovementService', () => {
           .addBlockBelow()
           .addBlockLeft()
           .done('J');
-        board.lockPieceInplace([{ x: 4, y: 5 }]);
+        const lockedBlock = new BlockBuilder({ x: 4, y: 5 }).done();
+        board.lockPieceInplace(lockedBlock);
         const newBlock = service.getFuturePosition('rotateRight', block);
         const expected = new BlockBuilder({ x: 5, y: 6 })
           .addBlockLeft()
@@ -140,7 +141,8 @@ describe('BlockMovementService', () => {
           .addBlockBelow()
           .addBlockLeft()
           .done('J');
-        board.lockPieceInplace([{ x: 4, y: 6 }]);
+        const lockedBlock = new BlockBuilder({ x: 4, y: 6 }).done();
+        board.lockPieceInplace(lockedBlock);
         const newBlock = service.getFuturePosition('rotateRight', block);
         const expected = new BlockBuilder({ x: 5, y: 5 })
           .addBlockLeft()
