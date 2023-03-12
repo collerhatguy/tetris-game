@@ -78,11 +78,13 @@ export class BlockGenerationService {
     if (!this.savedTetro) {
       this.savedTetro = tetro.shape;
       const newTetro = this.getNextBlock();
+      this.canSwap = false;
       return this.movement.replaceTetronome(tetro, newTetro);
     }
 
     const newTetro = this.allBlocks.find((t) => t.shape === this.savedTetro)!;
     this.savedTetro = tetro.shape;
+    this.canSwap = false;
     return this.movement.replaceTetronome(tetro, newTetro);
   }
 
@@ -91,7 +93,7 @@ export class BlockGenerationService {
     const index = Math.floor(random * this.blockBag.length);
     const [nextBlock] = this.blockBag.splice(index, 1);
     if (this.blockBag.length === 0) this.blockBag = [...this.allBlocks];
-    this.canSwap = false;
+    this.canSwap = true;
     return nextBlock;
   }
 }
