@@ -75,20 +75,20 @@ export class Tetronomo extends Array<Coordinate> {
   constructor(...args: Coordinate[]) {
     super(...args);
   }
-  static moveDown(block: Tetronomo) {
-    const res = new Tetronomo(...block.map((c) => ({ ...c, y: c.y + 1 })));
+  static moveDown(block: Tetronomo, spaces = 1) {
+    const res = new Tetronomo(...block.map((c) => ({ ...c, y: c.y + spaces })));
     res._position = block._position;
     res.shape = block.shape;
     return res;
   }
-  static moveLeft(block: Tetronomo) {
-    const res = new Tetronomo(...block.map((c) => ({ ...c, x: c.x - 1 })));
+  static moveLeft(block: Tetronomo, spaces = 1) {
+    const res = new Tetronomo(...block.map((c) => ({ ...c, x: c.x - spaces })));
     res._position = block._position;
     res.shape = block.shape;
     return res;
   }
-  static moveRight(block: Tetronomo) {
-    const res = new Tetronomo(...block.map((c) => ({ ...c, x: c.x + 1 })));
+  static moveRight(block: Tetronomo, spaces = 1) {
+    const res = new Tetronomo(...block.map((c) => ({ ...c, x: c.x + spaces })));
     res._position = block._position;
     res.shape = block.shape;
     return res;

@@ -70,9 +70,32 @@ export class BlockGenerationService {
   swapBlock(tetro: Tetronomo): Tetronomo {
     if (!this.savedTetro) {
       this.savedTetro = tetro.shape;
-      return this.getNextBlock();
+      const newTetro = this.getNextBlock();
+      const firstBlock = tetro.at(0)!;
+      const newFirstBlock = newTetro.at(0)!;
+      const spacesToMoveDown = firstBlock.y - newFirstBlock.y;
+      const spacesToMoveHorizontally = newFirstBlock.x - firstBlock.x;
+      const yAdjustedTetro = Tetronomo.moveDown(newTetro, spacesToMoveDown);
+      const xAdjustedTetro = Tetronomo.moveRight(
+        yAdjustedTetro,
+        spacesToMoveHorizontally
+      );
+
+      return xAdjustedTetro;
     }
-    return this.allBlocks.find((t) => t.shape === this.savedTetro)!;
+
+    const newTetro = this.allBlocks.find((t) => t.shape === this.savedTetro)!;
+    const firstBlock = tetro.at(0)!;
+    const newFirstBlock = newTetro.at(0)!;
+    const spacesToMoveDown = newFirstBlock.y - firstBlock.y;
+    const spacesToMoveHorizontally = newFirstBlock.x - firstBlock.x;
+    const yAdjustedTetro = Tetronomo.moveDown(newTetro, spacesToMoveDown);
+    const xAdjustedTetro = Tetronomo.moveRight(
+      yAdjustedTetro,
+      spacesToMoveHorizontally
+    );
+
+    return xAdjustedTetro;
   }
 
   getNextBlock(): Tetronomo {

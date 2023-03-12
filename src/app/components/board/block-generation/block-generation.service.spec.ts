@@ -6,10 +6,11 @@ import { BlockBuilder, Tetronomo } from './model';
 
 describe('BlockGenerationService', () => {
   let service: BlockGenerationService;
+  let spy: jasmine.Spy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [BoardService],
+      providers: [{ provide: BoardService, useValue: { boardWidth: 10 } }],
     });
     service = TestBed.inject(BlockGenerationService);
 
@@ -18,7 +19,7 @@ describe('BlockGenerationService', () => {
       allIndexes.push(i ? i / 7 : i);
     }
 
-    spyOn(Math, 'random').and.returnValues(...allIndexes, ...allIndexes);
+    spy = spyOn(Math, 'random').and.returnValues(...allIndexes, ...allIndexes);
   });
 
   it('should be created', () => {
@@ -54,12 +55,12 @@ describe('BlockGenerationService', () => {
 
   describe('caching', () => {
     it('I can cache a piece and have a random block returned to me', () => {
-      const tetro = new Tetronomo();
+      const tetro = new Tetronomo({ x: 0, y: 0 });
       const newTetro = service.swapBlock(tetro);
       expect(newTetro.shape).toBe('O');
     });
-    it('if I call the swap block functon again I will get the orignal tetro', () => {
-      const LBlock = new BlockBuilder({ y: 0, x: 5 })
+    it('if I call the swap block functon again I will get the original tetro', () => {
+      const LBlock = new BlockBuilder({ x: 5, y: 0 })
         .addBlockBelow()
         .addBlockBelow()
         .addBlockBelow()
@@ -67,6 +68,20 @@ describe('BlockGenerationService', () => {
       const newTetro = service.swapBlock(LBlock);
       const orignal = service.swapBlock(newTetro);
       expect(orignal).toEqual(LBlock);
+    });
+    it('if I call the swap block functon the returned block will match the position of the original but not the shape', () => {
+      const IBlock = new BlockBuilder({ x: 5, y: 6 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('I');
+      const expected = new BlockBuilder({ x: 5, y: 6 })
+        .addBlockRight()
+        .addBlockBelow()
+        .addBlockLeft()
+        .done('O');
+      const newTetro = service.swapBlock(IBlock);
+      expect(newTetro).toEqual(expected);
     });
   });
 });
