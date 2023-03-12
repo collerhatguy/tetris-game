@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import { BoardService } from '../board-service/board.service';
 import { BlockBuilder, Shape, Tetronomo } from './model';
 
@@ -6,7 +7,10 @@ import { BlockBuilder, Shape, Tetronomo } from './model';
   providedIn: 'root',
 })
 export class BlockGenerationService {
-  constructor(private board: BoardService) {}
+  constructor(
+    private board: BoardService,
+    private movement: BlockMovementService
+  ) {}
 
   private readonly creationIndex = Math.floor(this.board.boardWidth / 2);
 
@@ -71,31 +75,11 @@ export class BlockGenerationService {
     if (!this.savedTetro) {
       this.savedTetro = tetro.shape;
       const newTetro = this.getNextBlock();
-      const firstBlock = tetro.at(0)!;
-      const newFirstBlock = newTetro.at(0)!;
-      const spacesToMoveDown = firstBlock.y - newFirstBlock.y;
-      const spacesToMoveHorizontally = newFirstBlock.x - firstBlock.x;
-      const yAdjustedTetro = Tetronomo.moveDown(newTetro, spacesToMoveDown);
-      const xAdjustedTetro = Tetronomo.moveRight(
-        yAdjustedTetro,
-        spacesToMoveHorizontally
-      );
-
-      return xAdjustedTetro;
+      return this.movement.replaceTetronome(tetro, newTetro);
     }
 
     const newTetro = this.allBlocks.find((t) => t.shape === this.savedTetro)!;
-    const firstBlock = tetro.at(0)!;
-    const newFirstBlock = newTetro.at(0)!;
-    const spacesToMoveDown = newFirstBlock.y - firstBlock.y;
-    const spacesToMoveHorizontally = newFirstBlock.x - firstBlock.x;
-    const yAdjustedTetro = Tetronomo.moveDown(newTetro, spacesToMoveDown);
-    const xAdjustedTetro = Tetronomo.moveRight(
-      yAdjustedTetro,
-      spacesToMoveHorizontally
-    );
-
-    return xAdjustedTetro;
+    return this.movement.replaceTetronome(tetro, newTetro);
   }
 
   getNextBlock(): Tetronomo {
