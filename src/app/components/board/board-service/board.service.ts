@@ -67,7 +67,6 @@ export class BoardService extends Store<Board> {
     currentShadow.forEach((c) => {
       prevBoard[c.y][c.x] = createShadowBlock(current.shape);
     });
-    console.log(current.shape);
     current.forEach((c) => {
       prevBoard[c.y][c.x] = createPlayerBlock(current.shape);
     });

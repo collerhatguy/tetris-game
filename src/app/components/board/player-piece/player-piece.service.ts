@@ -92,8 +92,6 @@ export class PlayerPieceService extends Store<Tetronomo> {
       this.state
     );
 
-    console.log('newly created:', newValue.shape);
-
     const valid = this.validate.isValidMove(this.state, newValue);
 
     valid && this.setState(newValue);
