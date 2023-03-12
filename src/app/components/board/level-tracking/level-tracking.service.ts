@@ -31,7 +31,6 @@ export class LevelTrackingService {
       ([numberCleared, level]) => this.rowScoreMap.get(numberCleared)! * level
     ),
     scan((totalScore, addition) => totalScore + addition, 0),
-    startWith(0),
-    log()
+    startWith(0)
   );
 }

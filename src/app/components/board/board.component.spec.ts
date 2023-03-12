@@ -70,25 +70,25 @@ describe('BoardComponent', () => {
     return getBlock(shadowBlock);
   };
 
-  const pressA = () => {
+  const pressLeft = () => {
     fireEvent.keyDown(window, {
-      key: 'a',
+      key: 'ArrowLeft',
       charCode: 65,
-      code: 'KeyA',
+      code: 'ArrowLeft',
     } as KeyboardEvent);
   };
-  const pressD = () => {
+  const pressRight = () => {
     fireEvent.keyDown(window, {
-      key: 'd',
+      key: 'ArrowRight',
       charCode: 68,
-      code: 'KeyD',
+      code: 'ArrowRight',
     } as KeyboardEvent);
   };
-  const pressS = () => {
+  const pressDown = () => {
     fireEvent.keyDown(window, {
-      key: 's',
+      key: 'ArrowDown',
       charCode: 83,
-      code: 'KeyS',
+      code: 'ArrowDown',
     } as KeyboardEvent);
   };
 
@@ -118,7 +118,7 @@ describe('BoardComponent', () => {
       tick(1000);
 
       const prevCoordinates = await getPlayerCoordinates();
-      pressA();
+      pressLeft();
       const currentCoordinates = await getPlayerCoordinates();
 
       const expectedCoordinates = Tetronomo.moveLeft(
@@ -134,7 +134,7 @@ describe('BoardComponent', () => {
       tick(1000);
 
       const prevCoordinates = await getPlayerCoordinates();
-      pressD();
+      pressRight();
       const currentCoordinates = await getPlayerCoordinates();
 
       const expectedCoordinates = Tetronomo.moveRight(
@@ -151,10 +151,10 @@ describe('BoardComponent', () => {
       tick(1000);
 
       let prevCoordinates = await getPlayerCoordinates();
-      pressD();
-      pressA();
-      pressD();
-      pressA();
+      pressRight();
+      pressLeft();
+      pressRight();
+      pressLeft();
       let currentCoordinates = await getPlayerCoordinates();
 
       let expectedCoordinates = Tetronomo.moveRight(
@@ -164,7 +164,7 @@ describe('BoardComponent', () => {
       expect(currentCoordinates).toEqual(expectedCoordinates);
 
       tick(300);
-      pressA();
+      pressLeft();
 
       prevCoordinates = currentCoordinates;
 
@@ -180,11 +180,11 @@ describe('BoardComponent', () => {
       component.ngOnDestroy();
     }));
 
-    it('will go down if I hit "s" button and is not throttled', fakeAsync(async () => {
+    it('will go down if I hit "down" button and is not throttled', fakeAsync(async () => {
       component.ngOnInit();
       tick(1000);
       let prevCoordinates = await getPlayerCoordinates();
-      pressS();
+      pressDown();
       let currentCoordinates = await getPlayerCoordinates();
 
       let expectedCoordinates = Tetronomo.moveDown(
@@ -192,7 +192,7 @@ describe('BoardComponent', () => {
       );
 
       expect(currentCoordinates).toEqual(expectedCoordinates);
-      pressS();
+      pressDown();
 
       prevCoordinates = currentCoordinates;
 
@@ -211,7 +211,7 @@ describe('BoardComponent', () => {
       tick(1000);
       let prevCoordinates = await getPlayerCoordinates();
       tick(900);
-      pressS();
+      pressDown();
       tick(100);
       let currentCoordinates = await getPlayerCoordinates();
       let expectedCoordinates = Tetronomo.moveDown(
@@ -230,7 +230,7 @@ describe('BoardComponent', () => {
       let playerXCoordinate = playerCoordinates.map((c) => c.x);
       let shadowXCoordinates = shadowBlock.map((c) => c.x);
       expect(playerXCoordinate).toEqual(shadowXCoordinates);
-      pressD();
+      pressRight();
       playerCoordinates = await getPlayerCoordinates();
       shadowBlock = await getShadowCoordinates();
       playerXCoordinate = playerCoordinates.map((c) => c.x);
