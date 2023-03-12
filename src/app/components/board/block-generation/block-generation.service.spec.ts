@@ -83,5 +83,22 @@ describe('BlockGenerationService', () => {
       const newTetro = service.swapBlock(IBlock);
       expect(newTetro).toEqual(expected);
     });
+    it('will always return the last tetronome passed to it after the first', () => {
+      const IBlock = new BlockBuilder({ x: 5, y: 6 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('I');
+
+      const OBlock = new BlockBuilder({ x: 5, y: 6 })
+        .addBlockRight()
+        .addBlockBelow()
+        .addBlockLeft()
+        .done('O');
+      service.swapBlock(IBlock);
+      service.swapBlock(OBlock);
+      const res = service.swapBlock(new Tetronomo({ x: 0, y: 0 }));
+      expect(res.shape).toBe('O');
+    });
   });
 });

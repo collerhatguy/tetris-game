@@ -79,6 +79,7 @@ export class BlockGenerationService {
     }
 
     const newTetro = this.allBlocks.find((t) => t.shape === this.savedTetro)!;
+    this.savedTetro = tetro.shape;
     return this.movement.replaceTetronome(tetro, newTetro);
   }
 
