@@ -7,11 +7,9 @@
 </button>
 <main *ngIf="gameStart | async" data-testid="game">
   <div class="directions">
-    <span>A - Move Left </span>
-    <span>S - Move Down </span>
-    <span>D - Move Right </span>
-    <span>Q - Rotate Left </span>
-    <span>E - Rotate Right </span>
+    <span>Arrow Keys - Move</span>
+    <span>Z - Rotate Left </span>
+    <span>X - Rotate Right </span>
   </div>
   <app-board></app-board>
 </main>

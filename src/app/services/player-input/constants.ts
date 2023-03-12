@@ -1,9 +1,9 @@
 export const inputsPerSecond = 4;
 
-export const leftInputs = ['a', 'A'];
-export const rightInputs = ['d', 'D'];
-export const downInputs = ['s', 'S'];
-export const rotateLeftInputs = ['q', 'Q'];
-export const rotateRightInputs = ['e', 'E'];
+export const leftInputs = ['ArrowLeft'];
+export const rightInputs = ['ArrowRight'];
+export const downInputs = ['ArrowDown'];
+export const rotateLeftInputs = ['z', 'Z'];
+export const rotateRightInputs = ['x', 'X'];
 
 export const throttledInputs = [...leftInputs, ...rightInputs];
