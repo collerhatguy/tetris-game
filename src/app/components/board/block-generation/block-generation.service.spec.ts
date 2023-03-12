@@ -65,7 +65,8 @@ describe('BlockGenerationService', () => {
         .addBlockBelow()
         .addBlockBelow()
         .done('I');
-      const newTetro = service.swapBlock(LBlock);
+      service.swapBlock(LBlock);
+      const newTetro = service.getNextBlock();
       const orignal = service.swapBlock(newTetro);
       expect(orignal).toEqual(LBlock);
     });
@@ -84,21 +85,28 @@ describe('BlockGenerationService', () => {
       expect(newTetro).toEqual(expected);
     });
     it('will always return the last tetronome passed to it after the first', () => {
+      const OBlock = new BlockBuilder({ x: 5, y: 6 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('O');
+
+      service.swapBlock(OBlock);
+      const IBlock = service.getNextBlock();
+      service.swapBlock(IBlock);
+      service.getNextBlock();
+      const res = service.swapBlock(new Tetronomo({ x: 0, y: 0 }));
+      expect(res.shape).toBe('I');
+    });
+    it('you cannot swap a the same 2 blocks twice', () => {
       const IBlock = new BlockBuilder({ x: 5, y: 6 })
         .addBlockBelow()
         .addBlockBelow()
         .addBlockBelow()
         .done('I');
-
-      const OBlock = new BlockBuilder({ x: 5, y: 6 })
-        .addBlockRight()
-        .addBlockBelow()
-        .addBlockLeft()
-        .done('O');
-      service.swapBlock(IBlock);
-      service.swapBlock(OBlock);
-      const res = service.swapBlock(new Tetronomo({ x: 0, y: 0 }));
-      expect(res.shape).toBe('O');
+      const OBlock = service.swapBlock(IBlock);
+      const res = service.swapBlock(OBlock);
+      expect(res).toEqual(OBlock);
     });
   });
 });

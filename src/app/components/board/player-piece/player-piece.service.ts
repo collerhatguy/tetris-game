@@ -1,31 +1,18 @@
 import { Injectable } from '@angular/core';
-import {
-  Observable,
-  filter,
-  switchMap,
-  interval,
-  startWith,
-  map,
-  merge,
-  tap,
-  pairwise,
-} from 'rxjs';
+import { startWith, map, merge, tap, pairwise } from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import {
   Command,
-  Direction,
   HorizontalDirection,
   RotationalDirection,
 } from 'src/app/services/block-movement/models';
 import { ValidateMovementService } from 'src/app/services/block-movement/validate-movement/validate-movement.service';
 import { PlayerInputService } from 'src/app/services/player-input/player-input.service';
-import { clone } from 'src/app/utils/operators';
 import { Store } from 'src/app/utils/store';
 import { BlockGenerationService } from '../block-generation/block-generation.service';
 import { Tetronomo } from '../block-generation/model';
 import { BoardService } from '../board-service/board.service';
 import { GravityService } from '../gravity/gravity.service';
-import { LevelTrackingService } from '../level-tracking/level-tracking.service';
 
 @Injectable({
   providedIn: 'root',

@@ -71,7 +71,10 @@ export class BlockGenerationService {
 
   private savedTetro: Shape | undefined;
 
+  private canSwap = true;
+
   swapBlock(tetro: Tetronomo): Tetronomo {
+    if (!this.canSwap) return tetro;
     if (!this.savedTetro) {
       this.savedTetro = tetro.shape;
       const newTetro = this.getNextBlock();
@@ -88,6 +91,7 @@ export class BlockGenerationService {
     const index = Math.floor(random * this.blockBag.length);
     const [nextBlock] = this.blockBag.splice(index, 1);
     if (this.blockBag.length === 0) this.blockBag = [...this.allBlocks];
+    this.canSwap = false;
     return nextBlock;
   }
 }
