@@ -65,8 +65,14 @@ export class BlockGenerationService {
 
   private blockBag = [...this.allBlocks];
 
-  saveBlock(tetro: Tetronomo) {
-    return this.getNextBlock();
+  private savedTetro: Shape | undefined;
+
+  swapBlock(tetro: Tetronomo): Tetronomo {
+    if (!this.savedTetro) {
+      this.savedTetro = tetro.shape;
+      return this.getNextBlock();
+    }
+    return this.allBlocks.find((t) => t.shape === this.savedTetro)!;
   }
 
   getNextBlock(): Tetronomo {

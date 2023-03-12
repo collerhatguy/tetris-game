@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { BoardService } from '../board-service/board.service';
 
 import { BlockGenerationService } from './block-generation.service';
-import { Tetronomo } from './model';
+import { BlockBuilder, Tetronomo } from './model';
 
 describe('BlockGenerationService', () => {
   let service: BlockGenerationService;
@@ -55,8 +55,18 @@ describe('BlockGenerationService', () => {
   describe('caching', () => {
     it('I can cache a piece and have a random block returned to me', () => {
       const tetro = new Tetronomo();
-      const newTetro = service.saveBlock(tetro);
+      const newTetro = service.swapBlock(tetro);
       expect(newTetro.shape).toBe('O');
+    });
+    it('if I call the swap block functon again I will get the orignal tetro', () => {
+      const LBlock = new BlockBuilder({ y: 0, x: 5 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('I');
+      const newTetro = service.swapBlock(LBlock);
+      const orignal = service.swapBlock(newTetro);
+      expect(orignal).toEqual(LBlock);
     });
   });
 });
