@@ -176,4 +176,24 @@ describe('BlockMovementService', () => {
       });
     });
   });
+  describe('replacing a block', () => {
+    it('given 2 block its will replace the first block with the second block', () => {
+      const tetroToReplace = new BlockBuilder({ x: 6, y: 6 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('I');
+      const newTetro = new BlockBuilder({ x: 0, y: 0 })
+        .addBlockBelow()
+        .addBlockLeftAndRight()
+        .done('T');
+
+      const expected = new BlockBuilder({ x: 6, y: 6 })
+        .addBlockBelow()
+        .addBlockLeftAndRight()
+        .done('T');
+      const res = service.replaceTetronome(tetroToReplace, newTetro);
+      expect(res).toEqual(expected);
+    });
+  });
 });
