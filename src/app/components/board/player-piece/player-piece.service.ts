@@ -67,6 +67,7 @@ export class PlayerPieceService extends Store<Tetronomo> {
   }
 
   private swap() {
+    if (!this.state.length) return;
     const newValue = this.blockGeneration.swapBlock(this.state);
     const valid = this.validate.isValidMove(this.state, newValue);
 
