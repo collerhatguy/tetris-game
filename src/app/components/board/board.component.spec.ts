@@ -100,7 +100,7 @@ describe('BoardComponent', () => {
       tick(1001);
       playerPieces = await getPlayerBlock();
       expect(playerPieces.length).toBe(4);
-      expect(playerPieces[0].style.backgroundColor).toBe('orange');
+      expect(playerPieces[0].style.backgroundColor).not.toBe('white');
       component.ngOnDestroy();
     }));
 
@@ -109,7 +109,7 @@ describe('BoardComponent', () => {
       tick(1000 * 21);
       const solidPieces = await getPlayerBlock();
       expect(solidPieces.length).toBe(4);
-      expect(solidPieces[0].style.backgroundColor).toBe('orange');
+      expect(solidPieces[0].style.backgroundColor).not.toBe('white');
       component.ngOnDestroy();
     }));
 

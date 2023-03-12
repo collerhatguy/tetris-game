@@ -31,7 +31,8 @@ describe('BoardService', () => {
         y: service.boardHeight - 1 - n,
       });
     }
-    return row;
+
+    return new Tetronomo(...row);
   };
 
   it('should clear rows when they are created', () => {
@@ -41,7 +42,7 @@ describe('BoardService', () => {
     const [empty, ...solid] = service.state[service.boardHeight - 1];
     expect(empty.solid).toBeFalse();
     expect(solid.every((square) => square.solid)).toBeTrue();
-    const firstSquareCordinate: Block = [firstSquare];
+    const firstSquareCordinate = new Tetronomo(firstSquare);
     service.lockPieceInplace(firstSquareCordinate);
     const lastRow = service.state[service.boardHeight - 1];
     const isCleared = lastRow.every((square) => !square.solid);
@@ -50,7 +51,8 @@ describe('BoardService', () => {
 
   it('should move parent rows down when clearing', () => {
     const lastRowCordinates = getLastRow();
-    service.lockPieceInplace([{ x: 0, y: service.boardHeight - 2 }]);
+    const lockPiece = new Tetronomo({ x: 0, y: service.boardHeight - 2 });
+    service.lockPieceInplace(lockPiece);
     service.lockPieceInplace(lastRowCordinates);
     const lastRowFirstSquare = service.state[service.boardHeight - 1][0];
     expect(lastRowFirstSquare.solid).toBeTrue();
@@ -60,7 +62,8 @@ describe('BoardService', () => {
 
   it('should move the top most row if it is filled', () => {
     const lastRowCordinates = getLastRow();
-    service.lockPieceInplace([{ x: 0, y: 0 }]);
+    const lockPiece = new Tetronomo({ x: 0, y: 0 });
+    service.lockPieceInplace(lockPiece);
     service.lockPieceInplace(lastRowCordinates);
     const secondRowFirstSquare = service.state[1][0];
     expect(secondRowFirstSquare.solid).toBeTrue();
@@ -69,11 +72,12 @@ describe('BoardService', () => {
   });
 
   it('should be able to clear multiple rows and move the pieces down proeprly', () => {
-    const last2Rows = [...getLastRow(), ...getNthToLastRow(1)];
-    const block = [
-      getNthToLastRow(2).shift(),
-      getNthToLastRow(3).shift(),
-    ] as Block;
+    const last2Rows = new Tetronomo(...getLastRow(), ...getNthToLastRow(1));
+    const block = new Tetronomo(
+      getNthToLastRow(2).shift()!,
+      getNthToLastRow(3).shift()!
+    );
+
     service.lockPieceInplace(block);
     service.lockPieceInplace(last2Rows);
 

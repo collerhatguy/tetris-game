@@ -44,5 +44,10 @@ describe('teronomo', () => {
       const res = Tetronomo.moveDown(tetro);
       expect(res.position === 'L').toBeTrue();
     });
+    it('maintains the shape when moved', () => {
+      tetro.shape = 'S';
+      const res = Tetronomo.moveDown(tetro);
+      expect(res.shape === 'S').toBeTrue();
+    });
   });
 });

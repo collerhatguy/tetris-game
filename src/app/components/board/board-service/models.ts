@@ -1,4 +1,15 @@
-type Color = 'white' | 'black' | 'orange';
+import { Shape } from '../block-generation/model';
+
+type Color =
+  | 'white'
+  | 'black'
+  | 'DarkOrange'
+  | 'DarkBlue'
+  | 'Gold'
+  | 'DarkMagenta'
+  | 'DarkGreen'
+  | 'DarkRed'
+  | 'Cyan';
 
 export interface Square {
   color: Color;
@@ -24,26 +35,35 @@ export function createEmptyBlock(): Square {
   };
 }
 
-export function createSolidBlock(): Square {
+export function createSolidBlock(shape: Shape): Square {
   return {
     solid: true,
     isPlayer: false,
-    color: 'orange',
+    color: shapeToColorMap.get(shape)!,
   };
 }
 
-export function createShadowBlock(): Square {
+export function createShadowBlock(shape: Shape): Square {
   return {
     solid: false,
     isPlayer: false,
-    color: 'orange',
+    color: shapeToColorMap.get(shape)!,
   };
 }
 
-export function createPlayerBlock(): Square {
+const shapeToColorMap = new Map<Shape, Color>()
+  .set('O', 'Gold')
+  .set('I', 'Cyan')
+  .set('L', 'DarkBlue')
+  .set('Z', 'DarkRed')
+  .set('T', 'DarkMagenta')
+  .set('S', 'DarkGreen')
+  .set('J', 'DarkOrange');
+
+export function createPlayerBlock(shape: Shape): Square {
   return {
     solid: true,
     isPlayer: true,
-    color: 'orange',
+    color: shapeToColorMap.get(shape)!,
   };
 }
