@@ -20,7 +20,7 @@ describe('RowClearingService', () => {
 
   it('keeps track of the rows cleared by the player', () => {
     const board: Board = new Array(10);
-    const fullRow: Row = [{ solid: true, isPlayer: false, color: 'orange' }];
+    const fullRow: Row = [{ solid: true, isPlayer: false, color: 'DarkBlue' }];
     board.fill(fullRow);
     service.clearFullRows(board);
     expect(service.rowsCleared).toBe(10);

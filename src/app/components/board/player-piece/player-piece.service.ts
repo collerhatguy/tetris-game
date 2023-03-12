@@ -48,8 +48,6 @@ export class PlayerPieceService extends Store<Tetronomo> {
   );
 
   updateBoardBasedOnPiece = this.allInputs.pipe(
-    clone(), // this is something I had to do becuase of how references work in JS
-    // if you were to remove it then the prev and current below would be identical every time
     pairwise(),
     tap(([prev, current]) => {
       const hitGround = current.length === 0;
@@ -93,6 +91,8 @@ export class PlayerPieceService extends Store<Tetronomo> {
       direction,
       this.state
     );
+
+    console.log('newly created:', newValue.shape);
 
     const valid = this.validate.isValidMove(this.state, newValue);
 

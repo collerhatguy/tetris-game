@@ -78,16 +78,19 @@ export class Tetronomo extends Array<Coordinate> {
   static moveDown(block: Tetronomo) {
     const res = new Tetronomo(...block.map((c) => ({ ...c, y: c.y + 1 })));
     res._position = block._position;
+    res.shape = block.shape;
     return res;
   }
   static moveLeft(block: Tetronomo) {
     const res = new Tetronomo(...block.map((c) => ({ ...c, x: c.x - 1 })));
     res._position = block._position;
+    res.shape = block.shape;
     return res;
   }
   static moveRight(block: Tetronomo) {
     const res = new Tetronomo(...block.map((c) => ({ ...c, x: c.x + 1 })));
     res._position = block._position;
+    res.shape = block.shape;
     return res;
   }
 }
