@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { fromEvent, throttleTime, map, Observable, merge } from 'rxjs';
 import { filterInputs } from 'src/app/utils/operators';
-import { Direction } from '../block-movement/models';
+import { Command, Direction } from '../block-movement/models';
 import {
   throttledInputs,
   downInputs,
@@ -10,6 +10,7 @@ import {
   rightInputs,
   rotateLeftInputs,
   rotateRightInputs,
+  swapBlockInput,
 } from './constants';
 
 @Injectable({
@@ -48,12 +49,18 @@ export class PlayerInputService {
     map(() => 'rotateRight')
   );
 
-  input: Observable<Direction> = merge(
+  private swapTetroInput: Observable<'swap'> = this.keyEvents.pipe(
+    filterInputs(swapBlockInput),
+    map(() => 'swap')
+  );
+
+  input: Observable<Command> = merge(
     this.downInput,
     this.leftInput,
     this.rightInput,
     this.rotateLeftInput,
-    this.rotateRightInput
+    this.rotateRightInput,
+    this.swapTetroInput
   );
 
   constructor() {}

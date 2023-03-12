@@ -1,6 +1,8 @@
 import { Position } from 'src/app/components/board/block-generation/model';
 import { Coordinate } from 'src/app/components/board/board-service/models';
 
+export type Command = Direction | 'swap';
+
 export type Direction = HorizontalDirection | RotationalDirection | 'down';
 
 export type HorizontalDirection = 'left' | 'right';

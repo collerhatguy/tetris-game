@@ -12,6 +12,7 @@ import {
 } from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import {
+  Command,
   Direction,
   HorizontalDirection,
   RotationalDirection,
@@ -57,11 +58,19 @@ export class PlayerPieceService extends Store<Tetronomo> {
     })
   );
 
-  private move(direction: Direction) {
+  private move(direction: Command) {
     if (direction === 'down') return this.moveDown();
     if (direction === 'rotateRight' || direction === 'rotateLeft')
       return this.rotate(direction);
+    if (direction === 'swap') return this.swap();
     this.moveHorizontally(direction);
+  }
+
+  private swap() {
+    const newValue = this.blockGeneration.swapBlock(this.state);
+    const valid = this.validate.isValidMove(this.state, newValue);
+
+    valid ? this.setState(newValue) : this.blockGeneration.swapBlock(newValue);
   }
 
   private rotate(direction: RotationalDirection) {
