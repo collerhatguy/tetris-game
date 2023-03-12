@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { BoardService } from '../board-service/board.service';
 
 import { BlockGenerationService } from './block-generation.service';
+import { Tetronomo } from './model';
 
 describe('BlockGenerationService', () => {
   let service: BlockGenerationService;
@@ -49,5 +50,13 @@ describe('BlockGenerationService', () => {
       firstIterationOfBlocks.push(service.getNextBlock());
     }
     expect(firstIterationOfBlocks.every((t) => t.position === '0')).toBeTrue();
+  });
+
+  describe('caching', () => {
+    it('I can cache a piece and have a random block returned to me', () => {
+      const tetro = new Tetronomo();
+      const newTetro = service.saveBlock(tetro);
+      expect(newTetro.shape).toBe('O');
+    });
   });
 });

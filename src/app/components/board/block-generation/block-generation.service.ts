@@ -65,6 +65,10 @@ export class BlockGenerationService {
 
   private blockBag = [...this.allBlocks];
 
+  saveBlock(tetro: Tetronomo) {
+    return this.getNextBlock();
+  }
+
   getNextBlock(): Tetronomo {
     const random = Math.random();
     const index = Math.floor(random * this.blockBag.length);
