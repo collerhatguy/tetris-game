@@ -23,21 +23,21 @@ export class BlockGenerationService {
     .done('O');
 
   private readonly lineBlock = this.blockBuilder
-    .addBlockBelow()
-    .addBlockBelow()
-    .addBlockBelow()
+    .addBlockRight()
+    .addBlockRight()
+    .addBlockRight()
     .done('I');
 
   private readonly SBlock = this.blockBuilder
+    .addBlockLeft()
     .addBlockBelow()
-    .addBlockRight()
-    .addBlockBelow()
+    .addBlockLeft()
     .done('S');
 
   private readonly ZBlock = this.blockBuilder
+    .addBlockRight()
     .addBlockBelow()
-    .addBlockLeft()
-    .addBlockBelow()
+    .addBlockRight()
     .done('Z');
 
   private readonly JBlock = this.blockBuilder
