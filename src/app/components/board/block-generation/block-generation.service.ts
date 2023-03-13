@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import { BoardService } from '../board-service/board.service';
 import { BlockBuilder, Shape, Tetronomo } from './model';
 
@@ -6,7 +7,10 @@ import { BlockBuilder, Shape, Tetronomo } from './model';
   providedIn: 'root',
 })
 export class BlockGenerationService {
-  constructor(private board: BoardService) {}
+  constructor(
+    private board: BoardService,
+    private movement: BlockMovementService
+  ) {}
 
   private readonly creationIndex = Math.floor(this.board.boardWidth / 2);
 
@@ -65,11 +69,31 @@ export class BlockGenerationService {
 
   private blockBag = [...this.allBlocks];
 
+  savedTetro: Shape | undefined;
+
+  private canSwap = true;
+
+  swapBlock(tetro: Tetronomo): Tetronomo {
+    if (!this.canSwap) return tetro;
+    if (!this.savedTetro) {
+      this.savedTetro = tetro.shape;
+      const newTetro = this.getNextBlock();
+      this.canSwap = false;
+      return this.movement.replaceTetronome(tetro, newTetro);
+    }
+
+    const newTetro = this.allBlocks.find((t) => t.shape === this.savedTetro)!;
+    this.savedTetro = tetro.shape;
+    this.canSwap = false;
+    return this.movement.replaceTetronome(tetro, newTetro);
+  }
+
   getNextBlock(): Tetronomo {
     const random = Math.random();
     const index = Math.floor(random * this.blockBag.length);
     const [nextBlock] = this.blockBag.splice(index, 1);
     if (this.blockBag.length === 0) this.blockBag = [...this.allBlocks];
+    this.canSwap = true;
     return nextBlock;
   }
 }

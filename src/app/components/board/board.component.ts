@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil, Observable } from 'rxjs';
+import { BlockGenerationService } from './block-generation/block-generation.service';
 import { BoardService } from './board-service/board.service';
 import { LevelTrackingService } from './level-tracking/level-tracking.service';
 import { PlayerPieceService } from './player-piece/player-piece.service';
@@ -20,7 +21,8 @@ export class BoardComponent implements OnDestroy, OnInit {
   constructor(
     private level: LevelTrackingService,
     private playerPiece: PlayerPieceService,
-    private board: BoardService
+    private board: BoardService,
+    public gen: BlockGenerationService
   ) {}
 
   private subscribe(obs: Observable<any>) {

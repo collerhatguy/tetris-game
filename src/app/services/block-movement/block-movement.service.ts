@@ -102,5 +102,19 @@ export class BlockMovementService {
     return block;
   }
 
+  replaceTetronome(toReplace: Tetronomo, replacer: Tetronomo) {
+    const firstBlock = toReplace.at(0)!;
+    const newFirstBlock = replacer.at(0)!;
+    const spacesToMoveDown = firstBlock.y - newFirstBlock.y;
+    const spacesToMoveHorizontally = firstBlock.x - newFirstBlock.x;
+    const yAdjustedTetro = Tetronomo.moveDown(replacer, spacesToMoveDown);
+    const xAdjustedTetro = Tetronomo.moveRight(
+      yAdjustedTetro,
+      spacesToMoveHorizontally
+    );
+
+    return xAdjustedTetro;
+  }
+
   constructor(private validate: ValidateMovementService) {}
 }

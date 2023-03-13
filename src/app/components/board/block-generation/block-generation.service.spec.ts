@@ -2,13 +2,15 @@ import { TestBed } from '@angular/core/testing';
 import { BoardService } from '../board-service/board.service';
 
 import { BlockGenerationService } from './block-generation.service';
+import { BlockBuilder, Tetronomo } from './model';
 
 describe('BlockGenerationService', () => {
   let service: BlockGenerationService;
+  let spy: jasmine.Spy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [BoardService],
+      providers: [{ provide: BoardService, useValue: { boardWidth: 10 } }],
     });
     service = TestBed.inject(BlockGenerationService);
 
@@ -17,7 +19,7 @@ describe('BlockGenerationService', () => {
       allIndexes.push(i ? i / 7 : i);
     }
 
-    spyOn(Math, 'random').and.returnValues(...allIndexes, ...allIndexes);
+    spy = spyOn(Math, 'random').and.returnValues(...allIndexes, ...allIndexes);
   });
 
   it('should be created', () => {
@@ -49,5 +51,62 @@ describe('BlockGenerationService', () => {
       firstIterationOfBlocks.push(service.getNextBlock());
     }
     expect(firstIterationOfBlocks.every((t) => t.position === '0')).toBeTrue();
+  });
+
+  describe('caching', () => {
+    it('I can cache a piece and have a random block returned to me', () => {
+      const tetro = new Tetronomo({ x: 0, y: 0 });
+      const newTetro = service.swapBlock(tetro);
+      expect(newTetro.shape).toBe('O');
+    });
+    it('if I call the swap block functon again I will get the original tetro', () => {
+      const LBlock = new BlockBuilder({ x: 5, y: 0 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('I');
+      service.swapBlock(LBlock);
+      const newTetro = service.getNextBlock();
+      const orignal = service.swapBlock(newTetro);
+      expect(orignal).toEqual(LBlock);
+    });
+    it('if I call the swap block functon the returned block will match the position of the original but not the shape', () => {
+      const IBlock = new BlockBuilder({ x: 5, y: 6 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('I');
+      const expected = new BlockBuilder({ x: 5, y: 6 })
+        .addBlockRight()
+        .addBlockBelow()
+        .addBlockLeft()
+        .done('O');
+      const newTetro = service.swapBlock(IBlock);
+      expect(newTetro).toEqual(expected);
+    });
+    it('will always return the last tetronome passed to it after the first', () => {
+      const OBlock = new BlockBuilder({ x: 5, y: 6 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('O');
+
+      service.swapBlock(OBlock);
+      const IBlock = service.getNextBlock();
+      service.swapBlock(IBlock);
+      service.getNextBlock();
+      const res = service.swapBlock(new Tetronomo({ x: 0, y: 0 }));
+      expect(res.shape).toBe('I');
+    });
+    it('you cannot swap a the same 2 blocks twice', () => {
+      const IBlock = new BlockBuilder({ x: 5, y: 6 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('I');
+      const OBlock = service.swapBlock(IBlock);
+      const res = service.swapBlock(OBlock);
+      expect(res).toEqual(OBlock);
+    });
   });
 });
