@@ -1,9 +1,18 @@
-<h2 data-testid="level" *ngIf="level$ | async as level">Level: {{ level }}</h2>
-<h2 data-testid="score">Score: {{ score$ | async }}</h2>
-<img
-  src="assets/{{ gen.savedTetro }}-tetronome.png"
-  alt="{{ gen.savedTetro }}"
-/>
+<header>
+  <div>
+    <h2 data-testid="level" *ngIf="level$ | async as level">
+      Level: {{ level }}
+    </h2>
+    <h2 data-testid="score">Score: {{ score$ | async }}</h2>
+  </div>
+  <div class="img">
+    <img
+      *ngIf="gen.savedTetro"
+      src="assets/{{ gen.savedTetro }}-tetronome.png"
+      alt="{{ gen.savedTetro }}"
+    />
+  </div>
+</header>
 <section class="board-container" *ngIf="board$ | async as board">
   <div data-testid="row" *ngFor="let row of board; let y = index">
     <div
