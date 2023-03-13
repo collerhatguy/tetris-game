@@ -69,7 +69,7 @@ export class BlockGenerationService {
 
   private blockBag = [...this.allBlocks];
 
-  private savedTetro: Shape | undefined;
+  savedTetro: Shape | undefined;
 
   private canSwap = true;
 
