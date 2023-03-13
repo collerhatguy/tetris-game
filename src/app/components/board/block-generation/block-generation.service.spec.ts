@@ -61,9 +61,9 @@ describe('BlockGenerationService', () => {
     });
     it('if I call the swap block functon again I will get the original tetro', () => {
       const LBlock = new BlockBuilder({ x: 5, y: 0 })
-        .addBlockBelow()
-        .addBlockBelow()
-        .addBlockBelow()
+        .addBlockRight()
+        .addBlockRight()
+        .addBlockRight()
         .done('I');
       service.swapBlock(LBlock);
       const newTetro = service.getNextBlock();
