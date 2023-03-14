@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { fromEvent, throttleTime, map, Observable, merge } from 'rxjs';
-import { filterInputs } from 'src/app/utils/operators';
+import { fromEvent, throttleTime, map, Observable, merge, tap } from 'rxjs';
+import { filterInputs, log } from 'src/app/utils/operators';
 import { Command, Direction } from '../block-movement/models';
 import {
   throttledInputs,
@@ -11,6 +11,7 @@ import {
   rotateLeftInputs,
   rotateRightInputs,
   swapBlockInput,
+  dropTetroInput,
 } from './constants';
 
 @Injectable({
@@ -54,13 +55,19 @@ export class PlayerInputService {
     map(() => 'swap')
   );
 
+  private dropTetroInput: Observable<'drop'> = this.keyEvents.pipe(
+    filterInputs(dropTetroInput),
+    map(() => 'drop')
+  );
+
   input: Observable<Command> = merge(
     this.downInput,
     this.leftInput,
     this.rightInput,
     this.rotateLeftInput,
     this.rotateRightInput,
-    this.swapTetroInput
+    this.swapTetroInput,
+    this.dropTetroInput
   );
 
   constructor() {}

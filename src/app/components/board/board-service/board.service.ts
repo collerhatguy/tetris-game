@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store } from 'src/app/utils/store';
 import { Tetronomo } from '../block-generation/model';
 import { RowClearingService } from '../row-clearing/row-clearing.service';
-import { ShadowPieceService } from '../shadow-piece/shadow-piece.service';
+import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import {
   Board,
   Row,
@@ -22,7 +22,7 @@ export class BoardService extends Store<Board> {
 
   constructor(
     private rowClearing: RowClearingService,
-    private shadow: ShadowPieceService
+    private movement: BlockMovementService
   ) {
     super([]);
     this.setState(this.getInitialBoard());
@@ -58,12 +58,12 @@ export class BoardService extends Store<Board> {
     prev.forEach((c) => {
       prevBoard[c.y][c.x] = createEmptyBlock();
     });
-    const prevShadow = this.shadow.calculateShadowBlock(prev);
+    const prevShadow = this.movement.getLowestPoint(prev);
     prevShadow.forEach((c) => {
       prevBoard[c.y][c.x] = createEmptyBlock();
     });
 
-    const currentShadow = this.shadow.calculateShadowBlock(current);
+    const currentShadow = this.movement.getLowestPoint(current);
     currentShadow.forEach((c) => {
       prevBoard[c.y][c.x] = createShadowBlock(current.shape);
     });

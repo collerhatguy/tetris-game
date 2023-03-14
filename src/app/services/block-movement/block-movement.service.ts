@@ -116,5 +116,12 @@ export class BlockMovementService {
     return xAdjustedTetro;
   }
 
+  getLowestPoint(block: Tetronomo): Tetronomo {
+    if (block.length === 0) return block;
+    const newBlock = this.getFuturePosition('down', block);
+    const valid = this.validate.isValidMove(block, newBlock);
+    return valid ? this.getLowestPoint(newBlock) : block;
+  }
+
   constructor(private validate: ValidateMovementService) {}
 }

@@ -8,5 +8,7 @@ export const clone = <T>() =>
 
 export const filterInputs = (keys: string[]) =>
   pipe<Observable<KeyboardEvent>, Observable<KeyboardEvent>>(
-    filter((event) => keys.includes(event.key))
+    filter((event) =>
+      event.key ? keys.includes(event.key) : keys.includes(event.code)
+    )
   );
