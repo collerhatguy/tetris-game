@@ -16,4 +16,18 @@ describe('AppComponent', () => {
     expect(empty).toBeFalsy();
     const game = screen.getByTestId('game');
   });
+  it('I can hit the instructions btn and be taken to the instruction', () => {
+    const instructions = screen.getByTestId('instructions-btn');
+    fireEvent.click(instructions);
+    const empty = screen.queryByTestId('instructions-btn');
+    expect(empty).toBeFalsy();
+    screen.getByTestId('instructions');
+  });
+  it('I can click back from the instructions page', () => {
+    const instructions = screen.getByTestId('instructions-btn');
+    fireEvent.click(instructions);
+    const back = screen.getByTestId('back-btn');
+    fireEvent.click(back);
+    screen.getByTestId('starter-menu');
+  });
 });

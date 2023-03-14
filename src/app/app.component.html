@@ -1,18 +1,28 @@
-<button
-  (click)="gameStart.next(true)"
-  *ngIf="!(gameStart | async)"
-  data-testid="start-game-btn"
+<section
+  data-testid="starter-menu"
+  *ngIf="!(gameStart | async) && !(instructions | async)"
 >
-  Start Game
-</button>
+  <button (click)="gameStart.next(true)" data-testid="start-game-btn">
+    Start Game
+  </button>
+  <button (click)="instructions.next(true)" data-testid="instructions-btn">
+    Instructions
+  </button>
+</section>
+<div data-testid="instructions" *ngIf="instructions | async" class="directions">
+  <span>Arrow Keys - Move</span>
+  <span>Z - Rotate Left </span>
+  <span>X - Rotate Right </span>
+  <span>C - Swap Tetronomo </span>
+  <span>Space - Drop Tetronomo </span>
+  <span>* A "Tetronomo" is what the blocks you move around are called</span>
+  <button
+    (click)="gameStart.next(false); instructions.next(false)"
+    data-testid="back-btn"
+  >
+    Back
+  </button>
+</div>
 <main *ngIf="gameStart | async" data-testid="game">
-  <div class="directions">
-    <span>Arrow Keys - Move</span>
-    <span>Z - Rotate Left </span>
-    <span>X - Rotate Right </span>
-    <span>C - Swap Tetronomo </span>
-    <span>Space - Drop Tetronomo </span>
-    <span>* A "Tetronomo" is what the blocks you move around are called</span>
-  </div>
   <app-board></app-board>
 </main>
