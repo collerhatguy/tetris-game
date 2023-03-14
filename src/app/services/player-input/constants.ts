@@ -6,5 +6,6 @@ export const downInputs = ['ArrowDown'];
 export const rotateLeftInputs = ['z', 'Z'];
 export const rotateRightInputs = ['x', 'X'];
 export const swapBlockInput = ['c', 'C'];
+export const dropTetroInput = [' '];
 
 export const throttledInputs = [...leftInputs, ...rightInputs];

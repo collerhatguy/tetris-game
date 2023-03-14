@@ -1,6 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { BoardService } from 'src/app/components/board/board-service/board.service';
-import { BlockBuilder } from 'src/app/components/board/block-generation/model';
+import {
+  BlockBuilder,
+  Tetronomo,
+} from 'src/app/components/board/block-generation/model';
 import { BlockMovementService } from './block-movement.service';
 
 describe('BlockMovementService', () => {
@@ -194,6 +197,12 @@ describe('BlockMovementService', () => {
         .done('T');
       const res = service.replaceTetronome(tetroToReplace, newTetro);
       expect(res).toEqual(expected);
+    });
+  });
+  describe('getLowestPoint', () => {
+    it('does not run infinitly when an empty array is passed', () => {
+      const res = service.getLowestPoint(new Tetronomo());
+      expect(res).toEqual(new Tetronomo());
     });
   });
 });

@@ -50,7 +50,14 @@ export class PlayerPieceService extends Store<Tetronomo> {
     if (direction === 'rotateRight' || direction === 'rotateLeft')
       return this.rotate(direction);
     if (direction === 'swap') return this.swap();
+    if (direction === 'drop') return this.drop();
+
     this.moveHorizontally(direction);
+  }
+
+  private drop() {
+    const newValue = this.blockMovement.getLowestPoint(this.state);
+    this.setState(newValue);
   }
 
   private swap() {
