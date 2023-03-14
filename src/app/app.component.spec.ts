@@ -2,7 +2,7 @@ import { AppComponent } from './app.component';
 import { fireEvent, render, screen } from '@testing-library/angular';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-fdescribe('AppComponent', () => {
+describe('AppComponent', () => {
   beforeEach(async () => {
     await render(AppComponent, {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -22,5 +22,12 @@ fdescribe('AppComponent', () => {
     const empty = screen.queryByTestId('instructions-btn');
     expect(empty).toBeFalsy();
     screen.getByTestId('instructions');
+  });
+  it('I can click back from the instructions page', () => {
+    const instructions = screen.getByTestId('instructions-btn');
+    fireEvent.click(instructions);
+    const back = screen.getByTestId('back-btn');
+    fireEvent.click(back);
+    screen.getByTestId('starter-menu');
   });
 });

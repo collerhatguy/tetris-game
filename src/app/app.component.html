@@ -1,4 +1,7 @@
-<section *ngIf="!(gameStart | async) && !(instructions | async)">
+<section
+  data-testid="starter-menu"
+  *ngIf="!(gameStart | async) && !(instructions | async)"
+>
   <button (click)="gameStart.next(true)" data-testid="start-game-btn">
     Start Game
   </button>
@@ -13,6 +16,12 @@
   <span>C - Swap Tetronomo </span>
   <span>Space - Drop Tetronomo </span>
   <span>* A "Tetronomo" is what the blocks you move around are called</span>
+  <button
+    (click)="gameStart.next(false); instructions.next(false)"
+    data-testid="back-btn"
+  >
+    Back
+  </button>
 </div>
 <main *ngIf="gameStart | async" data-testid="game">
   <app-board></app-board>
