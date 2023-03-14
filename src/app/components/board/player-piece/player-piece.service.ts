@@ -55,7 +55,10 @@ export class PlayerPieceService extends Store<Tetronomo> {
     this.moveHorizontally(direction);
   }
 
-  private drop() {}
+  private drop() {
+    const newValue = this.blockMovement.getLowestPoint(this.state);
+    this.setState(newValue);
+  }
 
   private swap() {
     if (!this.state.length) return;
