@@ -2,7 +2,7 @@ import { AppComponent } from './app.component';
 import { fireEvent, render, screen } from '@testing-library/angular';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-describe('AppComponent', () => {
+fdescribe('AppComponent', () => {
   beforeEach(async () => {
     await render(AppComponent, {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -15,5 +15,12 @@ describe('AppComponent', () => {
     const empty = screen.queryByTestId('start-game-btn');
     expect(empty).toBeFalsy();
     const game = screen.getByTestId('game');
+  });
+  it('I can hit the instructions btn and be taken to the instruction', () => {
+    const instructions = screen.getByTestId('instructions-btn');
+    fireEvent.click(instructions);
+    const empty = screen.queryByTestId('instructions-btn');
+    expect(empty).toBeFalsy();
+    screen.getByTestId('instructions');
   });
 });

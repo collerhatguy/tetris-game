@@ -8,4 +8,5 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AppComponent {
   gameStart = new BehaviorSubject(false);
+  instructions = new BehaviorSubject(false);
 }
