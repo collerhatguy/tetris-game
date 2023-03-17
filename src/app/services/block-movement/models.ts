@@ -1,4 +1,7 @@
-import { Position } from 'src/app/components/board/block-generation/model';
+import {
+  Position,
+  Shape,
+} from 'src/app/components/board/block-generation/model';
 import { Coordinate } from 'src/app/components/board/board-service/models';
 
 export type Command = Direction | 'swap' | 'drop';
@@ -15,6 +18,14 @@ type WallKickData = {
     [key in RotationalDirection]: AlternatePositions;
   };
 };
+
+export const rotationIndexs = new Map<Shape, number>()
+  .set('I', 1)
+  .set('J', 2)
+  .set('L', 2)
+  .set('S', 2)
+  .set('T', 1)
+  .set('Z', 2);
 
 const alternatePositions1 = [
   { x: -1, y: 0 },

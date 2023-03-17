@@ -63,7 +63,7 @@ export class PlayerPieceService extends Store<Tetronomo> {
   private swap() {
     if (!this.state.length) return;
     const newValue = this.blockGeneration.swapBlock(this.state);
-    const valid = this.validate.isValidMove(this.state, newValue);
+    const valid = this.validate.isValidMove(newValue);
 
     valid ? this.setState(newValue) : this.blockGeneration.swapBlock(newValue);
   }
@@ -74,7 +74,7 @@ export class PlayerPieceService extends Store<Tetronomo> {
       this.state
     );
 
-    const valid = this.validate.isValidMove(this.state, newValue);
+    const valid = this.validate.isValidMove(newValue);
 
     valid && this.setState(newValue);
   }
@@ -85,7 +85,7 @@ export class PlayerPieceService extends Store<Tetronomo> {
       ? this.blockGeneration.getNextBlock()
       : this.blockMovement.getFuturePosition('down', this.state);
 
-    const hitTheGround = !this.validate.isValidMove(this.state, newValue);
+    const hitTheGround = !this.validate.isValidMove(newValue);
 
     this.setState(hitTheGround ? new Tetronomo() : newValue);
   }
@@ -96,7 +96,7 @@ export class PlayerPieceService extends Store<Tetronomo> {
       this.state
     );
 
-    const valid = this.validate.isValidMove(this.state, newValue);
+    const valid = this.validate.isValidMove(newValue);
 
     valid && this.setState(newValue);
   }

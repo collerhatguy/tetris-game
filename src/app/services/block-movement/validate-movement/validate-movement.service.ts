@@ -24,13 +24,14 @@ export class ValidateMovementService {
     if (hitGround) return false;
     const outsideOfBounds = c.x < 0 || c.x > board.boardWidth - 1 || c.y < 0;
     if (outsideOfBounds) return false;
-    const overlapsWithOtherPiece = board.state[c.y][c.x].solid;
+    const block = board.state[c.y][c.x];
+    const overlapsWithOtherPiece = block.solid && !block.isPlayer;
     return !overlapsWithOtherPiece;
   }
 
-  isValidMove(prev: Block, current: Block) {
-    const newlyOccupied = this.getNewlyOccupiedAreas(current, prev);
-    return newlyOccupied.every((c) => this.isValidCoordinate(c));
+  isValidMove(current: Block) {
+    // const newlyOccupied = this.getNewlyOccupiedAreas(current, prev);
+    return current.every((c) => this.isValidCoordinate(c));
   }
   constructor(private injector: Injector) {}
 }
