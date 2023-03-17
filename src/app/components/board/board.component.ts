@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil, Observable } from 'rxjs';
+import { Subject, takeUntil, Observable, map } from 'rxjs';
 import { BlockGenerationService } from './block-generation/block-generation.service';
 import { BoardService } from './board-service/board.service';
 import { LevelTrackingService } from './level-tracking/level-tracking.service';
@@ -10,7 +10,7 @@ import { PlayerPieceService } from './player-piece/player-piece.service';
   styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent implements OnDestroy, OnInit {
-  board$ = this.board.state$;
+  board$ = this.board.shownBoard;
 
   level$ = this.level.level;
 

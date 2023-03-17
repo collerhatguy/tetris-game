@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { subscribeSpyTo } from '@hirez_io/observer-spy';
 import { BlockBuilder, Tetronomo } from '../block-generation/model';
 import { RowClearingService } from '../row-clearing/row-clearing.service';
 
@@ -131,5 +132,12 @@ describe('BoardService', () => {
       isShadow(shadow);
       isPlayer(player2);
     });
+  });
+  it('has 4 extra rows that are not available publically', () => {
+    const spy = subscribeSpyTo(service.shownBoard);
+    expect(service.state.length).toBe(service.boardHeight);
+    expect(spy.getFirstValue().length).toBe(
+      service.boardHeight - service.hiddenRows
+    );
   });
 });
