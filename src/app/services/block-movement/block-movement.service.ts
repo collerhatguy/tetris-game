@@ -7,7 +7,12 @@ import {
   Block,
   Coordinate,
 } from 'src/app/components/board/board-service/models';
-import { Direction, RotationalDirection, wallKickData } from './models';
+import {
+  Direction,
+  RotationalDirection,
+  rotationIndexs,
+  wallKickData,
+} from './models';
 import { ValidateMovementService } from './validate-movement/validate-movement.service';
 
 @Injectable({
@@ -53,50 +58,37 @@ export class BlockMovementService {
     return tetro;
   }
 
-  private lastPosition: Block = [];
-
-  private lastAxis: Coordinate | undefined;
-
   private rotate(block: Tetronomo, direction: RotationalDirection): Tetronomo {
     if (block.shape === 'O') return block;
 
-    const alreadyRotated =
-      JSON.stringify(block) === JSON.stringify(this.lastPosition);
-
-    const newAxis = block[1];
-    const axis = alreadyRotated ? this.lastAxis ?? newAxis : newAxis;
+    // console.log(block);
+    const indexOfRotation = rotationIndexs.get(block.shape)!;
+    const axis = block[indexOfRotation];
 
     const newBlock =
       direction === 'rotateRight'
         ? this.rotateRight(axis, block)
         : this.rotateLeft(axis, block);
 
-    const kickedBlock = this.wallKick(newBlock, direction, block.position);
-    this.lastAxis = axis;
-    this.lastPosition = [...kickedBlock];
+    const kickedBlock = this.wallKick(newBlock, direction);
     return kickedBlock;
   }
 
   private wallKick(
     block: Tetronomo,
-    direction: RotationalDirection,
-    prevPosition: Position
+    direction: RotationalDirection
   ): Tetronomo {
-    const valid = this.validate.isValidMove(new Tetronomo(), block);
+    const valid = this.validate.isValidMove(block);
     if (valid) return block;
-    const alternativePositions = wallKickData[prevPosition][direction];
-    for (let c of alternativePositions) {
-      const copy = new Tetronomo(...[...block]);
-      const kickCordinates = copy.map((coordinate) => ({
-        x: coordinate.x + c.x,
-        y: coordinate.y + c.y,
-      }));
-      const valid = this.validate.isValidMove(new Tetronomo(), kickCordinates);
-      if (valid) {
-        const tetro = new Tetronomo(...kickCordinates);
-        tetro.rotate(direction, prevPosition);
-        tetro.shape = block.shape;
-        return tetro;
+    const alternativePositions = wallKickData[block.position][direction];
+    for (const c of alternativePositions) {
+      const copy = block;
+      const kickedVertically = Tetronomo.moveDown(copy, c.y);
+      const kickCordinates = Tetronomo.moveRight(kickedVertically, c.x);
+      const validAlternative = this.validate.isValidMove(kickCordinates);
+      console.log(kickCordinates);
+      if (validAlternative) {
+        return kickCordinates;
       }
     }
     return block;
@@ -119,7 +111,7 @@ export class BlockMovementService {
   getLowestPoint(block: Tetronomo): Tetronomo {
     if (block.length === 0) return block;
     const newBlock = this.getFuturePosition('down', block);
-    const valid = this.validate.isValidMove(block, newBlock);
+    const valid = this.validate.isValidMove(newBlock);
     return valid ? this.getLowestPoint(newBlock) : block;
   }
 

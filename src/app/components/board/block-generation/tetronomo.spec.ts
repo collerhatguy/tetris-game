@@ -1,9 +1,9 @@
-import { Tetronomo } from './model';
+import { BlockBuilder, Tetronomo } from './model';
 
 describe('teronomo', () => {
   let tetro: Tetronomo;
   beforeEach(() => {
-    tetro = new Tetronomo();
+    tetro = new Tetronomo({ x: 0, y: 0 });
   });
   describe('postion', () => {
     it('starts with 0', () => {
@@ -48,6 +48,11 @@ describe('teronomo', () => {
       tetro.shape = 'S';
       const res = Tetronomo.moveDown(tetro);
       expect(res.shape === 'S').toBeTrue();
+    });
+    it('can be moved down', () => {
+      const res = Tetronomo.moveDown(tetro);
+      const expected = new Tetronomo({ x: 0, y: 1 });
+      expect(res).toEqual(expected);
     });
   });
 });

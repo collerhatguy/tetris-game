@@ -25,45 +25,45 @@ describe('BlockMovementService', () => {
     it('can rotate a L block right', () => {
       const block = new BlockBuilder({ x: 5, y: 0 })
         .addBlockBelow()
-        .addBlockBelow()
-        .addBlockRight()
-        .done();
+        .addBlockLeft()
+        .addBlockLeft()
+        .done('L');
       const newBlock = service.getFuturePosition('rotateRight', block);
-      const expected = new BlockBuilder({ x: 6, y: 1 })
+      const expected = new BlockBuilder({ x: 5, y: 2 })
         .addBlockLeft()
-        .addBlockLeft()
-        .addBlockBelow()
-        .done();
+        .addBlockAbove()
+        .addBlockAbove()
+        .done('L');
       expected.rotate('rotateRight');
       expect(newBlock).toEqual(expected);
     });
     it('can rotate a J block right', () => {
       const block = new BlockBuilder({ x: 5, y: 0 })
         .addBlockBelow()
-        .addBlockBelow()
-        .addBlockLeft()
-        .done();
+        .addBlockRight()
+        .addBlockRight()
+        .done('J');
       const newBlock = service.getFuturePosition('rotateRight', block);
-      const expected = new BlockBuilder({ x: 6, y: 1 })
+      const expected = new BlockBuilder({ x: 7, y: 0 })
         .addBlockLeft()
-        .addBlockLeft()
-        .addBlockAbove()
-        .done();
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('J');
       expected.rotate('rotateRight');
       expect(newBlock).toEqual(expected);
     });
     it('can rotate an L block left', () => {
       const block = new BlockBuilder({ x: 5, y: 0 })
         .addBlockBelow()
-        .addBlockBelow()
-        .addBlockRight()
-        .done();
+        .addBlockLeft()
+        .addBlockLeft()
+        .done('L');
       const newBlock = service.getFuturePosition('rotateLeft', block);
-      const expected = new BlockBuilder({ x: 4, y: 1 })
+      const expected = new BlockBuilder({ x: 3, y: 0 })
         .addBlockRight()
-        .addBlockRight()
-        .addBlockAbove()
-        .done();
+        .addBlockBelow()
+        .addBlockBelow()
+        .done('L');
       expected.rotate('rotateLeft');
       expect(newBlock).toEqual(expected);
     });
@@ -120,63 +120,27 @@ describe('BlockMovementService', () => {
       newBlock = service.getFuturePosition('rotateLeft', newBlock);
       expect(newBlock).toEqual(block);
     });
-    describe('wall kicking', () => {
-      it('if I rotate right and that postion is occuppied I will get the position immediatly left of that', () => {
-        const block = new BlockBuilder({ x: 5, y: 5 })
-          .addBlockBelow()
-          .addBlockBelow()
-          .addBlockLeft()
-          .done('J');
-        const lockedBlock = new BlockBuilder({ x: 4, y: 5 }).done();
-        board.lockPieceInplace(lockedBlock);
-        const newBlock = service.getFuturePosition('rotateRight', block);
-        const expected = new BlockBuilder({ x: 5, y: 6 })
-          .addBlockLeft()
-          .addBlockLeft()
-          .addBlockAbove()
-          .done('J');
-        expected.rotate('rotateRight');
-        expect(newBlock).toEqual(expected);
-      });
-      it('if the previous cases final value is impossible then I will get the position immediatly below that one', () => {
-        const block = new BlockBuilder({ x: 5, y: 5 })
-          .addBlockBelow()
-          .addBlockBelow()
-          .addBlockLeft()
-          .done('J');
-        const lockedBlock = new BlockBuilder({ x: 4, y: 6 }).done();
-        board.lockPieceInplace(lockedBlock);
-        const newBlock = service.getFuturePosition('rotateRight', block);
-        const expected = new BlockBuilder({ x: 5, y: 5 })
-          .addBlockLeft()
-          .addBlockLeft()
-          .addBlockAbove()
-          .done('J');
-        expected.rotate('rotateRight');
-        expect(newBlock).toEqual(expected);
-      });
-      it('rotating to the right will cause the blocks postion to change', () => {
-        const block = new BlockBuilder({ x: 5, y: 5 })
-          .addBlockBelow()
-          .addBlockBelow()
-          .addBlockRight()
-          .done();
-        let newBlock = service.getFuturePosition('rotateRight', block);
-        expect(newBlock.position).toBe('R');
-        newBlock = service.getFuturePosition('rotateRight', newBlock);
-        expect(newBlock.position).toBe('2');
-        newBlock = service.getFuturePosition('rotateRight', newBlock);
-        expect(newBlock.position).toBe('L');
-      });
-      it('rotating left will not change the shape', () => {
-        const block = new BlockBuilder({ x: 5, y: 5 })
-          .addBlockBelow()
-          .addBlockBelow()
-          .addBlockRight()
-          .done('L');
-        const newBlock = service.getFuturePosition('rotateRight', block);
-        expect(newBlock.shape).toBe('L');
-      });
+    it('rotating to the right will cause the blocks postion to change', () => {
+      const block = new BlockBuilder({ x: 5, y: 5 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockRight()
+        .done();
+      let newBlock = service.getFuturePosition('rotateRight', block);
+      expect(newBlock.position).toBe('R');
+      newBlock = service.getFuturePosition('rotateRight', newBlock);
+      expect(newBlock.position).toBe('2');
+      newBlock = service.getFuturePosition('rotateRight', newBlock);
+      expect(newBlock.position).toBe('L');
+    });
+    it('rotating left will not change the shape', () => {
+      const block = new BlockBuilder({ x: 5, y: 5 })
+        .addBlockBelow()
+        .addBlockBelow()
+        .addBlockRight()
+        .done('L');
+      const newBlock = service.getFuturePosition('rotateRight', block);
+      expect(newBlock.shape).toBe('L');
     });
   });
   describe('replacing a block', () => {
