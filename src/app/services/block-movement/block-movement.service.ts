@@ -61,7 +61,6 @@ export class BlockMovementService {
   private rotate(block: Tetronomo, direction: RotationalDirection): Tetronomo {
     if (block.shape === 'O') return block;
 
-    // console.log(block);
     const indexOfRotation = rotationIndexs.get(block.shape)!;
     const axis = block[indexOfRotation];
 
@@ -86,7 +85,6 @@ export class BlockMovementService {
       const kickedVertically = Tetronomo.moveDown(copy, c.y);
       const kickCordinates = Tetronomo.moveRight(kickedVertically, c.x);
       const validAlternative = this.validate.isValidMove(kickCordinates);
-      console.log(kickCordinates);
       if (validAlternative) {
         return kickCordinates;
       }
