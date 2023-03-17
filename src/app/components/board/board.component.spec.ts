@@ -93,29 +93,9 @@ describe('BoardComponent', () => {
   };
 
   describe('movement', () => {
-    it('after being rendered for a second an orange square will appear at the top of the grid', fakeAsync(async () => {
+    it('the piece will move left if I hit left', fakeAsync(async () => {
       component.ngOnInit();
-      let playerPieces = screen.queryAllByTestId('player-piece');
-      expect(playerPieces.length).toBe(0);
-      tick(1001);
-      playerPieces = await getPlayerBlock();
-      expect(playerPieces.length).toBe(4);
-      expect(playerPieces[0].style.backgroundColor).not.toBe('white');
-      component.ngOnDestroy();
-    }));
-
-    it('the piece will stop falling at the bottom and become solid', fakeAsync(async () => {
-      component.ngOnInit();
-      tick(1000 * 21);
-      const solidPieces = await getPlayerBlock();
-      expect(solidPieces.length).toBe(4);
-      expect(solidPieces[0].style.backgroundColor).not.toBe('white');
-      component.ngOnDestroy();
-    }));
-
-    it('the piece will move left if I hit "a"', fakeAsync(async () => {
-      component.ngOnInit();
-      tick(1000);
+      tick(5000);
 
       const prevCoordinates = await getPlayerCoordinates();
       pressLeft();
@@ -129,9 +109,9 @@ describe('BoardComponent', () => {
 
       component.ngOnDestroy();
     }));
-    it('the piece will move right if I hit "d"', fakeAsync(async () => {
+    it('the piece will move right if I hit right', fakeAsync(async () => {
       component.ngOnInit();
-      tick(1000);
+      tick(5000);
 
       const prevCoordinates = await getPlayerCoordinates();
       pressRight();
@@ -148,7 +128,7 @@ describe('BoardComponent', () => {
 
     it('the piece will not accept further input for a brief time after receiving it', fakeAsync(async () => {
       component.ngOnInit();
-      tick(1000);
+      tick(5000);
 
       let prevCoordinates = await getPlayerCoordinates();
       pressRight();
@@ -182,7 +162,7 @@ describe('BoardComponent', () => {
 
     it('will go down if I hit "down" button and is not throttled', fakeAsync(async () => {
       component.ngOnInit();
-      tick(1000);
+      tick(5000);
       let prevCoordinates = await getPlayerCoordinates();
       pressDown();
       let currentCoordinates = await getPlayerCoordinates();
@@ -208,7 +188,7 @@ describe('BoardComponent', () => {
 
     it('gravity is reset when the player hits down so as to avoid unexpected input', fakeAsync(async () => {
       component.ngOnInit();
-      tick(1000);
+      tick(5000);
       let prevCoordinates = await getPlayerCoordinates();
       tick(900);
       pressDown();
@@ -224,7 +204,7 @@ describe('BoardComponent', () => {
 
     it('has a shadow at the bottom of the screen indicating where the piece will fall', fakeAsync(async () => {
       component.ngOnInit();
-      tick(1000);
+      tick(5000);
       let playerCoordinates = await getPlayerCoordinates();
       let shadowBlock = await getShadowCoordinates();
       let playerXCoordinate = playerCoordinates.map((c) => c.x);

@@ -12,12 +12,14 @@ import {
   createShadowBlock,
   createSolidBlock,
 } from './models';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoardService extends Store<Board> {
-  readonly boardHeight = 20;
+  readonly hiddenRows = 4;
+  readonly boardHeight = 20 + this.hiddenRows;
   readonly boardWidth = 10;
 
   constructor(
@@ -73,4 +75,8 @@ export class BoardService extends Store<Board> {
 
     this.setState(prevBoard);
   }
+
+  shownBoard = this.state$.pipe(
+    map((wholeBoard) => wholeBoard.slice(this.hiddenRows))
+  );
 }
