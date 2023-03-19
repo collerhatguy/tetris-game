@@ -85,7 +85,7 @@ export class BlockGenerationService {
 
   teronomoPreview = this.blockBag
     .asObservable()
-    .pipe(map((bag) => bag.slice(0, 6)));
+    .pipe(map((bag) => bag.slice(0, 6).map((t) => t.shape)));
 
   swapBlock(tetro: Tetronomo): Tetronomo {
     if (!this.canSwap) return tetro;
@@ -108,6 +108,8 @@ export class BlockGenerationService {
     if (currentBag.length < 6) {
       const nextBlocks = this.shuffleArray(this.allBlocks);
       currentBag.push(...nextBlocks);
+      this.blockBag.next(currentBag);
+    } else {
       this.blockBag.next(currentBag);
     }
     this.canSwap = true;

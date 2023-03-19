@@ -38,7 +38,19 @@ describe('BlockGenerationService', () => {
     const nextBlocks = spy.getFirstValue();
     for (let i = 0; i < 6; i++) {
       const nextBlock = service.getNextBlock();
-      expect(nextBlock).toEqual(nextBlocks[i]);
+      expect(nextBlock.shape).toEqual(nextBlocks[i]);
+    }
+    spy.unsubscribe();
+  });
+
+  it('preview is updated whenever the next block is created', () => {
+    const spy = subscribeSpyTo(service.teronomoPreview);
+    service.getNextBlock();
+    const nextBlocks = spy.getLastValue()!;
+
+    for (let i = 0; i < 6; i++) {
+      const nextBlock = service.getNextBlock();
+      expect(nextBlock.shape).toEqual(nextBlocks[i]);
     }
     spy.unsubscribe();
   });
@@ -49,7 +61,7 @@ describe('BlockGenerationService', () => {
       const [nextBlock] = spy.getFirstValue();
       const tetro = new Tetronomo({ x: 0, y: 0 });
       const newTetro = service.swapBlock(tetro);
-      expect(newTetro.shape).toBe(nextBlock.shape);
+      expect(newTetro.shape).toBe(nextBlock);
       spy.unsubscribe();
     });
     it('if I call the swap block functon again I will get the original tetro', () => {
@@ -74,7 +86,7 @@ describe('BlockGenerationService', () => {
         .done('I');
       const newTetro = service.swapBlock(IBlock);
       expect(newTetro[0]).toEqual(expectedStart);
-      expect(newTetro.shape).toBe(nextBlock.shape);
+      expect(newTetro.shape).toBe(nextBlock);
       spy.unsubscribe();
     });
     it('will always return the last tetronome passed to it after the first', () => {

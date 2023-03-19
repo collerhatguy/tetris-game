@@ -13,6 +13,11 @@
     />
   </div>
 </header>
+<aside *ngIf="preview$ | async as preview">
+  <div class="img" *ngFor="let shape of preview">
+    <img src="assets/{{ shape }}-tetronome.png" alt="{{ shape }}" />
+  </div>
+</aside>
 <section class="board-container" *ngIf="board$ | async as board">
   <div data-testid="row" *ngFor="let row of board; let y = index">
     <div
