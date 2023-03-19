@@ -16,6 +16,8 @@ export class BoardComponent implements OnDestroy, OnInit {
 
   score$ = this.level.score;
 
+  preview$ = this.gen.teronomoPreview;
+
   private destroy = new Subject();
 
   constructor(
