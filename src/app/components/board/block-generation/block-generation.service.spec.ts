@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { subscribeSpyTo } from '@hirez_io/observer-spy';
 import { BoardService } from '../board-service/board.service';
 
 import { BlockGenerationService } from './block-generation.service';
@@ -6,20 +7,12 @@ import { BlockBuilder, Tetronomo } from './model';
 
 describe('BlockGenerationService', () => {
   let service: BlockGenerationService;
-  let spy: jasmine.Spy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [{ provide: BoardService, useValue: { boardWidth: 10 } }],
     });
     service = TestBed.inject(BlockGenerationService);
-
-    const allIndexes = [];
-    for (let i = 0; i < 7; i++) {
-      allIndexes.push(i ? i / 7 : i);
-    }
-
-    spy = spyOn(Math, 'random').and.returnValues(...allIndexes, ...allIndexes);
   });
 
   it('should be created', () => {
@@ -32,19 +25,6 @@ describe('BlockGenerationService', () => {
     expect(block1).not.toEqual(block2);
   });
 
-  it('will start to return previous blocks once all possible values are emmitted', () => {
-    const firstIterationOfBlocks = [];
-    for (let i = 0; i < 7; i++) {
-      firstIterationOfBlocks.push(service.getNextBlock());
-    }
-
-    const secondIterationOfBlocks = [];
-    for (let i = 0; i < 7; i++) {
-      secondIterationOfBlocks.push(service.getNextBlock());
-    }
-
-    expect(firstIterationOfBlocks).toEqual(secondIterationOfBlocks);
-  });
   it('will always create the blocks in the "0" position', () => {
     const firstIterationOfBlocks = [];
     for (let i = 0; i < 7; i++) {
@@ -53,11 +33,24 @@ describe('BlockGenerationService', () => {
     expect(firstIterationOfBlocks.every((t) => t.position === '0')).toBeTrue();
   });
 
+  it('will show a preview of the next blocks', () => {
+    const spy = subscribeSpyTo(service.teronomoPreview);
+    const nextBlocks = spy.getFirstValue();
+    for (let i = 0; i < 6; i++) {
+      const nextBlock = service.getNextBlock();
+      expect(nextBlock).toEqual(nextBlocks[i]);
+    }
+    spy.unsubscribe();
+  });
+
   describe('caching', () => {
     it('I can cache a piece and have a random block returned to me', () => {
+      const spy = subscribeSpyTo(service.teronomoPreview);
+      const [nextBlock] = spy.getFirstValue();
       const tetro = new Tetronomo({ x: 0, y: 0 });
       const newTetro = service.swapBlock(tetro);
-      expect(newTetro.shape).toBe('O');
+      expect(newTetro.shape).toBe(nextBlock.shape);
+      spy.unsubscribe();
     });
     it('if I call the swap block functon again I will get the original tetro', () => {
       const LBlock = new BlockBuilder({ x: 5, y: 0 })
@@ -70,19 +63,19 @@ describe('BlockGenerationService', () => {
       const orignal = service.swapBlock(newTetro);
       expect(orignal).toEqual(LBlock);
     });
-    it('if I call the swap block functon the returned block will match the position of the original but not the shape', () => {
-      const IBlock = new BlockBuilder({ x: 5, y: 6 })
+    it('if I call the swap block function the returned block will match the position of the original but not the shape', () => {
+      const spy = subscribeSpyTo(service.teronomoPreview);
+      const [nextBlock] = spy.getFirstValue();
+      const expectedStart = { x: 5, y: 6 };
+      const IBlock = new BlockBuilder(expectedStart)
         .addBlockBelow()
         .addBlockBelow()
         .addBlockBelow()
         .done('I');
-      const expected = new BlockBuilder({ x: 5, y: 6 })
-        .addBlockRight()
-        .addBlockBelow()
-        .addBlockLeft()
-        .done('O');
       const newTetro = service.swapBlock(IBlock);
-      expect(newTetro).toEqual(expected);
+      expect(newTetro[0]).toEqual(expectedStart);
+      expect(newTetro.shape).toBe(nextBlock.shape);
+      spy.unsubscribe();
     });
     it('will always return the last tetronome passed to it after the first', () => {
       const OBlock = new BlockBuilder({ x: 5, y: 6 })
@@ -92,11 +85,11 @@ describe('BlockGenerationService', () => {
         .done('O');
 
       service.swapBlock(OBlock);
-      const IBlock = service.getNextBlock();
-      service.swapBlock(IBlock);
+      const nextBlock = service.getNextBlock();
+      service.swapBlock(nextBlock);
       service.getNextBlock();
       const res = service.swapBlock(new Tetronomo({ x: 0, y: 0 }));
-      expect(res.shape).toBe('I');
+      expect(res.shape).toBe(nextBlock.shape);
     });
     it('you cannot swap a the same 2 blocks twice', () => {
       const IBlock = new BlockBuilder({ x: 5, y: 6 })

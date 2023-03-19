@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, map } from 'rxjs';
 import { BlockMovementService } from 'src/app/services/block-movement/block-movement.service';
 import { BoardService } from '../board-service/board.service';
 import { BlockBuilder, Shape, Tetronomo } from './model';
@@ -67,11 +68,24 @@ export class BlockGenerationService {
     this.TBlock,
   ];
 
-  private blockBag = [...this.allBlocks];
+  private shuffleArray<T>(array: T[]): T[] {
+    const newArray = array.slice();
+    for (let i = newArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+    }
+    return newArray;
+  }
+
+  private blockBag = new BehaviorSubject(this.shuffleArray(this.allBlocks));
 
   savedTetro: Shape | undefined;
 
   private canSwap = true;
+
+  teronomoPreview = this.blockBag
+    .asObservable()
+    .pipe(map((bag) => bag.slice(0, 6)));
 
   swapBlock(tetro: Tetronomo): Tetronomo {
     if (!this.canSwap) return tetro;
@@ -89,10 +103,13 @@ export class BlockGenerationService {
   }
 
   getNextBlock(): Tetronomo {
-    const random = Math.random();
-    const index = Math.floor(random * this.blockBag.length);
-    const [nextBlock] = this.blockBag.splice(index, 1);
-    if (this.blockBag.length === 0) this.blockBag = [...this.allBlocks];
+    const currentBag = this.blockBag.value;
+    const nextBlock = currentBag.shift()!;
+    if (currentBag.length < 6) {
+      const nextBlocks = this.shuffleArray(this.allBlocks);
+      currentBag.push(...nextBlocks);
+      this.blockBag.next(currentBag);
+    }
     this.canSwap = true;
     return nextBlock;
   }
